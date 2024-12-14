@@ -1,7 +1,5 @@
 <template>
-  <NavigationBar />
    <RouterView />
-   <FooterComponent />
 </template>
 
 <script setup>

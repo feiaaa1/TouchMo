@@ -1,24 +1,59 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView/HomeView.vue'
-import LoginView from '../views/LoginView/LoginView.vue'
-import NotFoundView from '@/views/NotFoundView/NotFoundView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      component: () => import('@/views/HomeView/HomeView.vue'),
+      children: [
+        {
+          path: '',
+          name: 'home',
+          component: () => import('@/views/HomeView/SubViews/MoviePushView/MoviePushView.vue'),
+        },
+        {
+          path: 'movies/:id',
+          name: 'movieDetail',
+          component: () => import('@/views/HomeView/SubViews/MovieDetailView/MovieDetailView.vue'),
+        },
+        {
+          path: 'movies/:id/player',
+          name: 'moviePlayer',
+          component: () => import('@/views/HomeView/SubViews/MoviePlayerView/MoviePlayerView.vue'),
+        },
+        {
+          path: 'tags',
+          name: 'tags',
+          component: () => import('@/views/HomeView/SubViews/TagDisplayView/TagDisplayView.vue'),
+        },
+        {
+          path: 'tags/:tagName',
+          name: 'tagCorrelation',
+          component: () => import('@/views/HomeView/SubViews/TagCorrelation/TagCorrelation.vue'),
+        },
+        {
+          path: 'userProfile',
+          name: 'userProfile',
+          component: () => import('@/views/HomeView/SubViews/UserProfileView/UserProfileView.vue'),
+        },
+        {
+          path: 'actors/:id',
+          name: 'actors',
+          component: () =>
+            import('@/views/HomeView/SubViews/ActorProfileView/ActorProfileView.vue'),
+        },
+      ],
     },
     {
       path: '/login',
       name: 'login',
-      component: LoginView,
+      component: () => import('@/views/LoginView/LoginView.vue'),
     },
     {
-      path: '*', // 通配符路由，匹配所有未定义的路径
+      path: '/*',
       name: 'NotFound',
-      component: NotFoundView,
+      component: () => import('@/views/NotFoundView/NotFoundView.vue'),
     },
   ],
 })
