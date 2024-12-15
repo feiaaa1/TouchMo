@@ -23,10 +23,11 @@
   height: 100%;
   width: 100%;
   border-radius: 0.7rem;
-  background-image: url("https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg");
+  overflow: hidden;
+      background-image: url("https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg");
   background-position: center;
   background-clip: cover;
-  overflow: hidden;
+
   &::before {
     content: '';
     position: absolute;
@@ -34,7 +35,7 @@
     left: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to top, var(--primary-bg-color),#00000000);
+    background: linear-gradient(to top, var(--primary-bg-color)20%,#00000000);
   }
 
   .recommend-button {
@@ -43,7 +44,7 @@
     right: 2.2rem;
     z-index: 1;
     height: 2rem;
-    padding: 1.2rem 0.7rem;
+    padding: 1.3rem 0.8rem;
     background: var(--primary-border-color);
     border-radius: 100rem;
     display: flex;
@@ -84,12 +85,13 @@
     padding: 2.2rem;
 
     h3{
-      font-size: 1rem;
+      font-size: 0.8rem;
       font-weight: 300;
-      color: var(--primary-font-color);
+      color: var(--secondary-font-color);
     }
 
     h1 {
+      margin-top: 5px;
       font-size: 1.7rem;
       line-height: 1;
       color: var(--secondary-font-color);
@@ -102,7 +104,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse farthest-corner at center, #ff6b6b00 0%, #0000008e 100%);
+    background: radial-gradient(ellipse farthest-corner at center, #ed656500 60%, #000000b6 100%);
   }
 }
 </style>

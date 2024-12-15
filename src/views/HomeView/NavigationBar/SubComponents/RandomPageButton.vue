@@ -30,7 +30,7 @@ function navigateToRandomMovie() {
   }
 
   .icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 }
 </style>

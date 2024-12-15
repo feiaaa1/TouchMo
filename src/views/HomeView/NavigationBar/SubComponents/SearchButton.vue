@@ -30,7 +30,7 @@ function showSearchBox() {
   }
 
   .icon {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
   }
 }
 </style>

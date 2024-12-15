@@ -18,8 +18,11 @@ import ConsoleButton from './SubComponents/ConsoleButton.vue';
 
 <style lang="scss" scoped>
 .nav-container {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.8rem 2.5rem;
   background-color: var(--primary-bg-color);
   display: flex;
   align-items: center;
@@ -29,8 +32,8 @@ import ConsoleButton from './SubComponents/ConsoleButton.vue';
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    
+    gap: 0.8rem;
+
   }
 }
 </style>

@@ -1,12 +1,14 @@
 <template>
-  <div class="console-container" @click="navigateToRandomMovie()">
+  <div class="console-container" @click="changeThemeStyle()">
     <span class="icon iconfont icon-console"></span>
   </div>
 </template>
 
 <script setup>
-function navigateToRandomMovie() {
-
+import { useStyleStateStore } from '@/stores/styleState';
+const store = useStyleStateStore()
+function changeThemeStyle() {
+  store.switchThemeStyle()
 }
 </script>
 
@@ -29,7 +31,7 @@ function navigateToRandomMovie() {
   }
 
   .icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 }
 </style>

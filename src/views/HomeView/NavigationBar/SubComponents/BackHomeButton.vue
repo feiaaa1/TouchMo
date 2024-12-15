@@ -1,6 +1,6 @@
 <template>
   <div class="back-container" @click="navigateToHome()">
-    <p>TouchMovie</p>
+    <h3>TouchMo</h3>
     <span class="icon iconfont icon-home"></span>
   </div>
 </template>
@@ -31,13 +31,24 @@ function navigateToHome() {
   &:hover{
     background-color: var(--primary-accent-color);
     color: var(--primary-font-color);
-    p {
+    h3 {
       opacity: 0;
     }
     .icon {
       opacity: 100;
     }
   }
+
+  h3{
+    font-family: "Chewy-Regular";
+    font-size: 1.8rem;
+    font-weight: 600;
+
+    &::first-letter {
+      text-decoration-line: underline;
+      text-underline-offset: 2px;
+    }
+    }
 
   .icon {
     position: absolute;

@@ -1,6 +1,7 @@
 <template>
   <div class="category-container">
     <h3>分类</h3>
+    <span class="iconfont icon icon-category"></span>
   </div>
 </template>
 
@@ -11,12 +12,35 @@
 <style lang="scss" scoped>
 .category-container {
   cursor: pointer;
-  width: 40%;
+  position: relative;
+  width: 45%;
   height: 100%;
-  border-radius: 1rem;
-  background: linear-gradient(to right,#123c92,#486ab3);
+  border-radius: 0.7rem;
+  background: linear-gradient(to right,#2453b2,#448cd5);
   transition: all 1.2s;
   color: var(--secondary-font-color);
+  overflow: hidden;
+
+  &:hover {
+    flex-shrink: 0;
+
+    .icon {
+    transform: rotate(0deg) scale(1);
+      opacity: 0.8;
+      filter: blur(0);
+    }
+  }
+
+  .icon{
+    position: absolute;
+    bottom: 0;
+    right: 1.2rem;
+    font-size: 2.5rem;
+    transition: all 1s;
+    transform: rotate(20deg) scale(2) translateX(-0.2rem) ;
+    opacity: 0.2;
+    filter: blur(1px);
+  }
 
   h3{
     margin-top: 1.2rem;
@@ -29,8 +53,5 @@
     }
   }
 
-  &:hover {
-    flex-shrink: 0;
-  }
 }
 </style>

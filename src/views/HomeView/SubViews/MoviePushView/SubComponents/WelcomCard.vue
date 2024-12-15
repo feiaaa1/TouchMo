@@ -2,7 +2,7 @@
   <div class="welcom-container">
     <h1>
       欢迎访问<br />
-      TouchMovie
+      TouchMo
     </h1>
     <p>免费 高质量</p>
     <div class="inner-card">
@@ -25,8 +25,8 @@
   cursor: pointer;
   position: relative;
   width: 100%;
-  height: 67%;
-  padding: 2rem;
+  height: 75%;
+  padding: 2.8rem;
   background-color: var(--tertiary-bg-color);
   border: 1px solid var(--primary-border-color);
   border-radius: 0.7rem;
@@ -40,6 +40,7 @@
     }
   }
   h1{
+    font-size: 2.3rem;
     line-height: 1.3;
   }
   p{
