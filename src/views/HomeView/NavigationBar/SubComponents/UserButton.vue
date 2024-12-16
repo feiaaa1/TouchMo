@@ -8,7 +8,7 @@
 import { useStyleStateStore } from '@/stores/styleState'
 const store = useStyleStateStore()
 function showLoginBox() {
-  store.showBox('isShowLoginBox')
+  store.showBox('isShowUserCard')
 }
 </script>
 

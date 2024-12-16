@@ -16,7 +16,7 @@
 
     <div class="main-content">
       <div class="film-list-section">
-        <FilmList :number=20 :columns=2 />
+        <FilmList :filmList="movieList" :columns="2" />
       </div>
       <div class="ranking-section">
         <RankingBox />
@@ -31,10 +31,14 @@ import ExplainCard from './SubComponents/ExplainCard.vue'
 import CategoryButton from './SubComponents/CategoryButton.vue'
 import ForumButton from './SubComponents/ForumButton.vue'
 import MessageButton from './SubComponents/MessageButton.vue'
-import FilmList from './SubComponents/FilmList.vue'
+import FilmList from '@/components/FilmList.vue'
 import RankingBox from './SubComponents/RankingBox.vue'
-import { onMounted } from 'vue'
-onMounted(() => {
+import { ref } from 'vue'
+import { getPushMovieList } from '@/api/movie'
+const movieList = ref([])
+getPushMovieList().then((data) => {
+  console.log(data)
+  movieList.value = data.data
 })
 </script>
 

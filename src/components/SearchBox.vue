@@ -3,21 +3,32 @@
     <div class="flur" @click="closeBox()"></div>
     <div class="searchBox" >
       <header>
-        <h1></h1>
-        <input type="text" />
+        <p class="title">搜索</p>
+        <input @change="getFilmArr()" type="text" v-model="input" />
       </header>
-      <main></main>
+      <main>
+        <FilmList :film-list="filmList" :columns="1" />
+      </main>
     </div>
   </div>
 </template>
 
 <script setup>
+import FilmList from './FilmList.vue';
 import { useStyleStateStore } from '@/stores/styleState'
+import { ref } from 'vue';
 const store = useStyleStateStore()
-
 function closeBox() {
   store.closeBox()
 }
+
+const input = ref('')
+const filmList = ref([])
+function getFilmArr() {
+
+}
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -44,6 +55,28 @@ function closeBox() {
     border-radius: 0.8rem;
     border: 1px solid var(--primary-border-color);
     background-color: var(--tertiary-bg-color);
+    padding: 1rem;
+
+    header {
+      color: var(--primary-func-color);
+
+       p{
+        font-size: 1.4rem;
+      }
+      input {
+        outline: none;
+        width: 100%;
+        background-color: var(--secondary-bg-color);
+        border-radius: 100rem;
+        border: 1px solid var(--primary-border-color);
+        padding: 0.2rem 0.5rem;
+        color: var(--primary-font-color);
+
+        &:focus {
+          border: 1px solid var(--primary-func-color);
+        }
+      }
+    }
   }
 }
 </style>

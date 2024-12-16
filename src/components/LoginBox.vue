@@ -12,7 +12,7 @@
           <label for="password">Password:</label>
           <input type="password" v-model="password" id="password" required />
         </div>
-        <button type="submit">Login</button>
+        <button @click="submit()" type="submit">{{ title }}</button>
       </form>
       <p @click="switchForm()">{{ '切换到' + title }}</p>
     </div>
@@ -22,11 +22,26 @@
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
 const store = useStyleStateStore()
-import { ref } from 'vue';
-const title = ref('登录');
+import { ref } from 'vue'
+const title = ref('登录')
 
 function switchForm() {
-  title.value = title.value === '登录' ? '注册' : '登录';
+  title.value = title.value === '登录' ? '注册' : '登录'
+}
+
+const username = ref('')
+const password = ref('')
+import { userLogin, userRegister } from '@/api/user'
+function submit() {
+  if (title.value === '登录') {
+    userLogin(username.value, password.value).then((data) => {
+      localStorage.setItem('token', data.data.data)
+    })
+  } else {
+    userRegister(username.value, password.value).then((data) => {
+      console.log(data)
+    })
+  }
 }
 </script>
 
@@ -60,7 +75,7 @@ function switchForm() {
 
     p {
       cursor: pointer;
-      &:hover{
+      &:hover {
         color: var(--primary-func-color);
       }
     }

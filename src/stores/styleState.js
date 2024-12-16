@@ -4,12 +4,15 @@ import { defineStore } from 'pinia'
 export const useStyleStateStore = defineStore('styleState', () => {
   const ThemeStyle = ref('dark')
   function switchThemeStyle() {
+    console.log('changingTheme');
     ThemeStyle.value = ThemeStyle.value === 'light' ? 'dark' : 'light'
   }
 
   const showBoxList = reactive({
     isShowLoginBox: false,
     isShowSearchBox: false,
+    isShowUserCard: false,
+    isShowModifyCard: false
   })
   function showBox(boxName) {
     for (let key in showBoxList) {

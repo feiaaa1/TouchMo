@@ -1,6 +1,6 @@
 <template>
   <div class="film-container" :style="styleObject">
-    <FilmShortening v-for="item in props.number" :key="item" />
+    <FilmShortening v-for="item in props.filmList" :key="item.id" :cover="item.cover" :area="item.area" :title="item.title" :language="item.language" :categories="item.categories" :viewNum="item.viewNum" :id="item.id" />
   </div>
 </template>
 
@@ -13,9 +13,8 @@ const props = defineProps({
     type: Number,
     default: 2,
   },
-  number: {
-    type: Number,
-    default: 10,
+  filmList: {
+    type: Object,
   },
 })
 
@@ -26,7 +25,7 @@ const styleObject = reactive({
 
 <style lang="scss" scoped>
 .film-container {
-    width: 100%;
+  width: 100%;
   display: grid;
   gap: 1rem;
 }

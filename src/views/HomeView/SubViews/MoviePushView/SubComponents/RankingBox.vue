@@ -1,11 +1,18 @@
 <template>
   <div class="ranking-container">
-    <FilmList :columns="1" />
+    <FilmList :filmList="movieList" :columns="1" />
   </div>
 </template>
 
 <script setup>
-import FilmList from './FilmList.vue';
+import FilmList from '@/components/FilmList.vue';
+import { getHotPushMovieList } from '@/api/movie';
+import { ref } from 'vue';
+const movieList = ref([])
+getHotPushMovieList().then((data) => {
+  console.log('hotPushMovieList===>',data)
+  movieList.value = data.data
+})
 </script>
 
 <style lang="scss" scoped>

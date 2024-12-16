@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
-  baseURL: 'http://8glqj0v8j.shenzhuo.vip:55211', // 替换为你的 API 基础 URL
+  baseURL: 'http://www.free.svipss.top/', // 替换为你的 API 基础 URL
   timeout: 10000, // 请求超时时间
 })
 
@@ -14,7 +14,7 @@ axiosInstance.interceptors.request.use(
 
     if (token) {
       // 如果 token 存在，则将其作为请求头的一部分
-      config.headers.Authorization = `Bearer ${token}`
+      config.headers.token = `${token}`
     }
 
     return config
@@ -29,7 +29,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     // 对响应数据做些什么
-    return response
+    return response.data
   },
   (error) => {
     // 对响应错误做些什么
