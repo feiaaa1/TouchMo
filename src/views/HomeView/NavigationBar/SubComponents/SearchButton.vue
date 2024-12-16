@@ -5,8 +5,10 @@
 </template>
 
 <script setup>
+import { useStyleStateStore } from '@/stores/styleState'
+const store = useStyleStateStore()
 function showSearchBox() {
-
+  store.showBox('isShowSearchBox')
 }
 </script>
 
@@ -23,10 +25,10 @@ function showSearchBox() {
   font-size: medium;
   font-weight: 400;
   color: var(--primary-font-color);
-  transition: all .3s;
-  &:hover{
+  transition: all 0.3s;
+  &:hover {
     background-color: var(--primary-accent-color);
-        color: var(--secondary-font-color);
+    color: var(--secondary-font-color);
   }
 
   .icon {

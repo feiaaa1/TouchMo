@@ -1,14 +1,14 @@
 <template>
-  <div class="console-container" @click="changeThemeStyle()">
-    <span class="icon iconfont icon-console"></span>
+  <div class="console-container" @click="showLoginBox()">
+    <span class="icon iconfont icon-user"></span>
   </div>
 </template>
 
 <script setup>
-import { useStyleStateStore } from '@/stores/styleState';
+import { useStyleStateStore } from '@/stores/styleState'
 const store = useStyleStateStore()
-function changeThemeStyle() {
-  store.switchThemeStyle()
+function showLoginBox() {
+  store.showBox('isShowLoginBox')
 }
 </script>
 
@@ -28,13 +28,14 @@ function changeThemeStyle() {
   transition: all .3s;
   &:hover{
     background-color: var(--primary-accent-color);
-        .icon {
+
+    .icon {
       color: var(--secondary-font-color);
     }
   }
 
   .icon {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
   }
 }
 </style>

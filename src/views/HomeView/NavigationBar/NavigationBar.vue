@@ -5,6 +5,7 @@
       <RandomPageButton />
       <SearchButton />
       <ConsoleButton />
+      <userButton />
     </div>
   </div>
 </template>
@@ -14,6 +15,7 @@ import BackHomeButton from './SubComponents/BackHomeButton.vue';
 import RandomPageButton from './SubComponents/RandomPageButton.vue';
 import SearchButton from './SubComponents/SearchButton.vue';
 import ConsoleButton from './SubComponents/ConsoleButton.vue';
+import UserButton from './SubComponents/UserButton.vue';
 </script>
 
 <style lang="scss" scoped>

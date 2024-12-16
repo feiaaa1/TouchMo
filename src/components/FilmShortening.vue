@@ -1,12 +1,12 @@
 <template>
-  <div class="shorteing-container" @click="navigateToMovieDetail(film.id)">
+  <div class="shorteing-container" ref="container"  @click="navigateToMovieDetail(film.id)">
     <div class="img-container">
       <img :src="film.cover" alt="">
     </div>
     <div class="detail-container">
       <p>{{film.area}}</p>
       <h1>{{ '['+film.language+'] '+film.title }}</h1>
-      <div class="tags-views-container">
+      <div class="tags-views-container" v-if="showTags">
         <div ref="tag-list" class="tags-container">
           <TagComponent  v-for="item in film.categories" :key="item.id" :name="item.name" /></div>
         <div class="views-container">
@@ -19,9 +19,12 @@
 </template>
 
 <script setup>
-import { useTemplateRef, onMounted } from 'vue';
+import { ref, useTemplateRef, onMounted } from 'vue';
 import TagComponent from './TagComponent.vue';
 import { useRouter } from 'vue-router';
+
+
+
 const router = useRouter()
 
 const film = JSON.parse(JSON.stringify({
@@ -150,7 +153,12 @@ function updateContainer() {
   })
 }
 
+const showTags = ref(true)
+const container = useTemplateRef('container')
 onMounted(() => {
+  if (container.value.offsetWidth < 300) {
+    showTags.value = false
+  }
   updateContainer()
 })
 </script>
@@ -159,7 +167,7 @@ onMounted(() => {
 .shorteing-container {
   cursor: pointer;
   width: 100%;
-  height: 17rem;
+  aspect-ratio: 2/1.1;
   background-color: var(--quatenary-bg-color);
   border: 1px solid var(--primary-border-color);
   overflow: hidden;
@@ -207,16 +215,15 @@ onMounted(() => {
   .detail-container {
     height: 100%;
     width: 100%;
-    padding: 1.5rem 1.6rem;
+    padding: 4% 6%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 0.3rem;
 
     p {
       color: var(--primary-font-color);
-      font-size: 0.7rem;
+      font-size: 2%;
       font-style: italic;
     }
 
@@ -231,6 +238,8 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+
 
       .tags-container{
         display: flex;

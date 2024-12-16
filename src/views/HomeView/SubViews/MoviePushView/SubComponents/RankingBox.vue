@@ -1,19 +1,16 @@
 <template>
   <div class="ranking-container">
-
+    <FilmList :columns="1" />
   </div>
 </template>
 
 <script setup>
-
+import FilmList from './FilmList.vue';
 </script>
 
 <style lang="scss" scoped>
 .ranking-container {
-  position: sticky;
-  top: 5rem;
   width: 100%;
-  height: 25rem;
   padding: 2rem;
   background-color: var(--tertiary-bg-color);
   border-radius: 0.9rem;
