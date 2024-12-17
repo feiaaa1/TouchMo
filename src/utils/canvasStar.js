@@ -2,7 +2,7 @@ export function canvasStar() {
   const canvas = document.querySelector('#starfield')
   const container = document.querySelector('.home-container')
   const ctx = canvas.getContext('2d')
-  const colors = ['#fffb1c', '#ffffff']
+  const colors = ['#fffb1c', '#00fbff']
 
   function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)]
@@ -30,7 +30,7 @@ export function canvasStar() {
         size: Math.random() * 0.3 + 1.3,
         color: getRandomColor(),
         trail: [], // 存储流星的轨迹
-        trailLength: 10, // 轨迹长度
+        trailLength: 5, // 轨迹长度
         trailOpacity: 0.2, // 轨迹透明度
       })
     } else {
@@ -40,7 +40,7 @@ export function canvasStar() {
         y: Math.random() * canvas.height,
         speedX: Math.random() * 0.2 + 0.05,
         speedY: -Math.random() * 0.2 - 0.05,
-        size: Math.random() * 1 + 0.6,
+        size: Math.random() * 1 + 0.1,
         color: getRandomColor(),
       })
     }

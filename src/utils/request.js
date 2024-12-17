@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
-  baseURL: 'http://www.free.svipss.top/', // 替换为你的 API 基础 URL
+  baseURL: 'http://www.free.svipss.top', // 替换为你的 API 基础 URL
   timeout: 10000, // 请求超时时间
 })
 

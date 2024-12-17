@@ -1,11 +1,19 @@
 <template>
-  <div class="category-container">
+  <div @click="navigateToTagsPage()" class="category-container">
     <h3>分类</h3>
     <span class="iconfont icon icon-category"></span>
   </div>
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router';
+const router = useRouter()
+
+function navigateToTagsPage() {
+  router.push({
+    name: 'tags'
+  })
+}
 
 </script>
 

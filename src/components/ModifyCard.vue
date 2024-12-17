@@ -7,7 +7,7 @@
         <div class="avatar-upload">
           <label for="avatar">头像上传</label>
           <input type="file" id="avatar" @change="handleAvatarChange" />
-          <img v-if="avatarUrl" :src="avatarUrl" alt="用户头像" class="avatar-preview" />
+          <!-- <img v-if="avatarUrl" :src="avatarUrl" alt="用户头像" class="avatar-preview" /> -->
         </div>
 
         <!-- 名字输入 -->
@@ -21,100 +21,93 @@
           <label for="sex">性别</label>
           <select id="sex" v-model="sex" required>
             <option :value="1">男</option>
-          <option :value="0">女</option>
-        </select>
-      </div>
+            <option :value="0">女</option>
+          </select>
+        </div>
 
-      <!-- 邮箱编写和验证 -->
-      <div class="form-group">
-        <label for="email">邮箱</label>
-        <input type="email" id="email" v-model="email" @blur="validateEmail" required />
-        <span v-if="emailError" class="error">{{ emailError }}</span>
-      </div>
+        <!-- 邮箱编写和验证 -->
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <input type="email" id="email" v-model="email" @blur="validateEmail" required />
+          <span v-if="emailError" class="error">{{ emailError }}</span>
+        </div>
 
-      <!-- 提交按钮 -->
-      <button type="submit" :disabled="isSubmitting">提交</button>
-    </form>
+        <!-- 提交按钮 -->
+        <button type="submit" :disabled="isSubmitting">提交</button>
+      </form>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useUserStore } from '@/stores/user';
-import { useStyleStateStore } from '@/stores/styleState';
+import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 const userStore = useUserStore()
 
 // 用户信息
-const avatarUrl = ref(null);
-const name = ref('');
-const sex = ref('male');
-const email = ref('');
-const emailError = ref('');
-const isSubmitting = ref(false);
+const avatarFile = ref(null)
+const name = ref('')
+const sex = ref('male')
+const email = ref('')
+const emailError = ref('')
+const isSubmitting = ref(false)
 
 // 处理头像上传
 const handleAvatarChange = (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    // 这里可以添加文件验证逻辑
-    // ...
-
-    // 创建一个URL对象来预览图片
-    avatarUrl.value = URL.createObjectURL(file);
-  }
-};
-
+  const file = event.target.files[0]
+  avatarFile.value = file
+}
 // 验证邮箱
-const validateEmail = () => {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(email.value)) {
-    emailError.value = '请输入有效的邮箱地址';
-  } else {
-    emailError.value = '';
-  }
-};
-
+// const validateEmail = () => {
+//   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailPattern.test(email.value)) {
+//     emailError.value = '请输入有效的邮箱地址';
+//   } else {
+//     emailError.value = '';
+//   }
+// };
 
 // 处理表单提交
-import { modifyUserInfo } from '@/api/user';
+import { modifyUserInfo } from '@/api/user'
+import { upload } from '@/api/user'
 const handleSubmit = async () => {
-  isSubmitting.value = true;
+  isSubmitting.value = true
 
-  // 验证邮箱
+  //处理图片上传 更新数据为返回的url
+  const formData = new FormData()
+  formData.append('file', avatarFile.value)
+  const uploadRes = await upload(formData)
+  console.log('uploadRes--->', uploadRes)
+  avatarFile.value = uploadRes.data
 
-
-  // 创建一个FormData对象来提交数据
-
-  const formData = {
-    id: userStore.userInfo.value.id,
-    avater: avatarUrl.value,
+  const params = {
+    id: userStore.userInfo.id,
+    avatar: avatarFile.value,
     name: name.value,
     sex: sex.value,
-    email: email.value
+    email: email.value,
   }
+
   try {
-    // 发送请求到服务器
-
-    const res = await modifyUserInfo(formData)
-    console.log(res.data);
-
+    const res = await modifyUserInfo(params)
+    console.log('modify res-->', res.msg)
+    userStore.getUser()
     // 模拟成功响应
-    alert('用户信息更新成功！');
-
+    alert('用户信息更新成功！')
   } catch (error) {
     // 处理错误
-    console.error('提交用户信息时出错：', error);
+    console.error('提交用户信息时出错：', error)
   } finally {
-    isSubmitting.value = false;
+    isSubmitting.value = false
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
-.modify-container{
-    width: 100%;
+.modify-container {
+  width: 100%;
   height: 100%;
   .flur {
     position: absolute;
@@ -140,7 +133,6 @@ const handleSubmit = async () => {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: var(--tertiary-bg-color);
 
-
     .avatar-upload {
       // 头像上传样式
       // ...
@@ -153,23 +145,23 @@ const handleSubmit = async () => {
 
     .form-group {
       // 表单组样式
-    // ...
-
-    .error {
-      // 错误消息样式
       // ...
+
+      .error {
+        // 错误消息样式
+        // ...
+      }
+    }
+
+    button {
+      // 提交按钮样式
+      // ...
+
+      &:disabled {
+        // 禁用状态样式
+        // ...
+      }
     }
   }
-
-  button {
-    // 提交按钮样式
-    // ...
-
-    &:disabled {
-      // 禁用状态样式
-      // ...
-    }
-  }
-}
 }
 </style>

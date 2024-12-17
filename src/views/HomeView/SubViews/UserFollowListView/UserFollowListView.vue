@@ -1,17 +1,20 @@
 <template>
-  <div class="actor-container">
+  <div class="followList-container">
     <div class="left-container">
-      <div class="detail-container">
-        <div class="img">
-          <img :src="actorProfile.avatar" alt="">
+      <h1>关注列表</h1>
+      <div v-for="item in followList" :key="item.id"  class="actor-box">
+        <div class="detail-container">
+          <div class="img">
+            <img :src="item.avatar" alt="">
+          </div>
+          <div class="title-container">
+            <h1>{{ item.name }}</h1>
+            <button @click="subDeleteFollow(item.id)">取消关注</button>
+          </div>
         </div>
-        <div class="title-container">
-          <h1>{{ actorProfile.name }}</h1>
-          <button @click="submitFollow()">关注</button>
-        </div>
+        <h1>参演作品</h1>
+        <FilmList :filmList="item.films" />
       </div>
-      <h1>参演作品</h1>
-      <FilmList :filmList="actorProfile.films" />
     </div>
     <div class="right-container"></div>
   </div>
@@ -19,29 +22,32 @@
 
 <script setup>
 import { ref } from 'vue'
-import { getActorProfile } from '@/api/movie';
-import { useRoute } from 'vue-router';
 import FilmList from '@/components/FilmList.vue';
-const route = useRoute()
+import { getFollow } from '@/api/user';
 
-import { follow } from '@/api/user';
-function submitFollow() {
-  follow(route.params.actorId).then(res => {
-    if (res.code === 0) alert('关注成功')
-    if(res.code===1)alert('已关注，无法关注')
+const followList = ref([])
+function getFollowList() {
+  getFollow().then(res => {
+    followList.value = res.data
   })
 }
 
-const actorProfile = ref([])
+getFollowList()
 
-getActorProfile(route.params.actorId).then(res => {
-  actorProfile.value = res.data
-})
+import { deleteFollow } from '@/api/user';
+function subDeleteFollow(id) {
+  deleteFollow(id).then(res => {
+    if (res.code === 0) {
+      alert('取消成功！')
+      getFollowList()
+    }
+  })
+}
 
 </script>
 
 <style lang="scss" scoped>
-.actor-container {
+.followList-container {
   width: 100%;
   height: 100%;
   padding: 3rem;
@@ -60,8 +66,11 @@ getActorProfile(route.params.actorId).then(res => {
     flex-direction: column;
     gap: 2rem;
 
-    .detail-container{
-      display: flex;
+    .actor-box{
+      width: 100%;
+      margin-bottom: 3rem;
+      .detail-container{
+        display: flex;
       align-items: center;
       gap: 1rem;
       .img{
@@ -77,6 +86,9 @@ getActorProfile(route.params.actorId).then(res => {
         }
       }
     }
+
+  }
+
   }
 
   .right-container {

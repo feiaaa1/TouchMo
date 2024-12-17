@@ -28,17 +28,24 @@ const router = createRouter({
           component: () => import('@/views/HomeView/SubViews/TagDisplayView/TagDisplayView.vue'),
         },
         {
-          path: 'tags/:tagName',
+          path: 'tags/:tagId',
           name: 'tagCorrelation',
           component: () => import('@/views/HomeView/SubViews/TagCorrelation/TagCorrelation.vue'),
         },
         {
-          path: 'userProfile',
-          name: 'userProfile',
-          component: () => import('@/views/HomeView/SubViews/UserProfileView/UserProfileView.vue'),
+          path: 'userFollowList',
+          name: 'userFollowList',
+          component: () =>
+            import('@/views/HomeView/SubViews/UserFollowListView/UserFollowListView.vue'),
         },
         {
-          path: 'actors/:id',
+          path: 'userFavorites',
+          name: 'userFavorites',
+          component: () =>
+            import('@/views/HomeView/SubViews/UserFavoritesView/UserFavoritesView.vue'),
+        },
+        {
+          path: 'actors/:actorId',
           name: 'actors',
           component: () =>
             import('@/views/HomeView/SubViews/ActorProfileView/ActorProfileView.vue'),

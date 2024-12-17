@@ -21,6 +21,8 @@
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
+import { useUserStore } from '@/stores/user';
+const userStore = useUserStore()
 const store = useStyleStateStore()
 import { ref } from 'vue'
 const title = ref('登录')
@@ -34,12 +36,15 @@ const password = ref('')
 import { userLogin, userRegister } from '@/api/user'
 function submit() {
   if (title.value === '登录') {
-    userLogin(username.value, password.value).then((data) => {
-      localStorage.setItem('token', data.data.data)
+    userLogin(username.value, password.value).then(async (data) => {
+      localStorage.setItem('token', data.data)
+      await userStore.getUser()
+      alert('登录成功!')
+      store.closeBox()
     })
   } else {
-    userRegister(username.value, password.value).then((data) => {
-      console.log(data)
+    userRegister(username.value, password.value).then(() => {
+      alert('注册成功!')
     })
   }
 }

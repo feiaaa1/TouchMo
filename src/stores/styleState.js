@@ -8,13 +8,18 @@ export const useStyleStateStore = defineStore('styleState', () => {
     ThemeStyle.value = ThemeStyle.value === 'light' ? 'dark' : 'light'
   }
 
+  //用来记录收藏时的电影编号
+  const currentFilmId = ref(null)
+
   const showBoxList = reactive({
     isShowLoginBox: false,
     isShowSearchBox: false,
     isShowUserCard: false,
-    isShowModifyCard: false
+    isShowModifyCard: false,
+    isShowModifyFavoritesCard: false,
   })
-  function showBox(boxName) {
+  function showBox(boxName, id) {
+    if(id)currentFilmId.value = id
     for (let key in showBoxList) {
       if (key === boxName) {
         showBoxList[key] = true
@@ -22,7 +27,6 @@ export const useStyleStateStore = defineStore('styleState', () => {
         showBoxList[key] = false
       }
     }
-    console.log(showBoxList)
   }
   function closeBox() {
     for (let key in showBoxList) {
@@ -30,5 +34,5 @@ export const useStyleStateStore = defineStore('styleState', () => {
         }
   }
 
-  return { ThemeStyle, switchThemeStyle, showBox, showBoxList,closeBox }
+  return { ThemeStyle, switchThemeStyle, showBox, showBoxList,closeBox,currentFilmId }
 })

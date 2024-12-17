@@ -7,6 +7,7 @@
         <input @change="getFilmArr()" type="text" v-model="input" />
       </header>
       <main>
+
         <FilmList :film-list="filmList" :columns="1" />
       </main>
     </div>
@@ -18,14 +19,28 @@ import FilmList from './FilmList.vue';
 import { useStyleStateStore } from '@/stores/styleState'
 import { ref } from 'vue';
 const store = useStyleStateStore()
+
+//关闭后 1.清空电影list 2.清空输入框内容
 function closeBox() {
+  input.value = ''
+  filmList.value = []
   store.closeBox()
 }
 
+//获取电影列表
+import { getSearchMovieList } from '@/api/movie';
 const input = ref('')
 const filmList = ref([])
-function getFilmArr() {
-
+async function getFilmArr() {
+  const params = {
+    title: input.value,
+    page: 1,
+    pageSize: 10
+  }
+  console.log(params);
+  const res = await getSearchMovieList(params)
+  console.log('search-->',res);
+  filmList.value = res.data.record
 }
 
 
@@ -56,6 +71,9 @@ function getFilmArr() {
     border: 1px solid var(--primary-border-color);
     background-color: var(--tertiary-bg-color);
     padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
 
     header {
       color: var(--primary-func-color);
@@ -75,6 +93,14 @@ function getFilmArr() {
         &:focus {
           border: 1px solid var(--primary-func-color);
         }
+      }
+    }
+
+    main {
+      overflow: scroll;
+
+      &::-webkit-scrollbar{
+        display: none;
       }
     }
   }

@@ -9,6 +9,7 @@
     <PopupComponent />
     <UserProfileCard />
     <ModifyCard />
+    <ModifyFavoritesCard />
   </div>
 </template>
 
@@ -20,6 +21,7 @@ import LoginBox from '@/components/LoginBox.vue'
 import PopupComponent from '@/components/ToastComponent.vue'
 import UserProfileCard from '@/components/UserProfileCard.vue'
 import ModifyCard from '@/components/ModifyCard.vue'
+import ModifyFavoritesCard from '@/components/ModifyFavoritesCard.vue'
 import { ref, watch, onMounted } from 'vue'
 
 
@@ -42,27 +44,28 @@ watch(ThemeStyle, (newValue) => {
 //控制模糊效果
 
 //获取登陆状态 用户信息 用户收藏夹 用户关注
-import { getUserInfo,getUserFavorites } from '@/api/user'
+// import { getUserInfo,getUserFavorites } from '@/api/user'
 import { useUserStore } from '@/stores/user'
-
 const userStore = useUserStore()
-const {isLogin} = storeToRefs(userStore)
-watch(isLogin, async () => {
-  const res = await getUserInfo()
-    if (res.msg == '成功') {
-      userStore.isLogin = true
-      userStore.userInfo.value = res.data
-    }
-  console.log('userInfo====>', userStore.userInfo)
-  const favoritesRes = await getUserFavorites()
-  console.log('userFavorites====>',favoritesRes);
-  userStore.userInfo.value.favorites = favoritesRes.data
+userStore.getUser()
+//   const res = await getUserInfo()
+//     if (res.msg == '成功') {
+//       userStore.isLogin = true
+//       userStore.userInfo.value = res.data
 
-  const followRes = await getUserFavorites()
-  console.log('userFollow====>',followRes.data);
-  userStore.userInfo.value.follow = followRes.data
-},
-{ immediate: true })
+//       const favoritesRes = await getUserFavorites()
+//       userStore.userInfo.value.favorites = favoritesRes.data
+
+//       const followRes = await getUserFavorites()
+//       userStore.userInfo.value.follow = followRes.data
+//     } else {
+//     userStore.isLogin = false
+//   }
+
+
+
+//   console.log('Homeuse===>', userStore.userInfo)
+
 
 
 
@@ -99,6 +102,7 @@ watch(isLogin, async () => {
 .home-container {
   position: relative;
   width: 100%;
+  min-height: 100vh;
   z-index: 1;
 
   #starfield {

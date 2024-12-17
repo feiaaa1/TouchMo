@@ -10,6 +10,16 @@
         <p>{{ filmDetail.description }}</p>
         <h1>电影海报</h1>
         <img :src="filmDetail.cover" alt="" />
+        <h1>工作人员</h1>
+        <div class="workers-container">
+          <div @click="navigateToActorProfile(item)" v-for="item in worksList" :key="item.id" class="workers-box">
+            <img :src="item.avatar" alt="" />
+            <div class="workers-details-container">
+              <h2>{{ item.name }}</h2>
+              <p>{{ item.role === 1 ? '演员' : '导演' }}</p>
+            </div>
+          </div>
+        </div>
         <h1>电影资源</h1>
         <button class="source-btn">点我获取</button>
       </div>
@@ -20,12 +30,30 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
+import { useRouter } from 'vue-router';
 const route = useRoute()
+const router = useRouter()
+
+function navigateToActorProfile(data) {
+  router.push({
+    name: 'actors',
+    params: {
+      actorId: data.id
+    }
+  })
+}
 
 import { getMovieDetail } from '@/api/movie'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const filmDetail = ref({})
+const worksList = computed(() => {
+  if (filmDetail.value.directors || filmDetail.value.actors) {
+    return [...filmDetail.value.directors, ...filmDetail.value.actors]
+  } else {
+    return []
+  }
+})
 
 getMovieDetail(route.params.id).then((data) => {
   filmDetail.value = data.data
@@ -75,6 +103,47 @@ getMovieDetail(route.params.id).then((data) => {
       padding: 2.3rem;
       border: 1px solid var(--primary-border-color);
       background-color: var(--tertiary-bg-color);
+
+      .workers-container {
+        width: 100%;
+        display: flex;
+        overflow: scroll;
+        gap: 2rem;
+        overflow-y: hidden;
+        cursor: pointer;
+
+        &::-webkit-scrollbar {
+          width: 10px;
+        }
+        &::-webkit-scrollbar-thumb {
+          border-radius: 10px;
+          background: rgba(0, 255, 255, 1);
+        }
+        &::-webkit-scrollbar-track {
+          border-radius: 10px;
+          background: #104681;
+        }
+        .workers-box {
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 0.5rem;
+
+          img {
+            width: 5rem;
+            height: 5rem;
+            border-radius: 100rem;
+          }
+
+          .workers-details-container {
+            width: 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
+        }
+      }
 
       h1 {
         margin-bottom: 0.8rem;
