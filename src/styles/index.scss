@@ -1,13 +1,13 @@
 @import './reset.scss';
 html::-webkit-scrollbar {
-    width: 10px;
-  }
+  width: 10px;
+}
 
 html::-webkit-scrollbar-track {
-    background: rgb(9, 9, 9);
+  background: rgb(9, 9, 9);
 }
 
 html::-webkit-scrollbar-thumb {
-    background: rgb(26, 26, 26);
-    border-radius: 10px;
-  }
+  background: rgb(26, 26, 26);
+  border-radius: 10px;
+}

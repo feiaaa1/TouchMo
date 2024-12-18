@@ -1,15 +1,15 @@
 <template>
   <div class="followList-container">
     <div class="left-container">
-      <h1>关注列表</h1>
-      <div v-for="item in followList" :key="item.id"  class="actor-box">
+      <h1 class="title">关注列表</h1>
+      <div v-for="item in followList" :key="item.id" class="actor-box">
         <div class="detail-container">
           <div class="img">
-            <img :src="item.avatar" alt="">
+            <img :src="item.avatar" alt="" />
           </div>
           <div class="title-container">
             <h1>{{ item.name }}</h1>
-            <button @click="subDeleteFollow(item.id)">取消关注</button>
+            <button class="removeFollowBtn" @click="subDeleteFollow(item.id)">取消关注</button>
           </div>
         </div>
         <h1>参演作品</h1>
@@ -22,28 +22,27 @@
 
 <script setup>
 import { ref } from 'vue'
-import FilmList from '@/components/FilmList.vue';
-import { getFollow } from '@/api/user';
+import FilmList from '@/components/FilmList.vue'
+import { getFollow } from '@/api/user'
 
 const followList = ref([])
 function getFollowList() {
-  getFollow().then(res => {
+  getFollow().then((res) => {
     followList.value = res.data
   })
 }
 
 getFollowList()
 
-import { deleteFollow } from '@/api/user';
+import { deleteFollow } from '@/api/user'
 function subDeleteFollow(id) {
-  deleteFollow(id).then(res => {
+  deleteFollow(id).then((res) => {
     if (res.code === 0) {
       alert('取消成功！')
       getFollowList()
     }
   })
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -66,29 +65,72 @@ function subDeleteFollow(id) {
     flex-direction: column;
     gap: 2rem;
 
-    .actor-box{
+    .title{
+      color: var(--primary-accent-color);
+    }
+
+    .actor-box {
       width: 100%;
       margin-bottom: 3rem;
-      .detail-container{
-        display: flex;
-      align-items: center;
-      gap: 1rem;
-      .img{
-        width: 5rem;
-        height: 5rem;
-        border-radius: 100rem;
-        overflow: hidden;
+
+      .detail-container {
         display: flex;
         align-items: center;
-        justify-content: center;
-        img{
-          object-fit: cover;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        .title-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          .removeFollowBtn {
+            appearance: none;
+            background-color: transparent;
+            border: 0.125em solid var(--primary-font-color);
+            border-radius: 0.9375em;
+            box-sizing: border-box;
+            color: var(--primary-font-color);
+            cursor: pointer;
+            display: inline-block;
+            font-family: Roobert, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            padding: 0.2rem 1rem;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            will-change: transform;
+
+            &:hover {
+              color: var(--primary-func-color);
+              border: 0.125em solid var(--primary-func-color);
+              background-color: var(--tertiary-bg-color);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+          }
+        }
+        .img {
+          width: 5.5rem;
+          height: 5.5rem;
+          border-radius: 100rem;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: 1px solid var(--primary-func-color);
+          img {
+            object-fit: cover;
+          }
         }
       }
     }
-
-  }
-
   }
 
   .right-container {

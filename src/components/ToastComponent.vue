@@ -7,39 +7,39 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const props = defineProps({
   message: {
     type: String,
-    required: true
+    required: true,
   },
   type: {
     type: String,
     default: 'info',
-    validator: (value) => ['info', 'success', 'error', 'warning'].includes(value)
+    validator: (value) => ['info', 'success', 'error', 'warning'].includes(value),
   },
   duration: {
     type: Number,
-    default: 3000
-  }
-});
+    default: 3000,
+  },
+})
 
-const isVisible = ref(false);
+const isVisible = ref(false)
 
 const hideToast = () => {
-  isVisible.value = false;
-};
+  isVisible.value = false
+}
 
 // 自动隐藏 Toast
 onMounted(() => {
-  setTimeout(hideToast, props.duration);
-});
+  setTimeout(hideToast, props.duration)
+})
 
 // 清理工作，虽然在这个简单的例子中不是必需的
 onBeforeUnmount(() => {
-  clearTimeout(hideToast);
-});
+  clearTimeout(hideToast)
+})
 </script>
 
 <style lang="scss" scoped>

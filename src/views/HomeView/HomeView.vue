@@ -1,8 +1,8 @@
 <template>
   <div :class="['home-container', isDark ? 'dark-theme' : 'light-theme']">
-    <canvas id="starfield" :class="{blur:store.showBoxList.isShowUserCard}"></canvas>
-    <NavigationBar :class="{blur:store.showBoxList.isShowUserCard}" />
-    <RouterView :class="{blur:store.showBoxList.isShowUserCard}" />
+    <canvas id="starfield" :class="{ blur: store.showBoxList.isShowUserCard }"></canvas>
+    <NavigationBar :class="{ blur: store.showBoxList.isShowUserCard }" />
+    <RouterView :class="{ blur: store.showBoxList.isShowUserCard }" />
     <FooterComponent />
     <SearchBox />
     <LoginBox />
@@ -24,7 +24,6 @@ import ModifyCard from '@/components/ModifyCard.vue'
 import ModifyFavoritesCard from '@/components/ModifyFavoritesCard.vue'
 import { ref, watch, onMounted } from 'vue'
 
-
 //绘制星空背景
 import { canvasStar } from '@/utils/canvasStar'
 onMounted(() => {
@@ -41,33 +40,11 @@ watch(ThemeStyle, (newValue) => {
   isDark.value = newValue === 'dark' ? true : false
 })
 
-//控制模糊效果
 
 //获取登陆状态 用户信息 用户收藏夹 用户关注
-// import { getUserInfo,getUserFavorites } from '@/api/user'
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 userStore.getUser()
-//   const res = await getUserInfo()
-//     if (res.msg == '成功') {
-//       userStore.isLogin = true
-//       userStore.userInfo.value = res.data
-
-//       const favoritesRes = await getUserFavorites()
-//       userStore.userInfo.value.favorites = favoritesRes.data
-
-//       const followRes = await getUserFavorites()
-//       userStore.userInfo.value.follow = followRes.data
-//     } else {
-//     userStore.isLogin = false
-//   }
-
-
-
-//   console.log('Homeuse===>', userStore.userInfo)
-
-
-
 
 </script>
 
@@ -81,6 +58,7 @@ userStore.getUser()
   --primary-font-color: #adadad;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;
+  --quaternary-font-color: #e3e3e3;
   --primary-accent-color: #e9bb5f;
   --secondary-accent-color: #d5a62f;
   --primary-func-color: #2d6cf5;
@@ -116,7 +94,7 @@ userStore.getUser()
 }
 
 .blur {
-  transition: all .3s;
+  transition: all 0.3s;
   filter: blur(10px);
 }
 </style>

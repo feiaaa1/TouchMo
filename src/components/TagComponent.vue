@@ -1,6 +1,6 @@
 <template>
   <div
-  @click="navigateToTagCorrelation($event)"
+    @click="navigateToTagCorrelation($event)"
     :class="['tag-container', { border: props.isborder }]"
     :style="{ padding: `0rem ${fontSize / 2}rem` }"
   >
@@ -12,7 +12,7 @@
 const props = defineProps({
   id: {
     type: Number,
-    required: true
+    required: true,
   },
   name: String,
   isborder: {
@@ -25,7 +25,7 @@ const props = defineProps({
   },
 })
 
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function navigateToTagCorrelation(e) {
@@ -34,8 +34,8 @@ function navigateToTagCorrelation(e) {
   router.push({
     name: 'tagCorrelation',
     params: {
-      tagId: props.id
-    }
+      tagId: props.id,
+    },
   })
 }
 </script>

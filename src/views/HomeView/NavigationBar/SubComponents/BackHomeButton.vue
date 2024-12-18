@@ -6,11 +6,11 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function navigateToHome() {
-  router.push({name: 'home'})
+  router.push({ name: 'home' })
 }
 </script>
 
@@ -19,7 +19,7 @@ function navigateToHome() {
   cursor: pointer;
   position: relative;
   height: 2.2rem;
-  padding: 0rem 0.7rem ;
+  padding: 0rem 0.7rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,8 +27,8 @@ function navigateToHome() {
   font-size: medium;
   font-weight: 700;
   color: var(--primary-font-color);
-  transition: all .3s;
-  &:hover{
+  transition: all 0.3s;
+  &:hover {
     background-color: var(--primary-accent-color);
     color: var(--primary-font-color);
     h3 {
@@ -39,8 +39,8 @@ function navigateToHome() {
     }
   }
 
-  h3{
-    font-family: "Chewy-Regular";
+  h3 {
+    font-family: 'Chewy-Regular';
     font-size: 1.8rem;
     font-weight: 600;
 
@@ -48,7 +48,7 @@ function navigateToHome() {
       text-decoration-line: underline;
       text-underline-offset: 2px;
     }
-    }
+  }
 
   .icon {
     position: absolute;
@@ -57,7 +57,7 @@ function navigateToHome() {
     left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: all .3s;
+    transition: all 0.3s;
     color: var(--secondary-font-color);
   }
 }

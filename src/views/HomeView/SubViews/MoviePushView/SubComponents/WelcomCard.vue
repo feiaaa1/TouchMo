@@ -15,9 +15,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .welcom-container {
@@ -39,11 +37,11 @@
       transform: translateX(1rem) translateY(-50%);
     }
   }
-  h1{
+  h1 {
     font-size: 2.3rem;
     line-height: 1.3;
   }
-  p{
+  p {
     font-weight: 300;
     font-size: smaller;
     margin-top: 1rem;
@@ -59,19 +57,19 @@
     background-color: var(--secondary-accent-color);
     transform: translateY(-50%);
     opacity: 0;
-    transition: all .3s;
+    transition: all 0.3s;
 
     .icon-plane {
       font-size: 5rem;
     }
 
-    .content-box{
+    .content-box {
       flex-shrink: 0;
       display: flex;
       align-items: center;
       gap: 1rem;
 
-      h1{
+      h1 {
         font-size: 3.2rem;
         font-weight: 500;
       }

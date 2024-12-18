@@ -3,7 +3,14 @@
     <div class="left-container">
       <h1>标签</h1>
       <div class="tags-list-container">
-        <tag-component :font-size="2" v-for="item in tagsList" :key="item.id" :name="item.name" :id="item.id" :isborder="true" />
+        <tag-component
+          :font-size="2"
+          v-for="item in tagsList"
+          :key="item.id"
+          :name="item.name"
+          :id="item.id"
+          :isborder="true"
+        />
       </div>
     </div>
     <div class="right-container"></div>
@@ -39,7 +46,7 @@ getAllTagsList().then((res) => {
     background-color: var(--tertiary-bg-color);
     border: 1px solid var(--primary-border-color);
 
-    .tags-list-container{
+    .tags-list-container {
       margin-top: 2rem;
       width: 100%;
       display: flex;

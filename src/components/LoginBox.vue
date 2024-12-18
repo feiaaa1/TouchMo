@@ -5,23 +5,23 @@
       <h2>{{ title }}</h2>
       <form @submit.prevent="handleLogin">
         <div>
-          <label for="username">Username:</label>
+          <label for="username">账号:</label>
           <input type="text" v-model="username" id="username" required />
         </div>
         <div>
-          <label for="password">Password:</label>
+          <label for="password">密码:</label>
           <input type="password" v-model="password" id="password" required />
         </div>
         <button @click="submit()" type="submit">{{ title }}</button>
       </form>
-      <p @click="switchForm()">{{ '切换到' + title }}</p>
+      <p class="changeButton" @click="switchForm()">{{ '切换到' + title }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 const store = useStyleStateStore()
 import { ref } from 'vue'
@@ -64,7 +64,7 @@ function submit() {
     background-color: #0000009a;
   }
   .login-box {
-    position: absolute;
+    position: fixed;
     z-index: 15;
     top: 50vh;
     left: 50%;
@@ -78,8 +78,10 @@ function submit() {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: var(--tertiary-bg-color);
 
-    p {
+    .changeButton {
       cursor: pointer;
+      display: inline-block;
+      margin-top: 1rem;
       &:hover {
         color: var(--primary-func-color);
       }
@@ -91,17 +93,21 @@ function submit() {
     }
 
     input {
+      outline: none;
+      background:none;
+      border: 0px;
       width: 100%;
       padding: 8px;
       margin-bottom: 2rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      border-bottom: 1px solid #ccc;
+      background-color: transparent;
+      color: var(--primary-font-color);
     }
 
     button {
       width: 100%;
       padding: 10px;
-      background-color: #28a745;
+      background-color: var(--primary-accent-color);
       color: white;
       border: none;
       border-radius: 4px;
@@ -109,7 +115,7 @@ function submit() {
     }
 
     button:hover {
-      background-color: #218838;
+      background-color: var(--secondary-accent-color);
     }
   }
 }

@@ -6,15 +6,14 @@
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function navigateToTagsPage() {
   router.push({
-    name: 'tags'
+    name: 'tags',
   })
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -24,7 +23,7 @@ function navigateToTagsPage() {
   width: 45%;
   height: 100%;
   border-radius: 0.7rem;
-  background: linear-gradient(to right,#2453b2,#448cd5);
+  background: linear-gradient(to right, #2453b2, #448cd5);
   transition: all 1.2s;
   color: var(--secondary-font-color);
   overflow: hidden;
@@ -33,33 +32,32 @@ function navigateToTagsPage() {
     flex-shrink: 0;
 
     .icon {
-    transform: rotate(0deg) scale(1);
+      transform: rotate(0deg) scale(1);
       opacity: 0.8;
       filter: blur(0);
     }
   }
 
-  .icon{
+  .icon {
     position: absolute;
     bottom: 0;
     right: 1.2rem;
     font-size: 2.5rem;
     transition: all 1s;
-    transform: rotate(20deg) scale(2) translateX(-0.2rem) ;
+    transform: rotate(20deg) scale(2) translateX(-0.2rem);
     opacity: 0.2;
     filter: blur(1px);
   }
 
-  h3{
+  h3 {
     margin-top: 1.2rem;
     margin-left: 1.2rem;
 
-    &::first-letter{
+    &::first-letter {
       text-decoration-line: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 5px;
     }
   }
-
 }
 </style>

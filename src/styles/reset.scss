@@ -9,12 +9,31 @@
 
 /* Remove default margin */
 body,
-h1, h2, h3, h4, h5, h6,
-p, blockquote, pre,
-dl, dt, dd,
-ul, ol, li,
-figure, figcaption,
-table, caption, tbody, tfoot, thead, tr, th, td {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+figure,
+figcaption,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
   margin: 0;
 }
 
@@ -61,7 +80,7 @@ select {
   html:focus-within {
     scroll-behavior: auto;
   }
-  
+
   *,
   *::before,
   *::after {

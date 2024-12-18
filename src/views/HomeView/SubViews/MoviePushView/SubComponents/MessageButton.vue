@@ -5,9 +5,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .forum-container {
@@ -17,21 +15,21 @@
   width: 45%;
   height: 100%;
   border-radius: 0.7rem;
-  background: linear-gradient(to right,#479b77,#499f8c);
+  background: linear-gradient(to right, #479b77, #499f8c);
   transition: all 1.2s;
-    color: var(--secondary-font-color);
+  color: var(--secondary-font-color);
 
-      &:hover {
+  &:hover {
     flex-shrink: 0;
 
     .icon {
-    transform: rotate(0deg) scale(1) translateY(0);
+      transform: rotate(0deg) scale(1) translateY(0);
       opacity: 0.8;
       filter: blur(0);
     }
   }
 
-  .icon{
+  .icon {
     position: absolute;
     bottom: 0;
     right: 0.7rem;
@@ -42,18 +40,15 @@
     filter: blur(1px);
   }
 
-
-  h3{
+  h3 {
     margin-top: 1.2rem;
     margin-left: 1.2rem;
 
-    &::first-letter{
+    &::first-letter {
       text-decoration-line: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 5px;
     }
   }
-
-
 }
 </style>

@@ -12,9 +12,7 @@
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .explain-container {
@@ -24,7 +22,7 @@
   width: 100%;
   border-radius: 0.7rem;
   overflow: hidden;
-      background-image: url("https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg");
+  background-image: url('https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg');
   background-position: center;
   background-clip: cover;
 
@@ -35,7 +33,7 @@
     left: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to top, var(--primary-bg-color)20%,#00000000);
+    background: linear-gradient(to top, var(--primary-bg-color) 20%, #00000000);
   }
 
   .recommend-button {
@@ -51,9 +49,9 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.4rem;
-    transition: all .3s;
+    transition: all 0.3s;
 
-    &:hover{
+    &:hover {
       background-color: var(--primary-accent-color);
       .icon {
         color: var(--primary-accent-color);
@@ -73,18 +71,18 @@
       font-size: 1.2rem;
       color: var(--primary-border-color);
       background-color: var(--secondary-font-color);
-      transition: all .3s;
+      transition: all 0.3s;
     }
   }
 
-  .title-box{
+  .title-box {
     position: absolute;
     bottom: 0;
     left: 0;
     z-index: 1;
     padding: 2.2rem;
 
-    h3{
+    h3 {
       font-size: 0.8rem;
       font-weight: 300;
       color: var(--secondary-font-color);

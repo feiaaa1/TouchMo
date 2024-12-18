@@ -111,12 +111,10 @@ export function addMovieToFavorites(data) {
 
 //从收藏夹移除电影
 export function deleteMovieFromFavorites(data) {
- return request.delete(
-   '/favorites/film',
-   {
-     params: data,
-   },
- )
+  console.log(data)
+  return request.delete('/favorites/film', {
+    params: data,
+  })
 }
 
 //移动电影到其余收藏夹
@@ -128,4 +126,19 @@ export function moveMovieToOtherFavorites(data) {
       params: data,
     },
   )
+}
+
+//查看历史搜索记录
+export function getHistorySearch() {
+  return request.get('/history')
+}
+
+//用户添加历史搜索记录
+export function addHistorySearch(content) {
+  return request.post(`/history?content=${content}`)
+}
+
+//清空历史搜索记录
+export function deleteHistorySearch(){
+  return request.delete('/history')
 }

@@ -5,7 +5,7 @@
 </template>
 
 <script setup>
-import { useStyleStateStore } from '@/stores/styleState';
+import { useStyleStateStore } from '@/stores/styleState'
 const store = useStyleStateStore()
 function changeThemeStyle() {
   store.switchThemeStyle()
@@ -25,10 +25,10 @@ function changeThemeStyle() {
   font-size: medium;
   font-weight: 400;
   color: var(--primary-font-color);
-  transition: all .3s;
-  &:hover{
+  transition: all 0.3s;
+  &:hover {
     background-color: var(--primary-accent-color);
-        .icon {
+    .icon {
       color: var(--secondary-font-color);
     }
   }

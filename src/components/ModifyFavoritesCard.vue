@@ -1,22 +1,33 @@
 <template>
   <div class="modifyFavorite-container" v-if="styleStore.showBoxList.isShowModifyFavoritesCard">
     <div class="flur" @click="closeBox()"></div>
-    <div class="modifyFavorite-Box" >
-      <header>
-        <h2 v-show="!isCreate" class="title">收藏至</h2>
-        <p @click="isCreate = !isCreate">{{isCreate?'返回':'新建收藏夹'}}</p>
+    <div class="modifyFavorite-Box">
+      <header v-if="!styleStore.FavoriteState.isModifyFavorites">
+        <h2 v-show="!isCreate && !styleStore.FavoriteState.isOnlyCreate" class="title">收藏至</h2>
+        <p v-if="!styleStore.FavoriteState.isOnlyCreate" @click="isCreate = !isCreate">
+          {{ isCreate ? '返回' : '新建收藏夹' }}
+        </p>
       </header>
       <main>
-        <div @click="addMovie(item.id)" v-for="item in userStore.userInfo.favorites" :key="item.id" v-show="!isCreate" class="favorites-container">
-          <h1>{{ item.name||'无名字' }}</h1>
-          <p>{{ item.description||'无描述' }}</p>
+        <div
+          @click="handleMovie(item.id)"
+          v-for="item in userStore.userInfo.favorites"
+          :key="item.id"
+          v-show="!isCreate && !styleStore.FavoriteState.isOnlyCreate && !styleStore.FavoriteState.isModifyFavorites"
+          class="favorites-container"
+        >
+          <h1>{{ item.name || '无名字' }}</h1>
+          <p>{{ item.description || '无描述' }}</p>
         </div>
-        <div v-show="isCreate" class="create-container">
+        <div
+          v-show="isCreate || styleStore.FavoriteState.isOnlyCreate || styleStore.FavoriteState.isModifyFavorites"
+          class="create-container"
+        >
           <label for="name">名字</label>
-          <input v-model="name" id="name" type="text">
+          <input v-model="name" id="name" type="text" />
           <label for="description">描述</label>
-          <input v-model="description" id="description" type="text">
-          <button @click="submitCreatFavorite()">提交</button>
+          <input v-model="description" id="description" type="text" />
+          <button @click="handleFavorite()">提交</button>
         </div>
       </main>
     </div>
@@ -25,62 +36,94 @@
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
-import { useUserStore } from '@/stores/user';
-import { ref } from 'vue';
+import { useUserStore } from '@/stores/user'
+import { ref } from 'vue'
 const styleStore = useStyleStateStore()
 const userStore = useUserStore()
 
 const isCreate = ref(false)
 
-
-
-//新建收藏夹
-import { createFavorites } from '@/api/user';
+//处理收藏夹 新建 修改
+import { createFavorites } from '@/api/user'
+import { modifyFavorites } from '@/api/user'
 const name = ref('')
 const description = ref(null)
-function submitCreatFavorite() {
-  const params = {
-    id: null,
-    name: name.value,
-    userId: userStore.userInfo.id,
-    description: description.value
+function handleFavorite() {
+  if (!styleStore.FavoriteState.isModifyFavorites) {
+    const params = {
+      id: null,
+      name: name.value,
+      userId: userStore.userInfo.id,
+      description: description.value,
+    }
+    createFavorites(params).then((res) => {
+      console.log('createFavo-->', res)
+      styleStore.closeBox()
+      //清空输入框 更新数据
+      name.value = ''
+      description.value = null
+      alert('创建成功')
+      userStore.getUser()
+    })
+  } else {
+    const params = {
+      id: styleStore.FavoriteState.currentFavoritesId,
+      name: name.value,
+      userId: userStore.userInfo.id,
+      description: description.value,
+    }
+    modifyFavorites(params).then((res) => {
+      console.log('modifyFavorites--->', res)
+      styleStore.closeBox()
+
+      //清空输入框 更新数据
+      name.value = ''
+      description.value = null
+      alert('修改成功')
+      userStore.getUser()
+    })
   }
-  createFavorites(params).then(res => {
-    console.log(res);
-    userStore.getUser()
-  })
 }
 
-
-//收藏电影进入指定收藏夹
-import { addMovieToFavorites } from '@/api/user';
-function addMovie(favoritesId) {
-  const params = {
-    filmId: styleStore.currentFilmId,
-    favoritesId
+//处理电影进入指定收藏夹（添加或移动）
+import { addMovieToFavorites } from '@/api/user'
+import { moveMovieToOtherFavorites } from '@/api/user'
+function handleMovie(favoritesId) {
+  if (!styleStore.FavoriteState.currentFavoritesId){
+    const params = {
+      filmId: styleStore.FavoriteState.currentFilmId,
+      favoriteId: favoritesId,
+    }
+    addMovieToFavorites(params).then((res) => {
+      console.log('addMovie--->', res)
+      styleStore.closeBox()
+      alert('收藏成功')
+    })
+  } else {
+    const params = {
+      filmId: styleStore.FavoriteState.currentFilmId,
+      oldFavoriteId: styleStore.FavoriteState.currentFavoritesId,
+      newFavoriteId: favoritesId,
+    }
+    moveMovieToOtherFavorites(params).then((res) => {
+      console.log('moveMovie---->', res)
+      styleStore.closeBox()
+      alert('移动成功')
+    })
   }
-  addMovieToFavorites(params).then(res => {
-    console.log(res);
-    styleStore.closeBox()
-    alert('收藏成功')
-  })
 }
-
-
-
 
 //关闭后 1.清空电影list 2.清空输入框内容
 function closeBox() {
   styleStore.closeBox()
 }
-
 </script>
 
 <style lang="scss" scoped>
-.modifyFavorite-container{
+.modifyFavorite-container {
   width: 100%;
   height: 100%;
-  .flur{
+  .flur {
     position: absolute;
     top: 0;
     left: 0;
@@ -90,7 +133,7 @@ function closeBox() {
     background-color: #0000009a;
   }
   .modifyFavorite-Box {
-    position: absolute;
+    position: fixed;
     z-index: 15;
     left: 50%;
     top: 5rem;
@@ -108,19 +151,18 @@ function closeBox() {
     header {
       color: var(--primary-func-color);
 
-       p{
+      p {
         cursor: pointer;
-        &:hover{
+        &:hover {
           color: var(--primary-accent-color);
         }
       }
-
     }
 
     main {
       overflow: scroll;
 
-      &::-webkit-scrollbar{
+      &::-webkit-scrollbar {
         display: none;
       }
 
@@ -132,27 +174,29 @@ function closeBox() {
         border-radius: 0.8rem;
         margin-bottom: 1rem;
 
-        &:hover{
-          h1{
-          color: var(--primary-accent-color);
+        &:hover {
+          h1 {
+            color: var(--primary-accent-color);
+          }
         }
       }
-      }
 
-      .create-container{
+      .create-container {
+        color: var(--secondary-font-color);
         input {
-        outline: none;
-        width: 100%;
-        background-color: var(--secondary-bg-color);
-        border-radius: 100rem;
-        border: 1px solid var(--primary-border-color);
-        padding: 0.2rem 0.5rem;
-        color: var(--primary-font-color);
+          outline: none;
+          width: 100%;
+          background-color: var(--secondary-bg-color);
+          border-radius: 100rem;
+          border: 1px solid var(--primary-border-color);
+          padding: 0.2rem 0.5rem;
+          color: var(--primary-font-color);
+          margin-bottom: 2rem;
 
-        &:focus {
-          border: 1px solid var(--primary-func-color);
+          &:focus {
+            border: 1px solid var(--primary-func-color);
+          }
         }
-      }
       }
     }
   }

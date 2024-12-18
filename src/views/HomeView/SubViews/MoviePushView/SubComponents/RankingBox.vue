@@ -5,12 +5,12 @@
 </template>
 
 <script setup>
-import FilmList from '@/components/FilmList.vue';
-import { getHotPushMovieList } from '@/api/movie';
-import { ref } from 'vue';
+import FilmList from '@/components/FilmList.vue'
+import { getHotPushMovieList } from '@/api/movie'
+import { ref } from 'vue'
 const movieList = ref([])
 getHotPushMovieList().then((data) => {
-  console.log('hotPushMovieList===>',data)
+  console.log('hotPushMovieList===>', data)
   movieList.value = data.data
 })
 </script>

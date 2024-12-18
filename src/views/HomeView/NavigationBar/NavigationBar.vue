@@ -11,11 +11,11 @@
 </template>
 
 <script setup>
-import BackHomeButton from './SubComponents/BackHomeButton.vue';
-import RandomPageButton from './SubComponents/RandomPageButton.vue';
-import SearchButton from './SubComponents/SearchButton.vue';
-import ConsoleButton from './SubComponents/ConsoleButton.vue';
-import UserButton from './SubComponents/UserButton.vue';
+import BackHomeButton from './SubComponents/BackHomeButton.vue'
+import RandomPageButton from './SubComponents/RandomPageButton.vue'
+import SearchButton from './SubComponents/SearchButton.vue'
+import ConsoleButton from './SubComponents/ConsoleButton.vue'
+import UserButton from './SubComponents/UserButton.vue'
 </script>
 
 <style lang="scss" scoped>
@@ -30,12 +30,11 @@ import UserButton from './SubComponents/UserButton.vue';
   align-items: center;
   justify-content: space-between;
 
-  .nav-right-container{
+  .nav-right-container {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.8rem;
-
   }
 }
 </style>

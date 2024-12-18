@@ -12,7 +12,12 @@
         <img :src="filmDetail.cover" alt="" />
         <h1>工作人员</h1>
         <div class="workers-container">
-          <div @click="navigateToActorProfile(item)" v-for="item in worksList" :key="item.id" class="workers-box">
+          <div
+            @click="navigateToActorProfile(item)"
+            v-for="item in worksList"
+            :key="item.id"
+            class="workers-box"
+          >
             <img :src="item.avatar" alt="" />
             <div class="workers-details-container">
               <h2>{{ item.name }}</h2>
@@ -20,6 +25,27 @@
             </div>
           </div>
         </div>
+
+         <h1>评分</h1>
+        <div class="rating-container">
+          <span @click="rateMovie(item)" v-for="item in [1, 2, 3, 4, 5]" :key="item">
+            {{ item }} ★
+          </span>
+        </div>
+
+        <h1>评论区</h1>
+        <div class="comments-container">
+          <div class="comment-box" v-for="comment in comments" :key="comment.id">
+            <p><strong>{{ comment.user.name }}</strong>: {{ comment.text }}</p>
+            <div>
+              <button @click="likeComment(comment.id)">点赞 ({{ comment.likes }})</button>
+              <button @click="deleteComment(comment.id)" v-if="comment.user.id === userId">删除</button>
+              <button @click="editComment(comment)" v-if="comment.user.id === userId">编辑</button>
+            </div>
+            <input v-if="editingCommentId === comment.id" v-model="editingCommentText" @blur="saveComment(comment.id)" />
+          </div>
+        </div>
+        <input v-model="newComment" @keyup.enter="addComment" placeholder="添加评论..." />
         <h1>电影资源</h1>
         <button class="source-btn">点我获取</button>
       </div>
@@ -30,7 +56,7 @@
 
 <script setup>
 import { useRoute } from 'vue-router'
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
 
@@ -38,8 +64,8 @@ function navigateToActorProfile(data) {
   router.push({
     name: 'actors',
     params: {
-      actorId: data.id
-    }
+      actorId: data.id,
+    },
   })
 }
 
@@ -59,6 +85,63 @@ getMovieDetail(route.params.id).then((data) => {
   filmDetail.value = data.data
   console.log(filmDetail.value)
 })
+
+
+
+
+//评论区和评分逻辑
+const newComment = ref('');
+const comments = ref([]);
+const editingCommentId = ref(null);
+const editingCommentText = ref('');
+const userId = ref(1); // 假设用户 ID 为 1，实际应从认证系统中获取
+
+getMovieDetail(route.params.id).then((data) => {
+  filmDetail.value = data.data;
+  comments.value.push(...filmDetail.value.comments); // 假设电影详情中包含评论数据
+});
+
+function addComment() {
+  if (newComment.value.trim()) {
+    comments.value.push({
+      id: Date.now(),
+      user: { id: userId.value, name: '用户' + userId.value },
+      text: newComment.value,
+      likes: 0,
+    });
+    newComment.value = '';
+  }
+}
+
+function deleteComment(commentId) {
+  comments.value = comments.value.filter(comment => comment.id !== commentId);
+}
+
+function editComment(comment) {
+  editingCommentId.value = comment.id;
+  editingCommentText.value = comment.text;
+}
+
+function saveComment(commentId) {
+  const comment = comments.value.find(comment => comment.id === commentId);
+  if (comment) {
+    comment.text = editingCommentText.value;
+  }
+  editingCommentId.value = null;
+  editingCommentText.value = '';
+}
+
+function likeComment(commentId) {
+  const comment = comments.value.find(comment => comment.id === commentId);
+  if (comment) {
+    comment.likes++;
+  }
+}
+
+function rateMovie(rating) {
+  // 实现评分逻辑，例如发送请求到后端保存评分
+  console.log('Rated:', rating);
+}
 </script>
 
 <style lang="scss" scoped>
@@ -103,6 +186,26 @@ getMovieDetail(route.params.id).then((data) => {
       padding: 2.3rem;
       border: 1px solid var(--primary-border-color);
       background-color: var(--tertiary-bg-color);
+
+      .rating-container {
+  display: flex;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.comments-container {
+  margin-top: 2rem;
+}
+
+.comment-box {
+  margin-bottom: 1rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
 
       .workers-container {
         width: 100%;

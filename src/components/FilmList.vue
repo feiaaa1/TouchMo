@@ -1,6 +1,16 @@
 <template>
   <div class="film-container" :style="styleObject">
-    <FilmShortening v-for="item in props.filmList" :key="item.id" :cover="item.cover" :area="item.area" :title="item.title" :language="item.language" :categories="item.categories"  :id="item.id" />
+    <FilmShortening
+      v-for="item in props.filmList"
+      :key="item.id"
+      :cover="item.cover"
+      :area="item.area"
+      :title="item.title"
+      :language="item.language"
+      :categories="item.categories"
+      :id="item.id"
+      :isMore="props.isMore"
+    />
   </div>
 </template>
 
@@ -15,6 +25,10 @@ const props = defineProps({
   },
   filmList: {
     type: Object,
+  },
+  isMore: {
+    type: Boolean,
+    default: false,
   },
 })
 

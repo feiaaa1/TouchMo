@@ -1,13 +1,11 @@
 <template>
   <div class="forum-container">
-<h3>论坛</h3>
+    <h3>论坛</h3>
     <span class="iconfont icon icon-forum"></span>
   </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .forum-container {
@@ -16,7 +14,7 @@
   width: 45%;
   height: 100%;
   border-radius: 0.7rem;
-  background: linear-gradient(to right,#d03f29,#d06b30);
+  background: linear-gradient(to right, #d03f29, #d06b30);
   transition: all 1.2s;
   color: var(--secondary-font-color);
   overflow: hidden;
@@ -25,13 +23,13 @@
     flex-shrink: 0;
 
     .icon {
-    transform: rotate(0deg) scale(1) translateY(0);
+      transform: rotate(0deg) scale(1) translateY(0);
       opacity: 0.8;
       filter: blur(0);
     }
   }
 
-  .icon{
+  .icon {
     position: absolute;
     bottom: -0.8rem;
     right: 0rem;
@@ -42,18 +40,15 @@
     filter: blur(1px);
   }
 
-
-    h3{
+  h3 {
     margin-top: 1.2rem;
     margin-left: 1.2rem;
 
-    &::first-letter{
+    &::first-letter {
       text-decoration-line: underline;
       text-decoration-thickness: 2px;
       text-underline-offset: 5px;
     }
   }
-
-
 }
 </style>

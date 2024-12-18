@@ -5,9 +5,7 @@
 </template>
 
 <script setup>
-function navigateToRandomMovie() {
-
-}
+function navigateToRandomMovie() {}
 </script>
 
 <style lang="scss" scoped>
@@ -23,10 +21,10 @@ function navigateToRandomMovie() {
   font-size: medium;
   font-weight: 400;
   color: var(--primary-font-color);
-  transition: all .3s;
-  &:hover{
+  transition: all 0.3s;
+  &:hover {
     background-color: var(--primary-accent-color);
-        color: var(--secondary-font-color);
+    color: var(--secondary-font-color);
   }
 
   .icon {
