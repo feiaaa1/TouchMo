@@ -1,14 +1,16 @@
 <template>
-  <div class="search-container" @click="showSearchBox()">
+  <div class="search-container" @click="showSearchBox()"  :style="{
+  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
+  }">
     <span class="icon iconfont icon-search"></span>
   </div>
 </template>
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
-const store = useStyleStateStore()
+const styleStore = useStyleStateStore()
 function showSearchBox() {
-  store.showBox('isShowSearchBox')
+  styleStore.showBox('isShowSearchBox')
 }
 </script>
 

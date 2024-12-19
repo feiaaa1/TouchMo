@@ -14,7 +14,8 @@
             <p
               @click="
                 isShowHistory = false;
-                input = item
+              input = item;
+              getFilmArr()
               "
               class="historyItem"
               v-for="item in historyList"
@@ -45,18 +46,29 @@ const isShowHistory = ref(true)
 //获取搜索历史
 const historyList = ref([])
 import { getHistorySearch } from '@/api/user'
-getHistorySearch().then((res) => {
-  console.log('getHistoryList--->', res)
-  historyList.value = res.data
-})
 
+async function handleGetHistorySearch() {
+  const res = await getHistorySearch()
+    console.log('getHistoryList--->', res)
+    historyList.value = res.data
+}
+
+handleGetHistorySearch()
 
 
 //清空搜索历史
 import { deleteHistorySearch } from '@/api/user'
 async function handleDeleteHistory() {
-  const res = await deleteHistorySearch()
-  console.log(res)
+  try {
+    const res = await deleteHistorySearch()
+    console.log('deleteHistory',res);
+  }
+  catch (error) {
+    console.log('清空失败',error);
+  }
+  finally {
+    handleGetHistorySearch()
+  }
 }
 
 // 获取搜索的电影列表

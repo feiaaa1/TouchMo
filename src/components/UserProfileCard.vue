@@ -3,7 +3,7 @@
     <div class="flur" @click="closeBox()"></div>
     <div class="user-card">
       <header>
-          <img class="avatar" :src="userStore.userInfo.avatar" alt="" />
+        <img class="avatar" :src="userStore.userInfo.avatar" alt="" />
         <div class="detail-container">
           <div class="name-sex-container">
             <h2>
@@ -28,7 +28,7 @@
         >
           点击登录
         </h1>
-        <div class="main-detail-container">
+        <div v-show="userStore.isLogin" class="main-detail-container">
           <div class="main-detail-sub-container follow-container" @click="navigateToFollwPage()">
             <span class="icon iconfont icon-follow"></span>
             <p>我的关注</p>
@@ -37,7 +37,7 @@
             class="main-detail-sub-container favorite-container"
             @click="navigateToFavoritesPage()"
           >
-                       <span class="icon iconfont icon-favorite"></span>
+            <span class="icon iconfont icon-favorite"></span>
 
             <p>我的收藏</p>
           </div>
@@ -46,8 +46,11 @@
             <p>历史记录</p>
           </div>
         </div>
-        <button class="editUserBtn" @click="styleStore.showBox('isShowModifyCard')">
+        <button v-show="userStore.isLogin" class="editUserBtn btn" @click="styleStore.showBox('isShowModifyCard')">
           编辑用户信息
+        </button>
+        <button v-show="userStore.isLogin" class="LogOutBtn btn" @click="handleLogOut()">
+          退出登录
         </button>
       </main>
     </div>
@@ -57,14 +60,17 @@
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
 import { useUserStore } from '@/stores/user'
+import { ElMessage, ElNotification } from 'element-plus';
 const userStore = useUserStore()
-console.log('use===>', userStore.userInfo)
 
 const styleStore = useStyleStateStore()
+
 function closeBox() {
   styleStore.closeBox()
 }
 
+
+//跳转到关注、收藏页面
 import { useRouter } from 'vue-router'
 const router = useRouter()
 function navigateToFollwPage() {
@@ -78,6 +84,19 @@ function navigateToFavoritesPage() {
     name: 'userFavorites',
   })
   closeBox()
+}
+
+
+
+
+//退出登录逻辑
+async function handleLogOut() {
+    localStorage.removeItem('token')
+    userStore.resetUserInfo()
+    ElMessage({
+      message: '退出成功！',
+      type: 'success'
+    })
 }
 </script>
 
@@ -162,36 +181,13 @@ function navigateToFavoritesPage() {
       flex-direction: column;
       gap: 1rem;
 
-      .editUserBtn {
-        appearance: none;
-        background-color: transparent;
-        border: 0.125em solid var(--primary-font-color);
-        border-radius: 0.9375em;
-        box-sizing: border-box;
-        color: var(--primary-font-color);
-        cursor: pointer;
-        display: inline-block;
-        font-family: Roobert, sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        outline: none;
-        padding: 1rem 2.3rem;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        will-change: transform;
-
+      .LogOutBtn {
+        border: 0.125em solid var(--secondary-func-color);
+        color: var(--secondary-func-color);
+        padding: 0.5rem;
         &:hover {
-          color: var(--secondary-font-color);
-        border: 0.125em solid var(--secondary-font-color);
-          background-color: var(--tertiary-bg-color);
-          transform: translateY(-2px);
-        }
-
-        &:active {
-          transform: translateY(0);
+          color: var(--secondary-func-color);
+          border: 0.125em solid var(--secondary-func-color);
         }
       }
 
@@ -217,7 +213,7 @@ function navigateToFavoritesPage() {
           &:hover {
             color: var(--primary-accent-color);
           }
-          .icon{
+          .icon {
             font-size: 2rem;
           }
         }

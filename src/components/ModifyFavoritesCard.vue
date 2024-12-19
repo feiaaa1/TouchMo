@@ -46,6 +46,7 @@ const isCreate = ref(false)
 //处理收藏夹 新建 修改
 import { createFavorites } from '@/api/user'
 import { modifyFavorites } from '@/api/user'
+import { ElMessage, ElNotification } from 'element-plus'
 const name = ref('')
 const description = ref(null)
 function handleFavorite() {
@@ -62,7 +63,11 @@ function handleFavorite() {
       //清空输入框 更新数据
       name.value = ''
       description.value = null
-      alert('创建成功')
+      ElMessage({
+        title: 'Success',
+        message: '创建成功',
+        type: 'success'
+      })
       userStore.getUser()
     })
   } else {
@@ -79,7 +84,10 @@ function handleFavorite() {
       //清空输入框 更新数据
       name.value = ''
       description.value = null
-      alert('修改成功')
+      ElMessage({
+        message: '修改成功',
+        type: 'success'
+      })
       userStore.getUser()
     })
   }
@@ -97,7 +105,10 @@ function handleMovie(favoritesId) {
     addMovieToFavorites(params).then((res) => {
       console.log('addMovie--->', res)
       styleStore.closeBox()
-      alert('收藏成功')
+            ElMessage({
+        message: '收藏成功',
+        type: 'success'
+      })
     })
   } else {
     const params = {
@@ -108,7 +119,10 @@ function handleMovie(favoritesId) {
     moveMovieToOtherFavorites(params).then((res) => {
       console.log('moveMovie---->', res)
       styleStore.closeBox()
-      alert('移动成功')
+            ElMessage({
+        message: '收藏成功',
+        type: 'success'
+      })
     })
   }
 }

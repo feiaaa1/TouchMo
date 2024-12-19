@@ -101,3 +101,36 @@ html::-webkit-scrollbar-thumb {
   background: #1a1a1a;
   border-radius: 10px;
 }
+
+.btn {
+  appearance: none;
+  background-color: transparent;
+  border: 0.125em solid var(--primary-font-color);
+  border-radius: 0.9375em;
+  box-sizing: border-box;
+  color: var(--primary-font-color);
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  padding: 1rem 2.3rem;
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  will-change: transform;
+}
+
+.btn:hover {
+  color: var(--secondary-font-color);
+  border: 0.125em solid var(--secondary-font-color);
+  background-color: var(--tertiary-bg-color);
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}

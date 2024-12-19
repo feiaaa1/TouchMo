@@ -17,7 +17,7 @@
   border-radius: 0.7rem;
   background: linear-gradient(to right, #479b77, #499f8c);
   transition: all 1.2s;
-  color: var(--secondary-font-color);
+  color: var(--always-white-color);
 
   &:hover {
     flex-shrink: 0;

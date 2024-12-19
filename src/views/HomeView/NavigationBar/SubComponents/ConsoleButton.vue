@@ -1,14 +1,17 @@
 <template>
-  <div class="console-container" @click="changeThemeStyle()">
+  <div class="console-container" @click="changeThemeStyle()"
+   :style="{
+  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
+  }">
     <span class="icon iconfont icon-console"></span>
   </div>
 </template>
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
-const store = useStyleStateStore()
+const styleStore = useStyleStateStore()
 function changeThemeStyle() {
-  store.switchThemeStyle()
+  styleStore.switchThemeStyle()
 }
 </script>
 

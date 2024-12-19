@@ -16,7 +16,7 @@
   border-radius: 0.7rem;
   background: linear-gradient(to right, #d03f29, #d06b30);
   transition: all 1.2s;
-  color: var(--secondary-font-color);
+  color: var(--always-white-color);
   overflow: hidden;
 
   &:hover {

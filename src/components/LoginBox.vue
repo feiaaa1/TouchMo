@@ -34,17 +34,26 @@ function switchForm() {
 const username = ref('')
 const password = ref('')
 import { userLogin, userRegister } from '@/api/user'
+import { ElNotification } from 'element-plus';
 function submit() {
   if (title.value === '登录') {
     userLogin(username.value, password.value).then(async (data) => {
       localStorage.setItem('token', data.data)
       await userStore.getUser()
-      alert('登录成功!')
+      ElNotification({
+        title: 'Success',
+        message: '登录成功',
+        type: 'success'
+      })
       store.closeBox()
     })
   } else {
     userRegister(username.value, password.value).then(() => {
-      alert('注册成功!')
+            ElNotification({
+        title: 'Success',
+        message: '注册成功',
+        type: 'success'
+      })
     })
   }
 }

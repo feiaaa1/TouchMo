@@ -8,6 +8,11 @@ export const useStyleStateStore = defineStore('styleState', () => {
     ThemeStyle.value = ThemeStyle.value === 'light' ? 'dark' : 'light'
   }
 
+  const NavigationState = ref({
+    isMovieDetail: false,
+    isScrollTop: false
+  })
+
   const FavoriteState = ref({
     //用来记录收藏时的电影编号
     currentFilmId: null,
@@ -60,6 +65,7 @@ export const useStyleStateStore = defineStore('styleState', () => {
     showBox,
     showBoxList,
     closeBox,
-    FavoriteState
+    FavoriteState,
+    NavigationState
   }
 })

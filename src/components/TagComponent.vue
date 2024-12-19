@@ -1,5 +1,6 @@
 <template>
   <div
+  ref="tag"
     @click="navigateToTagCorrelation($event)"
     :class="['tag-container', { border: props.isborder }]"
     :style="{ padding: `0rem ${fontSize / 2}rem` }"
@@ -23,8 +24,14 @@ const props = defineProps({
     type: Number,
     default: 0.83,
   },
+  isHover: {
+    type: Boolean,
+    default: true
+  }
 })
 
+
+import { onMounted, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -38,6 +45,15 @@ function navigateToTagCorrelation(e) {
     },
   })
 }
+
+const tagEle = useTemplateRef('tag')
+
+onMounted(() => {
+  if (!props.isHover) {
+    tagEle.value.removeEventListener('mouseenter', tagEle.value.onmouseenter);
+    tagEle.value.removeEventListener('mouseleave', tagEle.value.onmouseleave);
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -50,16 +66,11 @@ function navigateToTagCorrelation(e) {
   gap: 2px;
 
   &:hover {
-    .icon,
     p {
       color: var(--primary-func-color);
     }
   }
 
-  .icon {
-    color: var(--tertiary-font-color);
-    transition: all 0.2s;
-  }
   p {
     color: var(--secondary-font-color);
     transition: all 0.2s;

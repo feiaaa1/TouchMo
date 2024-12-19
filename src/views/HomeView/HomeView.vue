@@ -50,6 +50,9 @@ userStore.getUser()
 
 <style lang="scss" scoped>
 .dark-theme {
+  --always-entire-white-color: #ffffff;
+  --always-white-color: #f3f3f3;
+  --always-black-color: #111014;
   --primary-bg-color: #000000;
   --secondary-bg-color: #111014;
   --tertiary-bg-color: #1d1e22;
@@ -62,18 +65,27 @@ userStore.getUser()
   --primary-accent-color: #e9bb5f;
   --secondary-accent-color: #d5a62f;
   --primary-func-color: #2d6cf5;
+  --secondary-func-color: #ce3e3e;
   background-color: var(--secondary-bg-color);
 }
 
 .light-theme {
-  --primary-bg-color: #dddddd;
+  --always-entire-white-color: #ffffff;
+  --always-white-color: #fafafa;
+  --always-black-color: #111014;
+  --primary-bg-color: #ffffff;
   --secondary-bg-color: #f5f5f5;
-  --tertiary-bg-color: #ebebeb;
+  --tertiary-bg-color: #fafafa;
+    --quaternary-bg-color: #a9a9a9;
   --primary-border-color: #b8b8b8;
   --primary-font-color: #4d4d4d;
-  --secondary-font-color: #fafafa;
+  --secondary-font-color: #313131;
+    --tertiary-font-color: #b8b8b8;
+  --quaternary-font-color: #e3e3e3;
   --primary-accent-color: #2d6cf5;
   --secondary-accent-color: #2f56d5;
+    --primary-func-color: #e9bb5f;
+  --secondary-func-color: #ce3e3e;
   background-color: var(--secondary-bg-color);
 }
 

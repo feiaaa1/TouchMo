@@ -1,10 +1,14 @@
 <template>
-  <div class="random-container" @click="navigateToRandomMovie()">
+  <div class="random-container" @click="navigateToRandomMovie()" :style="{
+  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
+  }">
     <span class="icon iconfont icon-random"></span>
   </div>
 </template>
 
 <script setup>
+import { useStyleStateStore } from '@/stores/styleState';
+const styleStore = useStyleStateStore()
 function navigateToRandomMovie() {}
 </script>
 

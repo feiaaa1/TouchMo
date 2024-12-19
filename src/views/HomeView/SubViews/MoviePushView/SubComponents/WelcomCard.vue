@@ -35,6 +35,7 @@
     .inner-card {
       opacity: 1;
       transform: translateX(1rem) translateY(-50%);
+  color: var(--always-white-color);
     }
   }
   h1 {

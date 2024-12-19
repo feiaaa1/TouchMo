@@ -34,7 +34,7 @@
         </div>
 
         <!-- 提交按钮 -->
-        <button class="submitBtn" type="submit" :disabled="isSubmitting">提交</button>
+        <button class="submitBtn btn" type="submit" :disabled="isSubmitting">提交</button>
       </form>
     </div>
   </div>
@@ -55,8 +55,6 @@ const sex = ref(1) // 默认为男性
 const email = ref('')
 const emailError = ref('')
 const isSubmitting = ref(false)
-
-
 
 name.value = userStore.userInfo.name;
 sex.value = userStore.userInfo.sex;
@@ -92,6 +90,7 @@ const validateEmail = () => {
 // 处理表单提交
 import { modifyUserInfo } from '@/api/user'
 import { upload } from '@/api/user'
+import { ElMessage } from 'element-plus';
 const handleSubmit = async () => {
   isSubmitting.value = true
 
@@ -115,7 +114,10 @@ const handleSubmit = async () => {
     console.log('modify res-->', res.msg)
     userStore.getUser()
   } catch (error) {
-    console.error('提交用户信息时出错：', error)
+    ElMessage({
+      type: 'error',
+      message: `提交失败${error}`
+    })
   } finally {
     styleStore.closeBox()
     isSubmitting.value = false
@@ -212,38 +214,16 @@ const handleSubmit = async () => {
       }
     }
 
-    .submitBtn {
+    .btn {
       width: 100%;
-        appearance: none;
-        background-color: transparent;
         border: 0.125em solid var(--primary-accent-color);
-        border-radius: 0.9375em;
-        box-sizing: border-box;
         color: var(--primary-accent-color);
-        cursor: pointer;
-        display: inline-block;
-        font-family: Roobert, sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        outline: none;
-        padding: 1rem 2.3rem;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        will-change: transform;
         font-size: 1.2rem;
 
         &:hover {
           color: var(--secondary-accent-color);
         border: 0.125em solid var(--secondary-accent-color);
           background-color: var(--tertiary-bg-color);
-          transform: translateY(-2px);
-        }
-
-        &:active {
-          transform: translateY(0);
         }
       }
   }

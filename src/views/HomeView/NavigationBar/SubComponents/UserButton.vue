@@ -1,14 +1,16 @@
 <template>
-  <div class="console-container" @click="showLoginBox()">
+  <div class="console-container" @click="showLoginBox()"  :style="{
+  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
+  }">
     <span class="icon iconfont icon-user"></span>
   </div>
 </template>
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
-const store = useStyleStateStore()
+const styleStore = useStyleStateStore()
 function showLoginBox() {
-  store.showBox('isShowUserCard')
+  styleStore.showBox('isShowUserCard')
 }
 </script>
 

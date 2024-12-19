@@ -2,15 +2,73 @@
   <div class="detail-container">
     <header>
       <img :src="filmDetail.cover" alt="" />
+              <div class="tags-container">
+          <TagComponent
+            v-for="item in filmDetail.categories"
+            :key="item.id"
+            :name="item.name"
+            :id="item.id"
+            :fontSize="1"
+            :isHover="false"
+          />
+        </div>
       <h1>{{ '【' + filmDetail.language + '】' + filmDetail.title }}</h1>
+      <div class="releaseTime-container">
+        <span class="icon iconfont icon-calendar"></span>
+        <span>{{'发表于 '+filmDetail.releaseTime}}</span>
+      </div>
     </header>
     <main>
       <div class="left-container">
-        <h1>电影介绍</h1>
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>电影介绍</h1>
+        </div>
         <p>{{ filmDetail.description }}</p>
-        <h1>电影海报</h1>
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>电影海报</h1>
+        </div>
         <img :src="filmDetail.cover" alt="" />
-        <h1>工作人员</h1>
+
+
+
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>电影PV</h1>
+        </div>
+         <video :src="filmSource" width="100%" height="auto" controls>
+    </video>
+
+
+
+
+
+
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>演职员</h1>
+        </div>
         <div class="workers-container">
           <div
             @click="navigateToActorProfile(item)"
@@ -26,8 +84,21 @@
           </div>
         </div>
 
-        <h1>评分</h1>
+
+
+
+
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>评个分吧</h1>
+        </div>
         <el-rate
+        style="transform: scale(1.5) translateX(1.2rem);"
           :allow-half="true"
           size="large"
           v-model="rateVal"
@@ -35,7 +106,18 @@
           @change="handleRateMovie()"
           />
 
+
+
+
+
+
+
+
+
+                  <div class="title-container">
+          <span class="icon iconfont icon-comment"></span>
           <h1>{{isEdit?'修改评论':'评论'}}</h1>
+        </div>
           <div class="comments-container">
             <textarea id="comment-textarea" v-model="commentInput" class="comments-area"></textarea>
           <button @click="handleSubmitComment()" class="submitBtn">发布</button>
@@ -44,18 +126,18 @@
             <div class="comment-item-header">
               <img :src="item.avatar" alt="">
               <div class="header-detail-container">
-                <p>{{item.name}}</p>
-                <!-- <p>{{createTime}}</p> -->
+                <p>{{ item.name + (item.userId === userStore.userInfo.id?'(我)':'')}}</p>
+                <p class="createTimeText">{{item.createTime}}</p>
               </div>
             </div>
             <div class="comment-item-main">
               <p>{{item.content}}</p>
               <div class="main-detail-container">
-                <span v-if="item.userId === userStore.userInfo.id" @click="handleEditComment(item.content,item.id)" class="icon iconfont icon-more"></span>
-                <span v-if="item.userId === userStore.userInfo.id"  @click="handleDeleteComment(item.id)" class="icon iconfont icon-delete"></span>
                 <span @click="handleStarComment(item.id)" v-show="!item.isStar" class="icon iconfont icon-love-empty"></span>
                 <span @click="handleRemoveStarComment(item.id)" v-show="item.isStar" class="icon iconfont icon-love-fill"></span>
                 <span class="starCount">{{item.star}}</span>
+                <span v-if="item.userId === userStore.userInfo.id" @click="handleEditComment(item.content,item.id)" class="icon iconfont icon-more"></span>
+                <span v-if="item.userId === userStore.userInfo.id"  @click="handleDeleteComment(item.id)" class="icon iconfont icon-delete"></span>
 
               </div>
             </div>
@@ -65,7 +147,16 @@
 
 
 
-        <h1>电影资源</h1>
+
+
+
+
+
+
+        <div class="title-container">
+          <span class="icon iconfont icon-deloperator"></span>
+          <h1>电影资源</h1>
+        </div>
         <button class="source-btn">点我获取</button>
       </div>
       <div class="right-container"></div>
@@ -74,6 +165,7 @@
 </template>
 
 <script setup>
+import { ElMessage } from 'element-plus';
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 // import { ElRate,ElInput } from 'element-plus';
@@ -91,10 +183,11 @@ const router = useRouter()
 
 
 //获取电影详情信息逻辑
-import { getMovieDetail } from '@/api/movie'
+import { getMovieDetail,getMovieSource } from '@/api/movie'
 import { computed, ref } from 'vue'
 
 const filmDetail = ref({})
+const filmSource = ref('')
 //工作人员数组
 const worksList = computed(() => {
   if (filmDetail.value.directors || filmDetail.value.actors) {
@@ -113,10 +206,20 @@ function navigateToActorProfile(data) {
   })
 }
 //获取电影详情信息
-getMovieDetail(route.params.id).then((data) => {
-  filmDetail.value = data.data
-  console.log(filmDetail.value)
+getMovieDetail(route.params.id).then((res) => {
+  filmDetail.value = res.data
+  console.log('getFilmDetail--->',filmDetail.value)
 })
+
+//获取电影pv资源
+getMovieSource(route.params.id).then(res => {
+  filmSource.value = res.data
+  console.log(res.data);
+})
+
+
+
+
 
 
 
@@ -175,6 +278,10 @@ async function handleSubmitComment() {
   }
 }
 
+
+
+
+
 //修改用户评论
 // import { scrollToElementCenter } from '@/utils/scrollToElement';
 async function handleEditComment(content,commentId) {
@@ -198,7 +305,15 @@ async function handleDeleteComment(commentId) {
   }
 
 }
-//点赞
+
+
+
+
+
+
+
+
+//点赞功能
 import { starMovieComment } from '@/api/movie';
 import { removeStarMovieComment } from '@/api/movie';
 async function handleStarComment(commentId) {
@@ -246,10 +361,16 @@ async function handleRateMovie() {
   try {
     const res = await rateMovie(params)
     console.log('rate--->', res)
-    alert('评分成功')
+                      ElMessage({
+        message: '评分成功',
+        type: 'success'
+      })
   } catch (error) {
     console.error('提交用户信息时出错：', error)
-    alert('评分失败')
+                  ElMessage({
+        message: '评分失败',
+        type: 'error'
+      })
   }
 }
 
@@ -266,10 +387,12 @@ async function handleRateMovie() {
     height: 20rem;
     overflow: hidden;
     display: flex;
-    align-items: center;
-    justify-content: start;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
     padding: 20px 0px 0px 5rem;
-
+    gap: 0.5rem;
+    color: var(--always-entire-white-color);
     img {
       width: 100%;
       position: absolute;
@@ -277,11 +400,23 @@ async function handleRateMovie() {
       top: 0;
       left: 0;
       filter: blur(100px);
+      transform: scale(1.4);
     }
 
     h1 {
-      color: var(--secondary-font-color);
+      transform: translateX(-1.5rem);
       font-size: 3rem;
+    }
+
+    .tags-container{
+      display: flex;
+      align-items: center;
+      justify-content: start;
+    }
+
+    .releaseTime-container{
+      display: flex;
+      gap: 5px;
     }
   }
 
@@ -300,6 +435,25 @@ async function handleRateMovie() {
       padding: 2.3rem;
       border: 1px solid var(--primary-border-color);
       background-color: var(--tertiary-bg-color);
+
+      video{
+        border-radius: 0.7rem;
+        transition: all .2s;
+        &:hover{
+          box-shadow: 3px 16px 22px -1px rgba(0, 0, 0, 0.65);
+        }
+      }
+
+      .title-container{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 0.8rem;
+        .icon{
+          font-size: 1.2rem;
+        }
+      }
 
       .rating-container {
         display: flex;
@@ -369,20 +523,22 @@ async function handleRateMovie() {
         display: flex;
         flex-direction: column;
         padding-bottom: 1rem;
+        gap: 1rem;
 
         &:last-child{
           border: none;
         }
 
         .comment-item-header{
+          width: 100%;
           display: flex;
           align-items: center;
           justify-content: center;
           align-self: flex-start;
           gap: 1rem;
           img {
-            height: 3rem;
-            width: 3rem;
+            height: 3.5rem;
+            width: 3.5rem;
             border: 1px solid var(--primary-accent-color);
             border-radius: 50%;
             object-fit: cover;
@@ -390,10 +546,14 @@ async function handleRateMovie() {
 
           .header-detail-container{
             display: flex;
-            width: 10rem;
+            width: 100%;
             flex-direction: column;
             p{
               font-size: 1.2rem;
+            }
+            .createTimeText{
+              font-size: 0.8rem;
+              opacity: 0.4;
             }
           }
         }
@@ -439,6 +599,8 @@ async function handleRateMovie() {
             }
 
             .starCount{
+              margin-top: 0.2rem;
+              font-weight: 300;
               font-size: 1rem;
               margin-left: 4px;
               user-select: none;
@@ -503,10 +665,6 @@ async function handleRateMovie() {
         }
       }
 
-      h1 {
-        margin-bottom: 0.8rem;
-        margin-top: 2rem;
-      }
 
       p {
         color: var(--primary-font-color);

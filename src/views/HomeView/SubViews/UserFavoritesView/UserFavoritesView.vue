@@ -35,6 +35,7 @@
 import { useStyleStateStore } from '@/stores/styleState'
 import { useUserStore } from '@/stores/user'
 import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
 import FilmList from '@/components/FilmList.vue'
 
 const styleStore = useStyleStateStore()
@@ -60,7 +61,10 @@ function subDeleteFavorites(e, favoriteId) {
   e.stopPropagation()
   deleteFavorites(favoriteId).then((res) => {
     console.log('deleteDir-->', res)
-    alert('删除成功')
+                  ElMessage({
+        message: '删除成功',
+        type: 'success'
+      })
     userStore.getUser()
   })
 }

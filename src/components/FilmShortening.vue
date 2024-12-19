@@ -90,7 +90,6 @@ function submitDeleteFavorites(e) {
   }
   deleteMovieFromFavorites(params).then((res) => {
     console.log('delete--->', res)
-    alert('删除成功')
   })
 }
 </script>

@@ -33,7 +33,7 @@
     left: 0;
     width: 100%;
     height: 50%;
-    background: linear-gradient(to top, var(--primary-bg-color) 20%, #00000000);
+    background: linear-gradient(to top, var(--always-black-color) 20%, #00000000);
   }
 
   .recommend-button {
@@ -85,14 +85,16 @@
     h3 {
       font-size: 0.8rem;
       font-weight: 300;
-      color: var(--secondary-font-color);
+  color: var(--always-white-color);
+
     }
 
     h1 {
       margin-top: 5px;
       font-size: 1.7rem;
       line-height: 1;
-      color: var(--secondary-font-color);
+  color: var(--always-white-color);
+
     }
   }
 

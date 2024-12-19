@@ -25,7 +25,7 @@ function navigateToTagsPage() {
   border-radius: 0.7rem;
   background: linear-gradient(to right, #2453b2, #448cd5);
   transition: all 1.2s;
-  color: var(--secondary-font-color);
+  color: var(--always-white-color);
   overflow: hidden;
 
   &:hover {
