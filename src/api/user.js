@@ -142,3 +142,8 @@ export function addHistorySearch(content) {
 export function deleteHistorySearch(){
   return request.delete('/history')
 }
+
+//用户评分电影
+export function rateMovie(data) {
+  return request.put('/film/score',data)
+}

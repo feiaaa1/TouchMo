@@ -26,6 +26,8 @@ export function getActorProfile(id) {
   return request.get(`/follow/${id}`)
 }
 
+
+
 //获取电影评论
 export function getMovieComment(data) {
   return request.get('/comment', {
@@ -61,4 +63,3 @@ export function removeStarMovieComment(commentId) {
   return request.delete(`/comment/star?commentId=${commentId}`)
 }
 
-//用户评分电影

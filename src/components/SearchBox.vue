@@ -4,15 +4,22 @@
     <div class="searchBox">
       <header>
         <label for="search" class="title">搜索</label>
-        <input id="search" @input="debouncedGetFilmArr"
-        type="text" v-model="input">
+        <input id="search" @input="debouncedGetFilmArr" type="text" v-model="input" />
         <div v-show="isShowHistory" class="history-list">
           <div class="history-header">
             <p class="hitory-title">搜索历史</p>
             <p class="deleteHistoryBtn" @click="handleDeleteHistory()">清空历史记录</p>
           </div>
           <div class="history-main">
-            <p @click="isShowHistory = false;input = item" class="historyItem" v-for="item in historyList" :key="item">
+            <p
+              @click="
+                isShowHistory = false;
+                input = item
+              "
+              class="historyItem"
+              v-for="item in historyList"
+              :key="item"
+            >
               {{ item }}
             </p>
           </div>
@@ -35,37 +42,32 @@ const store = useStyleStateStore()
 //是否显示搜索历史
 const isShowHistory = ref(true)
 
-
 //获取搜索历史
 const historyList = ref([])
-import { getHistorySearch } from '@/api/user';
-getHistorySearch().then(res => {
-  console.log('getHistoryList--->', res);
+import { getHistorySearch } from '@/api/user'
+getHistorySearch().then((res) => {
+  console.log('getHistoryList--->', res)
   historyList.value = res.data
 })
 
 
+
 //清空搜索历史
-import { deleteHistorySearch } from '@/api/user';
+import { deleteHistorySearch } from '@/api/user'
 async function handleDeleteHistory() {
   const res = await deleteHistorySearch()
-  console.log(res);
+  console.log(res)
 }
-
-
-
 
 // 获取搜索的电影列表
 import { getSearchMovieList } from '@/api/movie'
-import { addHistorySearch } from '@/api/user';
+import { addHistorySearch } from '@/api/user'
 import { debounce } from '@/utils/debounce'
-
 
 //是否显示加载
 const isLoading = ref(false)
 const input = ref('')
 const filmList = ref([])
-
 
 // 搜索函数
 async function getFilmArr() {
@@ -85,18 +87,21 @@ async function getFilmArr() {
   filmList.value = getListRes.data.record
   isLoading.value = false
   const addHistoryRes = await addHistorySearch(input.value)
-  console.log('addHistoryRes--->',addHistoryRes);
+  console.log('addHistoryRes--->', addHistoryRes)
 }
 // 使用防抖函数包装的搜索函数
 const debouncedGetFilmArr = debounce(getFilmArr, 400) // 延迟500毫秒
-
-
 
 //关闭逻辑 关闭后 1.清空电影list 2.清空输入框内容
 function closeBox() {
   input.value = ''
   filmList.value = []
   isShowHistory.value = true
+  //重新拉取历史搜索
+  getHistorySearch().then((res) => {
+  console.log('getHistoryList--->', res)
+  historyList.value = res.data
+})
   store.closeBox()
 }
 </script>
@@ -147,13 +152,12 @@ function closeBox() {
         padding: 0.2rem 0.5rem;
         color: var(--primary-font-color);
 
-
         &:focus {
           border: 1px solid var(--primary-func-color);
         }
       }
 
-      .history-list{
+      .history-list {
         margin-top: 1rem;
         width: 100%;
         display: flex;
@@ -162,37 +166,37 @@ function closeBox() {
         flex-direction: column;
         gap: 1rem;
 
-        .history-header{
+        .history-header {
           width: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
 
-          .deleteHistoryBtn{
+          .deleteHistoryBtn {
             cursor: pointer;
-            &:hover{
+            &:hover {
               color: var(--primary-accent-color);
             }
           }
         }
 
-        .history-main{
-                  width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 1rem;
-          .historyItem{
+        .history-main {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          flex-wrap: wrap;
+          gap: 1rem;
+          .historyItem {
             cursor: pointer;
             flex-shrink: 0;
             border-radius: 0.3rem;
-            padding:0.2rem 0.5rem;
+            padding: 0.2rem 0.5rem;
             color: var(--primary-font-color);
             border: 1px solid var(--primary-font-color);
             &:hover {
-                          color: var(--primary-func-color);
-            border: 1px solid var(--primary-func-color);
+              color: var(--primary-func-color);
+              border: 1px solid var(--primary-func-color);
             }
           }
         }
@@ -201,7 +205,7 @@ function closeBox() {
 
     main {
       overflow: scroll;
-      p{
+      p {
         color: var(--secondary-font-color);
       }
 

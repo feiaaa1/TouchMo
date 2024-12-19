@@ -26,26 +26,45 @@
           </div>
         </div>
 
-         <h1>评分</h1>
-        <div class="rating-container">
-          <span @click="rateMovie(item)" v-for="item in [1, 2, 3, 4, 5]" :key="item">
-            {{ item }} ★
-          </span>
-        </div>
+        <h1>评分</h1>
+        <el-rate
+          :allow-half="true"
+          size="large"
+          v-model="rateVal"
+          :colors="colors"
+          @change="handleRateMovie()"
+          />
 
-        <h1>评论区</h1>
-        <div class="comments-container">
-          <div class="comment-box" v-for="comment in comments" :key="comment.id">
-            <p><strong>{{ comment.user.name }}</strong>: {{ comment.text }}</p>
-            <div>
-              <button @click="likeComment(comment.id)">点赞 ({{ comment.likes }})</button>
-              <button @click="deleteComment(comment.id)" v-if="comment.user.id === userId">删除</button>
-              <button @click="editComment(comment)" v-if="comment.user.id === userId">编辑</button>
+          <h1>{{isEdit?'修改评论':'评论'}}</h1>
+          <div class="comments-container">
+            <textarea id="comment-textarea" v-model="commentInput" class="comments-area"></textarea>
+          <button @click="handleSubmitComment()" class="submitBtn">发布</button>
+
+          <div v-for="item in commentsList" :key="item.id" class="comment-item">
+            <div class="comment-item-header">
+              <img :src="item.avatar" alt="">
+              <div class="header-detail-container">
+                <p>{{item.name}}</p>
+                <!-- <p>{{createTime}}</p> -->
+              </div>
             </div>
-            <input v-if="editingCommentId === comment.id" v-model="editingCommentText" @blur="saveComment(comment.id)" />
+            <div class="comment-item-main">
+              <p>{{item.content}}</p>
+              <div class="main-detail-container">
+                <span v-if="item.userId === userStore.userInfo.id" @click="handleEditComment(item.content,item.id)" class="icon iconfont icon-more"></span>
+                <span v-if="item.userId === userStore.userInfo.id"  @click="handleDeleteComment(item.id)" class="icon iconfont icon-delete"></span>
+                <span @click="handleStarComment(item.id)" v-show="!item.isStar" class="icon iconfont icon-love-empty"></span>
+                <span @click="handleRemoveStarComment(item.id)" v-show="item.isStar" class="icon iconfont icon-love-fill"></span>
+                <span class="starCount">{{item.star}}</span>
+
+              </div>
+            </div>
           </div>
         </div>
-        <input v-model="newComment" @keyup.enter="addComment" placeholder="添加评论..." />
+
+
+
+
         <h1>电影资源</h1>
         <button class="source-btn">点我获取</button>
       </div>
@@ -57,9 +76,34 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
+// import { ElRate,ElInput } from 'element-plus';
+import { useUserStore } from '@/stores/user'
+const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 
+
+
+
+
+
+
+
+
+//获取电影详情信息逻辑
+import { getMovieDetail } from '@/api/movie'
+import { computed, ref } from 'vue'
+
+const filmDetail = ref({})
+//工作人员数组
+const worksList = computed(() => {
+  if (filmDetail.value.directors || filmDetail.value.actors) {
+    return [...filmDetail.value.directors, ...filmDetail.value.actors]
+  } else {
+    return []
+  }
+})
+//跳转人员详情逻辑
 function navigateToActorProfile(data) {
   router.push({
     name: 'actors',
@@ -68,19 +112,7 @@ function navigateToActorProfile(data) {
     },
   })
 }
-
-import { getMovieDetail } from '@/api/movie'
-import { computed, ref } from 'vue'
-
-const filmDetail = ref({})
-const worksList = computed(() => {
-  if (filmDetail.value.directors || filmDetail.value.actors) {
-    return [...filmDetail.value.directors, ...filmDetail.value.actors]
-  } else {
-    return []
-  }
-})
-
+//获取电影详情信息
 getMovieDetail(route.params.id).then((data) => {
   filmDetail.value = data.data
   console.log(filmDetail.value)
@@ -88,60 +120,142 @@ getMovieDetail(route.params.id).then((data) => {
 
 
 
+//获取电影所有评论
+import { getMovieComment } from '@/api/movie';
+const commentsList = ref([])
+async function getComment() {
+  const res = await getMovieComment({
+    filmId: route.params.id,
+    page: 1,
+    pageSize: 10
+  })
+  console.log('getMovieComment--->', res);
+  commentsList.value = res.data.record
+}
+getComment()
+
+
+
+
+
+
+
 
 //评论区和评分逻辑
-const newComment = ref('');
-const comments = ref([]);
-const editingCommentId = ref(null);
-const editingCommentText = ref('');
-const userId = ref(1); // 假设用户 ID 为 1，实际应从认证系统中获取
-
-getMovieDetail(route.params.id).then((data) => {
-  filmDetail.value = data.data;
-  comments.value.push(...filmDetail.value.comments); // 假设电影详情中包含评论数据
-});
-
-function addComment() {
-  if (newComment.value.trim()) {
-    comments.value.push({
-      id: Date.now(),
-      user: { id: userId.value, name: '用户' + userId.value },
-      text: newComment.value,
-      likes: 0,
-    });
-    newComment.value = '';
+import { subMovieComment } from '@/api/movie';
+import { editMovieComment } from '@/api/movie';
+const isEdit = ref(false)
+const commentInput = ref('')
+const currentCommentId = ref(null)
+async function handleSubmitComment() {
+  try {
+    const params = {
+      id: currentCommentId.value,
+      content: commentInput.value,
+      filmId: route.params.id,
+      userId: userStore.userInfo.id
+    }
+    if (!isEdit.value) {
+      const res = await subMovieComment(params)
+      console.log('submitComment--->', res);
+    } else {
+      console.log(params);
+      const res = await editMovieComment(params)
+      console.log('editComment--->', res);
+    }
+    getComment()
+  }
+  catch (error) {
+    console.log('评论提交失败',error);
+  }
+  finally {
+    commentInput.value = ''
+    isEdit.value = false
+    currentCommentId.value = null
   }
 }
 
-function deleteComment(commentId) {
-  comments.value = comments.value.filter(comment => comment.id !== commentId);
+//修改用户评论
+// import { scrollToElementCenter } from '@/utils/scrollToElement';
+async function handleEditComment(content,commentId) {
+  commentInput.value = content;
+  isEdit.value = true;
+  currentCommentId.value = commentId
+  // scrollToElementCenter('comment-textarea')
 }
-
-function editComment(comment) {
-  editingCommentId.value = comment.id;
-  editingCommentText.value = comment.text;
-}
-
-function saveComment(commentId) {
-  const comment = comments.value.find(comment => comment.id === commentId);
-  if (comment) {
-    comment.text = editingCommentText.value;
+//删除用户评论
+import { deleteMovieComment } from '@/api/movie';
+async function handleDeleteComment(commentId) {
+  try {
+    const res = await deleteMovieComment(commentId)
+    console.log('deleteComment--->',res);
   }
-  editingCommentId.value = null;
-  editingCommentText.value = '';
-}
+  catch (error) {
+    console.log(error);
+  }
+  finally {
+    getComment()
+  }
 
-function likeComment(commentId) {
-  const comment = comments.value.find(comment => comment.id === commentId);
-  if (comment) {
-    comment.likes++;
+}
+//点赞
+import { starMovieComment } from '@/api/movie';
+import { removeStarMovieComment } from '@/api/movie';
+async function handleStarComment(commentId) {
+  try {
+    const res = await starMovieComment(commentId)
+    console.log('starComment--->',res);
+  }
+  catch (error) {
+    console.log(error);
+  }
+  finally {
+    getComment()
+  }
+}
+async function handleRemoveStarComment(commentId) {
+  try {
+    const res = await removeStarMovieComment(commentId)
+    console.log('removeStarComment--->',res);
+  }
+  catch (error) {
+    console.log(error);
+  }
+  finally {
+    getComment()
   }
 }
 
-function rateMovie(rating) {
-  // 实现评分逻辑，例如发送请求到后端保存评分
-  console.log('Rated:', rating);
+
+
+
+
+
+
+// 实现评分逻辑，例如发送请求到后端保存评分
+import { rateMovie } from '@/api/user'
+const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
+const rateVal = ref('')
+async function handleRateMovie() {
+  const params = {
+    id: route.params.id,
+    score: +rateVal.value * 2,
+    userId: userStore.userInfo.id,
+  }
+
+  try {
+    const res = await rateMovie(params)
+    console.log('rate--->', res)
+    alert('评分成功')
+  } catch (error) {
+    console.error('提交用户信息时出错：', error)
+    alert('评分失败')
+  }
 }
+
+
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -188,27 +302,161 @@ function rateMovie(rating) {
       background-color: var(--tertiary-bg-color);
 
       .rating-container {
-  display: flex;
-  gap: 1rem;
-  cursor: pointer;
-}
+        display: flex;
+        gap: 1rem;
+        cursor: pointer;
 
-.comments-container {
-  margin-top: 2rem;
-}
+        .icon {
+          font-size: 2rem;
+        }
+      }
 
-.comment-box {
-  margin-bottom: 1rem;
-}
+      .comments-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
 
-input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-top: 1rem;
-}
 
-      .workers-container {
+
+        .comments-area{
+          width: 100%;
+          height: 10rem;
+          background-color: transparent;
+          border-radius: 0.8rem;
+          color: var(--primary-font-color);
+          font-size: 1rem;
+          padding: 0.7rem;
+        }
+       .submitBtn {
+         appearance: none;
+        background-color: transparent;
+        border: 0.125em solid var(--primary-accent-color);
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        color: var(--primary-accent-color);
+        cursor: pointer;
+        display: inline-block;
+        font-family: Roobert, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        padding: 0.6rem 1rem;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        will-change: transform;
+        width: 8rem;
+        align-self: flex-end;
+
+        &:hover {
+          color: var(--secondary-accent-color);
+          border: 0.125em solid var(--secondary-accent-color);
+          background-color: var(--tertiary-bg-color);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .comment-item{
+        border-bottom:1px solid var(--primary-border-color) ;
         width: 100%;
+        min-height: 3rem;
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 1rem;
+
+        &:last-child{
+          border: none;
+        }
+
+        .comment-item-header{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          align-self: flex-start;
+          gap: 1rem;
+          img {
+            height: 3rem;
+            width: 3rem;
+            border: 1px solid var(--primary-accent-color);
+            border-radius: 50%;
+            object-fit: cover;
+          }
+
+          .header-detail-container{
+            display: flex;
+            width: 10rem;
+            flex-direction: column;
+            p{
+              font-size: 1.2rem;
+            }
+          }
+        }
+
+        .comment-item-main{
+          display: flex;
+          flex-direction: column;
+          padding-left: 4rem;
+          width: 100%;
+          >p{
+            font-size: 1.3rem;
+          }
+
+          .main-detail-container{
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            .icon{
+              margin-left: 1rem;
+              font-size: 1.3rem;
+              cursor: pointer;
+            }
+
+            .icon-delete{
+              &:hover{
+                color: #ff0000;
+              }
+            }
+
+            .icon-love-empty,.icon-love-fill{
+              font-size: 1.5rem;
+              &:hover{
+                color: var(--primary-accent-color);
+              }
+            }
+
+            .icon-more{
+              font-size: 1.4rem;
+              &:hover{
+                color:var(--primary-func-color)
+              }
+            }
+
+            .starCount{
+              font-size: 1rem;
+              margin-left: 4px;
+              user-select: none;
+            }
+
+            span{
+              display: inline-block;
+            }
+          }
+        }
+
+      }
+
+
+    }
+
+    .workers-container {
+      width: 100%;
         display: flex;
         overflow: scroll;
         gap: 2rem;
@@ -216,34 +464,41 @@ input {
         cursor: pointer;
 
         &::-webkit-scrollbar {
-          width: 10px;
+          height: 10px;
         }
         &::-webkit-scrollbar-thumb {
           border-radius: 10px;
-          background: rgba(0, 255, 255, 1);
+          background: var(--secondary-accent-color);
         }
         &::-webkit-scrollbar-track {
           border-radius: 10px;
-          background: #104681;
+          background: var(--quaternary-bg-color);
         }
         .workers-box {
           flex-shrink: 0;
           display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 0.5rem;
-
+          flex-direction: column;
+          align-items: start;
+          justify-content: center;
+          gap: 0.4rem;
           img {
-            width: 5rem;
-            height: 5rem;
-            border-radius: 100rem;
+            width: 7rem;
+            height: 10rem;
+            border-radius: 0.4rem;
+            object-fit: cover;
           }
 
           .workers-details-container {
             width: 5rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
+            h2 {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              margin-bottom: -5px;
+            }
           }
         }
       }
@@ -265,13 +520,38 @@ input {
       }
 
       .source-btn {
+         appearance: none;
+        background-color: transparent;
+        border: 0.125em solid var(--primary-accent-color);
+        border-radius: 0.5rem;
+        box-sizing: border-box;
+        color: var(--primary-accent-color);
         cursor: pointer;
-        color: var(--tertiary-bg-color);
-        font-size: 1.8rem;
-        border-radius: 100rem;
-        background-color: var(--primary-font-color);
-        width: 12rem;
-        height: 4rem;
+        display: inline-block;
+        font-family: Roobert, sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        outline: none;
+        padding: 0.6rem 1rem;
+        text-align: center;
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        will-change: transform;
+        width: 8rem;
+        align-self: flex-end;
+
+        &:hover {
+          color: var(--secondary-accent-color);
+          border: 0.125em solid var(--secondary-accent-color);
+          background-color: var(--tertiary-bg-color);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
       }
     }
 

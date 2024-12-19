@@ -56,19 +56,13 @@ const email = ref('')
 const emailError = ref('')
 const isSubmitting = ref(false)
 
-// const getImageFileFromUrl = async (url, imageName) => {
-//   const res = await fetch(url);
-//   const blob = await res.blob();
-//   console.log(res);
-//   return new File([blob], imageName, {type: 'image/png'});
-// }
+
 
 name.value = userStore.userInfo.name;
 sex.value = userStore.userInfo.sex;
 email.value = userStore.userInfo.email;
 avatarUrl.value = userStore.userInfo.avatar
-// const res = await getImageFileFromUrl(userInfo.avatar, 'test')
-// avatarFile.value = [res]
+
 
 
 

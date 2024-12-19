@@ -27,7 +27,7 @@ export const useUserStore = defineStore('user', () => {
       const followRes = await getUserFollow()
       userInfo.value.follow = followRes.data
 
-      alert('更新用户信息成功！')
+      alert('获取用户信息成功！')
     } else {
       //重置用户信息
       userInfo.value = {
