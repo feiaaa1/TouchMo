@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useStyleStateStore } from '@/stores/styleState';
-
+import { useStyleStateStore } from '@/stores/styleState'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,7 +61,13 @@ const router = createRouter({
   ],
 })
 
+router.beforeEach((to, from, next) => {
+  next()
+  window.scrollTo(0, 0)
+})
+
 router.beforeResolve(async (to) => {
+
   if (to.name === 'movieDetail') {
     const styleStore = useStyleStateStore()
     styleStore.NavigationState.isMovieDetail = true
@@ -70,10 +75,10 @@ router.beforeResolve(async (to) => {
 })
 
 router.afterEach((to, from) => {
-    if (from.name === 'movieDetail') {
-      const styleStore = useStyleStateStore()
-      styleStore.NavigationState.isMovieDetail = false
-    }
+  if (from.name === 'movieDetail') {
+    const styleStore = useStyleStateStore()
+    styleStore.NavigationState.isMovieDetail = false
+  }
 })
 
 export default router

@@ -1,7 +1,6 @@
 <template>
-  <div class="modifyFavorite-container" v-if="styleStore.showBoxList.isShowModifyFavoritesCard">
-    <div class="flur" @click="closeBox()"></div>
-    <div class="modifyFavorite-Box">
+  <transition name="modifyFavorites">
+    <div class="modifyFavorite-Box" v-if="styleStore.showBoxList.isShowModifyFavoritesCard">
       <header v-if="!styleStore.FavoriteState.isModifyFavorites">
         <h2 v-show="!isCreate && !styleStore.FavoriteState.isOnlyCreate" class="title">收藏至</h2>
         <p v-if="!styleStore.FavoriteState.isOnlyCreate" @click="isCreate = !isCreate">
@@ -10,17 +9,25 @@
       </header>
       <main>
         <div
-          @click="handleMovie(item.id)"
-          v-for="item in userStore.userInfo.favorites"
-          :key="item.id"
-          v-show="!isCreate && !styleStore.FavoriteState.isOnlyCreate && !styleStore.FavoriteState.isModifyFavorites"
+        @click="handleMovie(item.id)"
+        v-for="item in userStore.userInfo.favorites"
+        :key="item.id"
+        v-show="
+        !isCreate &&
+            !styleStore.FavoriteState.isOnlyCreate &&
+            !styleStore.FavoriteState.isModifyFavorites
+            "
           class="favorites-container"
-        >
+          >
           <h1>{{ item.name || '无名字' }}</h1>
           <p>{{ item.description || '无描述' }}</p>
         </div>
         <div
-          v-show="isCreate || styleStore.FavoriteState.isOnlyCreate || styleStore.FavoriteState.isModifyFavorites"
+          v-show="
+            isCreate ||
+            styleStore.FavoriteState.isOnlyCreate ||
+            styleStore.FavoriteState.isModifyFavorites
+          "
           class="create-container"
         >
           <label for="name">名字</label>
@@ -31,8 +38,8 @@
         </div>
       </main>
     </div>
-  </div>
-</template>
+  </transition>
+  </template>
 
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
@@ -46,7 +53,7 @@ const isCreate = ref(false)
 //处理收藏夹 新建 修改
 import { createFavorites } from '@/api/user'
 import { modifyFavorites } from '@/api/user'
-import { ElMessage, ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 const name = ref('')
 const description = ref(null)
 function handleFavorite() {
@@ -66,7 +73,7 @@ function handleFavorite() {
       ElMessage({
         title: 'Success',
         message: '创建成功',
-        type: 'success'
+        type: 'success',
       })
       userStore.getUser()
     })
@@ -86,7 +93,7 @@ function handleFavorite() {
       description.value = null
       ElMessage({
         message: '修改成功',
-        type: 'success'
+        type: 'success',
       })
       userStore.getUser()
     })
@@ -97,7 +104,7 @@ function handleFavorite() {
 import { addMovieToFavorites } from '@/api/user'
 import { moveMovieToOtherFavorites } from '@/api/user'
 function handleMovie(favoritesId) {
-  if (!styleStore.FavoriteState.currentFavoritesId){
+  if (!styleStore.FavoriteState.currentFavoritesId) {
     const params = {
       filmId: styleStore.FavoriteState.currentFilmId,
       favoriteId: favoritesId,
@@ -105,9 +112,9 @@ function handleMovie(favoritesId) {
     addMovieToFavorites(params).then((res) => {
       console.log('addMovie--->', res)
       styleStore.closeBox()
-            ElMessage({
+      ElMessage({
         message: '收藏成功',
-        type: 'success'
+        type: 'success',
       })
     })
   } else {
@@ -119,36 +126,19 @@ function handleMovie(favoritesId) {
     moveMovieToOtherFavorites(params).then((res) => {
       console.log('moveMovie---->', res)
       styleStore.closeBox()
-            ElMessage({
+      ElMessage({
         message: '收藏成功',
-        type: 'success'
+        type: 'success',
       })
     })
   }
 }
-
-//关闭后 1.清空电影list 2.清空输入框内容
-function closeBox() {
-  styleStore.closeBox()
-}
 </script>
 
 <style lang="scss" scoped>
-.modifyFavorite-container {
-  width: 100%;
-  height: 100%;
-  .flur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 14;
-    width: 100%;
-    height: 100%;
-    background-color: #0000009a;
-  }
   .modifyFavorite-Box {
     position: fixed;
-    z-index: 15;
+    z-index: 25;
     left: 50%;
     top: 5rem;
     transform: translateX(-50%);
@@ -214,5 +204,20 @@ function closeBox() {
       }
     }
   }
+
+  .modifyFavorite-enter-active,
+.modifyFavorite-leave-active {
+  transition: all 0.5s;
 }
+
+.modifyFavorite-enter-from {
+  transform: translateX(-50%) scale(0.7);
+  opacity: 0;
+}
+
+.modifyFavorite-leave-to {
+  transform: translateX(-50%) translateY(3rem);
+  opacity: 0;
+}
+
 </style>

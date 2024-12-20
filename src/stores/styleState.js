@@ -1,4 +1,4 @@
-import { reactive,ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export const useStyleStateStore = defineStore('styleState', () => {
@@ -10,7 +10,7 @@ export const useStyleStateStore = defineStore('styleState', () => {
 
   const NavigationState = ref({
     isMovieDetail: false,
-    isScrollTop: false
+    isScrollTop: true,
   })
 
   const FavoriteState = ref({
@@ -21,18 +21,20 @@ export const useStyleStateStore = defineStore('styleState', () => {
     //用来记录当前进入的收藏夹
     currentFavoritesId: null,
     //用来记录是否是修改状态
-    isModifyFavorites:false
+    isModifyFavorites: false,
   })
 
   const showBoxList = reactive({
     isShowLoginBox: false,
     isShowSearchBox: false,
     isShowUserCard: false,
-    isShowModifyCard: false,
+    isShowModifyUserInfoCard: false,
     isShowModifyFavoritesCard: false,
+    isShowBlurBlack: false,
   })
+
   function showBox(boxName, id) {
-    if (id)FavoriteState.value.currentFilmId = id
+    if (id) FavoriteState.value.currentFilmId = id
     for (let key in showBoxList) {
       if (key === boxName) {
         showBoxList[key] = true
@@ -40,6 +42,7 @@ export const useStyleStateStore = defineStore('styleState', () => {
         showBoxList[key] = false
       }
     }
+    showBoxList.isShowBlurBlack = true
   }
 
   //box关闭清空所有状态
@@ -66,6 +69,6 @@ export const useStyleStateStore = defineStore('styleState', () => {
     showBoxList,
     closeBox,
     FavoriteState,
-    NavigationState
+    NavigationState,
   }
 })

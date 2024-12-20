@@ -25,6 +25,7 @@
   background-image: url('https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg');
   background-position: center;
   background-clip: cover;
+  animation: slideUp 1.1s ease -0.1s;
 
   &::before {
     content: '';
@@ -85,16 +86,14 @@
     h3 {
       font-size: 0.8rem;
       font-weight: 300;
-  color: var(--always-white-color);
-
+      color: var(--always-white-color);
     }
 
     h1 {
       margin-top: 5px;
       font-size: 1.7rem;
       line-height: 1;
-  color: var(--always-white-color);
-
+      color: var(--always-white-color);
     }
   }
 

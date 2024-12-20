@@ -3,8 +3,24 @@
     <div class="left-container">
       <header>
         <h1>收藏列表</h1>
-        <h1 @click="isEntryDir = !isEntryDir;styleStore.FavoriteState.currentFavoritesId = null" v-show="isEntryDir">返回</h1>
-        <p @click="styleStore.showBox('isShowModifyFavoritesCard');styleStore.FavoriteState.isOnlyCreate = true" v-show="!isEntryDir">新建收藏夹</p>
+        <h1
+          @click="
+            isEntryDir = !isEntryDir
+            styleStore.FavoriteState.currentFavoritesId = null
+          "
+          v-show="isEntryDir"
+        >
+          返回
+        </h1>
+        <p
+          @click="
+            styleStore.showBox('isShowModifyFavoritesCard')
+            styleStore.FavoriteState.isOnlyCreate = true
+          "
+          v-show="!isEntryDir"
+        >
+          新建收藏夹
+        </p>
       </header>
       <main>
         <div
@@ -22,7 +38,13 @@
             @click="subDeleteFavorites($event, item.id)"
             class="icon iconfont icon-delete"
           ></span>
-          <span @click="subModifyFavorites($event, item.id);styleStore.FavoriteState.isModifyFavorites = true" class="icon iconfont icon-more"></span>
+          <span
+            @click="
+              subModifyFavorites($event, item.id)
+              styleStore.FavoriteState.isModifyFavorites = true
+            "
+            class="icon iconfont icon-more"
+          ></span>
         </div>
         <FilmList :isMore="true" :filmList="filmList" v-show="isEntryDir"></FilmList>
       </main>
@@ -44,7 +66,6 @@ const userStore = useUserStore()
 const isEntryDir = ref(false)
 const filmList = ref([])
 
-
 //获取收藏夹电影列表
 import { getFavorites } from '@/api/user'
 function entryDir(id) {
@@ -61,10 +82,10 @@ function subDeleteFavorites(e, favoriteId) {
   e.stopPropagation()
   deleteFavorites(favoriteId).then((res) => {
     console.log('deleteDir-->', res)
-                  ElMessage({
-        message: '删除成功',
-        type: 'success'
-      })
+    ElMessage({
+      message: '删除成功',
+      type: 'success',
+    })
     userStore.getUser()
   })
 }

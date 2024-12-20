@@ -1,9 +1,12 @@
 <template>
-  <div class="nav-container" :style="{
-  position: styleStore.NavigationState.isMovieDetail ? 'fixed' : 'sticky',
-  borderBottom: `1px solid ${styleStore.NavigationState.isScrollTop ? 'transparent' : 'var(--primary-border-color)'}`,
-  backgroundColor: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'transparent':'var(--primary-bg-color)':'var(--primary-bg-color)'}`
-  }">
+  <div
+    class="nav-container"
+    :style="{
+      position: styleStore.NavigationState.isMovieDetail ? 'fixed' : 'sticky',
+      borderBottom: `1px solid ${styleStore.NavigationState.isScrollTop ? 'transparent' : 'var(--primary-border-color)'}`,
+      backgroundColor: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'transparent' : 'var(--primary-bg-color)') : 'var(--primary-bg-color)'}`,
+    }"
+  >
     <BackHomeButton />
     <div class="nav-right-container">
       <RandomPageButton />
@@ -23,7 +26,6 @@ import UserButton from './SubComponents/UserButton.vue'
 import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 
-
 window.onscroll = () => {
   if (scrollY !== 0) {
     styleStore.NavigationState.isScrollTop = false
@@ -42,7 +44,9 @@ window.onscroll = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  transition: all .5s;
+  transition:
+    border-bottom 0.5s,
+    background-color 0.5s;
 
   .nav-right-container {
     display: flex;

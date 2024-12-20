@@ -2,38 +2,29 @@
   <div class="detail-container">
     <header>
       <img :src="filmDetail.cover" alt="" />
-              <div class="tags-container">
+        <div class="tags-container">
           <TagComponent
-            v-for="item in filmDetail.categories"
-            :key="item.id"
-            :name="item.name"
-            :id="item.id"
-            :fontSize="1"
-            :isHover="false"
-          />
-        </div>
+          v-for="item in filmDetail.categories"
+          :key="item.id"
+          :name="item.name"
+          :id="item.id"
+          :fontSize="1"
+          :isHover="false"
+        />
+      </div>
       <h1>{{ '【' + filmDetail.language + '】' + filmDetail.title }}</h1>
       <div class="releaseTime-container">
         <span class="icon iconfont icon-calendar"></span>
-        <span>{{'发表于 '+filmDetail.releaseTime}}</span>
+        <span>{{ '发表于 ' + filmDetail.releaseTime }}</span>
       </div>
     </header>
     <main>
       <div class="left-container">
-
-
-
-
-
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影介绍</h1>
         </div>
         <p>{{ filmDetail.description }}</p>
-
-
-
-
 
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
@@ -41,29 +32,11 @@
         </div>
         <img :src="filmDetail.cover" alt="" />
 
-
-
-
-
-
-
-
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影PV</h1>
         </div>
-         <video :src="filmSource" width="100%" height="auto" controls>
-    </video>
-
-
-
-
-
-
-
-
-
-
+        <video :src="filmSource" width="100%" height="auto" controls></video>
 
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
@@ -84,74 +57,63 @@
           </div>
         </div>
 
-
-
-
-
-
-
-
-
-
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>评个分吧</h1>
         </div>
         <el-rate
-        style="transform: scale(1.5) translateX(1.2rem);"
+          style="transform: scale(1.5) translateX(1.2rem)"
           :allow-half="true"
           size="large"
           v-model="rateVal"
           :colors="colors"
           @change="handleRateMovie()"
-          />
+        />
 
-
-
-
-
-
-
-
-
-                  <div class="title-container">
+        <div class="title-container">
           <span class="icon iconfont icon-comment"></span>
-          <h1>{{isEdit?'修改评论':'评论'}}</h1>
+          <h1>{{ isEdit ? '修改评论' : '评论' }}</h1>
         </div>
-          <div class="comments-container">
-            <textarea id="comment-textarea" v-model="commentInput" class="comments-area"></textarea>
+        <div class="comments-container">
+          <textarea id="comment-textarea" v-model="commentInput" class="comments-area"></textarea>
           <button @click="handleSubmitComment()" class="submitBtn">发布</button>
 
           <div v-for="item in commentsList" :key="item.id" class="comment-item">
             <div class="comment-item-header">
-              <img :src="item.avatar" alt="">
+              <img :src="item.avatar" alt="" />
               <div class="header-detail-container">
-                <p>{{ item.name + (item.userId === userStore.userInfo.id?'(我)':'')}}</p>
-                <p class="createTimeText">{{item.createTime}}</p>
+                <p>{{ item.name + (item.userId === userStore.userInfo.id ? '(我)' : '') }}</p>
+                <p class="createTimeText">{{ item.createTime }}</p>
               </div>
             </div>
             <div class="comment-item-main">
-              <p>{{item.content}}</p>
+              <p>{{ item.content }}</p>
               <div class="main-detail-container">
-                <span @click="handleStarComment(item.id)" v-show="!item.isStar" class="icon iconfont icon-love-empty"></span>
-                <span @click="handleRemoveStarComment(item.id)" v-show="item.isStar" class="icon iconfont icon-love-fill"></span>
-                <span class="starCount">{{item.star}}</span>
-                <span v-if="item.userId === userStore.userInfo.id" @click="handleEditComment(item.content,item.id)" class="icon iconfont icon-more"></span>
-                <span v-if="item.userId === userStore.userInfo.id"  @click="handleDeleteComment(item.id)" class="icon iconfont icon-delete"></span>
-
+                <span
+                  @click="handleStarComment(item.id)"
+                  v-show="!item.isStar"
+                  class="icon iconfont icon-love-empty"
+                ></span>
+                <span
+                  @click="handleRemoveStarComment(item.id)"
+                  v-show="item.isStar"
+                  class="icon iconfont icon-love-fill"
+                ></span>
+                <span class="starCount">{{ item.star }}</span>
+                <span
+                  v-if="item.userId === userStore.userInfo.id"
+                  @click="handleEditComment(item.content, item.id)"
+                  class="icon iconfont icon-more"
+                ></span>
+                <span
+                  v-if="item.userId === userStore.userInfo.id"
+                  @click="handleDeleteComment(item.id)"
+                  class="icon iconfont icon-delete"
+                ></span>
               </div>
             </div>
           </div>
         </div>
-
-
-
-
-
-
-
-
-
 
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
@@ -165,7 +127,7 @@
 </template>
 
 <script setup>
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 // import { ElRate,ElInput } from 'element-plus';
@@ -174,16 +136,8 @@ const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
 
-
-
-
-
-
-
-
-
 //获取电影详情信息逻辑
-import { getMovieDetail,getMovieSource } from '@/api/movie'
+import { getMovieDetail, getMovieSource } from '@/api/movie'
 import { computed, ref } from 'vue'
 
 const filmDetail = ref({})
@@ -208,45 +162,32 @@ function navigateToActorProfile(data) {
 //获取电影详情信息
 getMovieDetail(route.params.id).then((res) => {
   filmDetail.value = res.data
-  console.log('getFilmDetail--->',filmDetail.value)
+  console.log('getFilmDetail--->', filmDetail.value)
 })
 
 //获取电影pv资源
-getMovieSource(route.params.id).then(res => {
+getMovieSource(route.params.id).then((res) => {
   filmSource.value = res.data
-  console.log(res.data);
+  console.log(res.data)
 })
 
-
-
-
-
-
-
 //获取电影所有评论
-import { getMovieComment } from '@/api/movie';
+import { getMovieComment } from '@/api/movie'
 const commentsList = ref([])
 async function getComment() {
   const res = await getMovieComment({
     filmId: route.params.id,
     page: 1,
-    pageSize: 10
+    pageSize: 10,
   })
-  console.log('getMovieComment--->', res);
+  console.log('getMovieComment--->', res)
   commentsList.value = res.data.record
 }
 getComment()
 
-
-
-
-
-
-
-
 //评论区和评分逻辑
-import { subMovieComment } from '@/api/movie';
-import { editMovieComment } from '@/api/movie';
+import { subMovieComment } from '@/api/movie'
+import { editMovieComment } from '@/api/movie'
 const isEdit = ref(false)
 const commentInput = ref('')
 const currentCommentId = ref(null)
@@ -256,96 +197,70 @@ async function handleSubmitComment() {
       id: currentCommentId.value,
       content: commentInput.value,
       filmId: route.params.id,
-      userId: userStore.userInfo.id
+      userId: userStore.userInfo.id,
     }
     if (!isEdit.value) {
       const res = await subMovieComment(params)
-      console.log('submitComment--->', res);
+      console.log('submitComment--->', res)
     } else {
-      console.log(params);
+      console.log(params)
       const res = await editMovieComment(params)
-      console.log('editComment--->', res);
+      console.log('editComment--->', res)
     }
     getComment()
-  }
-  catch (error) {
-    console.log('评论提交失败',error);
-  }
-  finally {
+  } catch (error) {
+    console.log('评论提交失败', error)
+  } finally {
     commentInput.value = ''
     isEdit.value = false
     currentCommentId.value = null
   }
 }
 
-
-
-
-
 //修改用户评论
 // import { scrollToElementCenter } from '@/utils/scrollToElement';
-async function handleEditComment(content,commentId) {
-  commentInput.value = content;
-  isEdit.value = true;
+async function handleEditComment(content, commentId) {
+  commentInput.value = content
+  isEdit.value = true
   currentCommentId.value = commentId
   // scrollToElementCenter('comment-textarea')
 }
 //删除用户评论
-import { deleteMovieComment } from '@/api/movie';
+import { deleteMovieComment } from '@/api/movie'
 async function handleDeleteComment(commentId) {
   try {
     const res = await deleteMovieComment(commentId)
-    console.log('deleteComment--->',res);
-  }
-  catch (error) {
-    console.log(error);
-  }
-  finally {
+    console.log('deleteComment--->', res)
+  } catch (error) {
+    console.log(error)
+  } finally {
     getComment()
   }
-
 }
 
-
-
-
-
-
-
-
 //点赞功能
-import { starMovieComment } from '@/api/movie';
-import { removeStarMovieComment } from '@/api/movie';
+import { starMovieComment } from '@/api/movie'
+import { removeStarMovieComment } from '@/api/movie'
 async function handleStarComment(commentId) {
   try {
     const res = await starMovieComment(commentId)
-    console.log('starComment--->',res);
-  }
-  catch (error) {
-    console.log(error);
-  }
-  finally {
+    console.log('starComment--->', res)
+  } catch (error) {
+    console.log(error)
+  } finally {
     getComment()
   }
 }
 async function handleRemoveStarComment(commentId) {
   try {
     const res = await removeStarMovieComment(commentId)
-    console.log('removeStarComment--->',res);
-  }
-  catch (error) {
-    console.log(error);
-  }
-  finally {
+    console.log('removeStarComment--->', res)
+  } catch (error) {
+    console.log(error)
+  } finally {
     getComment()
   }
 }
-
-
-
-
-
-
 
 // 实现评分逻辑，例如发送请求到后端保存评分
 import { rateMovie } from '@/api/user'
@@ -361,22 +276,18 @@ async function handleRateMovie() {
   try {
     const res = await rateMovie(params)
     console.log('rate--->', res)
-                      ElMessage({
-        message: '评分成功',
-        type: 'success'
-      })
+    ElMessage({
+      message: '评分成功',
+      type: 'success',
+    })
   } catch (error) {
     console.error('提交用户信息时出错：', error)
-                  ElMessage({
-        message: '评分失败',
-        type: 'error'
-      })
+    ElMessage({
+      message: '评分失败',
+      type: 'error',
+    })
   }
 }
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
@@ -403,22 +314,23 @@ async function handleRateMovie() {
       transform: scale(1.4);
     }
 
-    h1 {
-      transform: translateX(-1.5rem);
-      font-size: 3rem;
+      h1 {
+        transform: translateX(-1.5rem);
+        font-size: 3rem;
+      }
+
+      .tags-container {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+      }
+
+      .releaseTime-container {
+        display: flex;
+        gap: 5px;
+      }
     }
 
-    .tags-container{
-      display: flex;
-      align-items: center;
-      justify-content: start;
-    }
-
-    .releaseTime-container{
-      display: flex;
-      gap: 5px;
-    }
-  }
 
   main {
     width: 100%;
@@ -436,21 +348,21 @@ async function handleRateMovie() {
       border: 1px solid var(--primary-border-color);
       background-color: var(--tertiary-bg-color);
 
-      video{
+      video {
         border-radius: 0.7rem;
-        transition: all .2s;
-        &:hover{
+        transition: all 0.2s;
+        &:hover {
           box-shadow: 3px 16px 22px -1px rgba(0, 0, 0, 0.65);
         }
       }
 
-      .title-container{
+      .title-container {
         display: flex;
         align-items: center;
         gap: 1rem;
         margin-top: 2rem;
         margin-bottom: 0.8rem;
-        .icon{
+        .icon {
           font-size: 1.2rem;
         }
       }
@@ -470,9 +382,7 @@ async function handleRateMovie() {
         flex-direction: column;
         gap: 1rem;
 
-
-
-        .comments-area{
+        .comments-area {
           width: 100%;
           height: 10rem;
           background-color: transparent;
@@ -481,144 +391,142 @@ async function handleRateMovie() {
           font-size: 1rem;
           padding: 0.7rem;
         }
-       .submitBtn {
-         appearance: none;
-        background-color: transparent;
-        border: 0.125em solid var(--primary-accent-color);
-        border-radius: 0.5rem;
-        box-sizing: border-box;
-        color: var(--primary-accent-color);
-        cursor: pointer;
-        display: inline-block;
-        font-family: Roobert, sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        outline: none;
-        padding: 0.6rem 1rem;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        will-change: transform;
-        width: 8rem;
-        align-self: flex-end;
+        .submitBtn {
+          appearance: none;
+          background-color: transparent;
+          border: 0.125em solid var(--primary-accent-color);
+          border-radius: 0.5rem;
+          box-sizing: border-box;
+          color: var(--primary-accent-color);
+          cursor: pointer;
+          display: inline-block;
+          font-family: Roobert, sans-serif;
+          font-size: 16px;
+          font-weight: 600;
+          outline: none;
+          padding: 0.6rem 1rem;
+          text-align: center;
+          transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+          user-select: none;
+          -webkit-user-select: none;
+          touch-action: manipulation;
+          will-change: transform;
+          width: 8rem;
+          align-self: flex-end;
 
-        &:hover {
-          color: var(--secondary-accent-color);
-          border: 0.125em solid var(--secondary-accent-color);
-          background-color: var(--tertiary-bg-color);
-          transform: translateY(-2px);
+          &:hover {
+            color: var(--secondary-accent-color);
+            border: 0.125em solid var(--secondary-accent-color);
+            background-color: var(--tertiary-bg-color);
+            transform: translateY(-2px);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
         }
 
-        &:active {
-          transform: translateY(0);
-        }
-      }
-
-      .comment-item{
-        border-bottom:1px solid var(--primary-border-color) ;
-        width: 100%;
-        min-height: 3rem;
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 1rem;
-        gap: 1rem;
-
-        &:last-child{
-          border: none;
-        }
-
-        .comment-item-header{
+        .comment-item {
+          border-bottom: 1px solid var(--primary-border-color);
           width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          align-self: flex-start;
-          gap: 1rem;
-          img {
-            height: 3.5rem;
-            width: 3.5rem;
-            border: 1px solid var(--primary-accent-color);
-            border-radius: 50%;
-            object-fit: cover;
-          }
-
-          .header-detail-container{
-            display: flex;
-            width: 100%;
-            flex-direction: column;
-            p{
-              font-size: 1.2rem;
-            }
-            .createTimeText{
-              font-size: 0.8rem;
-              opacity: 0.4;
-            }
-          }
-        }
-
-        .comment-item-main{
+          min-height: 3rem;
           display: flex;
           flex-direction: column;
-          padding-left: 4rem;
-          width: 100%;
-          >p{
-            font-size: 1.3rem;
+          padding-bottom: 1rem;
+          gap: 1rem;
+
+          &:last-child {
+            border: none;
           }
 
-          .main-detail-container{
+          .comment-item-header {
+            width: 100%;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
+            justify-content: center;
+            align-self: flex-start;
+            gap: 1rem;
+            img {
+              height: 3.5rem;
+              width: 3.5rem;
+              border: 1px solid var(--primary-accent-color);
+              border-radius: 50%;
+              object-fit: cover;
+            }
 
-            .icon{
-              margin-left: 1rem;
+            .header-detail-container {
+              display: flex;
+              width: 100%;
+              flex-direction: column;
+              p {
+                font-size: 1.2rem;
+              }
+              .createTimeText {
+                font-size: 0.8rem;
+                opacity: 0.4;
+              }
+            }
+          }
+
+          .comment-item-main {
+            display: flex;
+            flex-direction: column;
+            padding-left: 4rem;
+            width: 100%;
+            > p {
               font-size: 1.3rem;
-              cursor: pointer;
             }
 
-            .icon-delete{
-              &:hover{
-                color: #ff0000;
+            .main-detail-container {
+              display: flex;
+              align-items: center;
+              justify-content: flex-end;
+
+              .icon {
+                margin-left: 1rem;
+                font-size: 1.3rem;
+                cursor: pointer;
               }
-            }
 
-            .icon-love-empty,.icon-love-fill{
-              font-size: 1.5rem;
-              &:hover{
-                color: var(--primary-accent-color);
+              .icon-delete {
+                &:hover {
+                  color: #ff0000;
+                }
               }
-            }
 
-            .icon-more{
-              font-size: 1.4rem;
-              &:hover{
-                color:var(--primary-func-color)
+              .icon-love-empty,
+              .icon-love-fill {
+                font-size: 1.5rem;
+                &:hover {
+                  color: var(--primary-accent-color);
+                }
               }
-            }
 
-            .starCount{
-              margin-top: 0.2rem;
-              font-weight: 300;
-              font-size: 1rem;
-              margin-left: 4px;
-              user-select: none;
-            }
+              .icon-more {
+                font-size: 1.4rem;
+                &:hover {
+                  color: var(--primary-func-color);
+                }
+              }
 
-            span{
-              display: inline-block;
+              .starCount {
+                margin-top: 0.2rem;
+                font-weight: 300;
+                font-size: 1rem;
+                margin-left: 4px;
+                user-select: none;
+              }
+
+              span {
+                display: inline-block;
+              }
             }
           }
         }
-
       }
 
-
-    }
-
-    .workers-container {
-      width: 100%;
+      .workers-container {
+        width: 100%;
         display: flex;
         overflow: scroll;
         gap: 2rem;
@@ -665,7 +573,6 @@ async function handleRateMovie() {
         }
       }
 
-
       p {
         color: var(--primary-font-color);
         width: 50%;
@@ -678,7 +585,7 @@ async function handleRateMovie() {
       }
 
       .source-btn {
-         appearance: none;
+        appearance: none;
         background-color: transparent;
         border: 0.125em solid var(--primary-accent-color);
         border-radius: 0.5rem;

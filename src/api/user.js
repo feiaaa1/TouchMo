@@ -139,11 +139,11 @@ export function addHistorySearch(content) {
 }
 
 //清空历史搜索记录
-export function deleteHistorySearch(){
+export function deleteHistorySearch() {
   return request.delete('/history')
 }
 
 //用户评分电影
 export function rateMovie(data) {
-  return request.put('/film/score',data)
+  return request.put('/film/score', data)
 }

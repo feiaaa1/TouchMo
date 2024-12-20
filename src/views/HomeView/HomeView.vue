@@ -6,10 +6,10 @@
     <FooterComponent />
     <SearchBox />
     <LoginBox />
-    <PopupComponent />
     <UserProfileCard />
-    <ModifyCard />
+    <ModifyUserInfoCard />
     <ModifyFavoritesCard />
+    <BlurBlack />
   </div>
 </template>
 
@@ -18,10 +18,10 @@ import NavigationBar from './NavigationBar/NavigationBar.vue'
 import FooterComponent from './FooterComponent/FooterComponent.vue'
 import SearchBox from '@/components/SearchBox.vue'
 import LoginBox from '@/components/LoginBox.vue'
-import PopupComponent from '@/components/ToastComponent.vue'
 import UserProfileCard from '@/components/UserProfileCard.vue'
-import ModifyCard from '@/components/ModifyCard.vue'
+import ModifyUserInfoCard from '@/components/ModifyUserInfoCard.vue'
 import ModifyFavoritesCard from '@/components/ModifyFavoritesCard.vue'
+import BlurBlack from '@/components/BlurBlack.vue'
 import { ref, watch, onMounted } from 'vue'
 
 //绘制星空背景
@@ -40,12 +40,10 @@ watch(ThemeStyle, (newValue) => {
   isDark.value = newValue === 'dark' ? true : false
 })
 
-
 //获取登陆状态 用户信息 用户收藏夹 用户关注
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 userStore.getUser()
-
 </script>
 
 <style lang="scss" scoped>
@@ -56,15 +54,16 @@ userStore.getUser()
   --primary-bg-color: #000000;
   --secondary-bg-color: #111014;
   --tertiary-bg-color: #1d1e22;
-  --quaternary-bg-color: #121212;
-  --primary-border-color: #373737;
-  --primary-font-color: #adadad;
+  --quaternary-bg-color: #111014;
+  --primary-border-color: #444444;
+  --primary-font-color: #cbcbcb;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;
   --quaternary-font-color: #e3e3e3;
-  --primary-accent-color: #e9bb5f;
+  --primary-accent-color: #f2c66d;
   --secondary-accent-color: #d5a62f;
   --primary-func-color: #2d6cf5;
+  --tertiary-func-color: #4ce89a;
   --secondary-func-color: #ce3e3e;
   background-color: var(--secondary-bg-color);
 }
@@ -76,15 +75,15 @@ userStore.getUser()
   --primary-bg-color: #ffffff;
   --secondary-bg-color: #f5f5f5;
   --tertiary-bg-color: #fafafa;
-    --quaternary-bg-color: #a9a9a9;
+  --quaternary-bg-color: #a9a9a9;
   --primary-border-color: #b8b8b8;
   --primary-font-color: #4d4d4d;
   --secondary-font-color: #313131;
-    --tertiary-font-color: #b8b8b8;
+  --tertiary-font-color: #b8b8b8;
   --quaternary-font-color: #e3e3e3;
   --primary-accent-color: #2d6cf5;
   --secondary-accent-color: #2f56d5;
-    --primary-func-color: #e9bb5f;
+  --primary-func-color: #e9bb5f;
   --secondary-func-color: #ce3e3e;
   background-color: var(--secondary-bg-color);
 }

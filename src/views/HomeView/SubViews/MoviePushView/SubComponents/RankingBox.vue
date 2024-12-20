@@ -1,7 +1,6 @@
 <template>
   <div class="ranking-container">
-    <h2>热门推荐
-    </h2>
+    <h2>热门推荐</h2>
     <FilmList :filmList="movieList" :columns="1" />
   </div>
 </template>
@@ -24,7 +23,7 @@ getHotPushMovieList().then((data) => {
   background-color: var(--tertiary-bg-color);
   border-radius: 0.9rem;
   border: 1px solid var(--primary-border-color);
-  h2{
+  h2 {
     color: var(--secondary-font-color);
     margin-bottom: 1rem;
   }

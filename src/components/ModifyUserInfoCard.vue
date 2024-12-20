@@ -1,7 +1,7 @@
 <template>
-  <div class="modify-container" v-if="styleStore.showBoxList.isShowModifyCard">
-    <div class="flur" @click="styleStore.closeBox()"></div>
-    <div class="user-edit-form">
+  <transition name="modifyUserInfo">
+
+    <div class="user-edit-form" v-if="styleStore.showBoxList.isShowModifyUserInfoCard">
       <h1>编辑用户信息</h1>
       <form @submit.prevent="handleSubmit">
         <!-- 头像上传 -->
@@ -37,7 +37,7 @@
         <button class="submitBtn btn" type="submit" :disabled="isSubmitting">提交</button>
       </form>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script setup>
@@ -56,13 +56,10 @@ const email = ref('')
 const emailError = ref('')
 const isSubmitting = ref(false)
 
-name.value = userStore.userInfo.name;
-sex.value = userStore.userInfo.sex;
-email.value = userStore.userInfo.email;
+name.value = userStore.userInfo.name
+sex.value = userStore.userInfo.sex
+email.value = userStore.userInfo.email
 avatarUrl.value = userStore.userInfo.avatar
-
-
-
 
 // 处理头像上传
 const handleAvatarChange = (event) => {
@@ -72,8 +69,6 @@ const handleAvatarChange = (event) => {
     avatarUrl.value = URL.createObjectURL(file) // 生成文件URL用于预览
   }
 }
-
-
 
 // 验证邮箱
 const validateEmail = () => {
@@ -85,15 +80,13 @@ const validateEmail = () => {
   }
 }
 
-
-
 // 处理表单提交
 import { modifyUserInfo } from '@/api/user'
 import { upload } from '@/api/user'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 const handleSubmit = async () => {
+  try {
   isSubmitting.value = true
-
   // 处理图片上传 更新数据为返回的url
   const formData = new FormData()
   formData.append('file', avatarFile.value)
@@ -108,59 +101,45 @@ const handleSubmit = async () => {
     sex: sex.value,
     email: email.value,
   }
-
-  try {
     const res = await modifyUserInfo(params)
     console.log('modify res-->', res.msg)
     userStore.getUser()
+    ElMessage({
+      type: 'success',
+      message: '修改成功！'
+    })
   } catch (error) {
     ElMessage({
       type: 'error',
-      message: `提交失败${error}`
+      message: `提交失败${error}`,
     })
   } finally {
     styleStore.closeBox()
     isSubmitting.value = false
   }
 }
-
-
 </script>
 
 <style lang="scss" scoped>
-.modify-container {
-  width: 100%;
-  height: 100%;
-  color: var(--primary-font-color);
-
-  .flur {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 14;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-
   .user-edit-form {
     position: fixed;
     top: 50vh;
     left: 50vw;
-    transform: translate(-50%,-50%);
-    z-index: 15;
+    transform: translate(-50%, -50%);
+    z-index: 25;
     width: 30vw;
     max-width: 500px;
     padding: 2rem;
     border-radius: 10px;
     background-color: var(--tertiary-bg-color);
+    color: var(--primary-font-color);
 
     .avatar-upload {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      margin:1rem 0rem;
+      margin: 1rem 0rem;
 
       label {
         cursor: pointer;
@@ -168,9 +147,9 @@ const handleSubmit = async () => {
         color: var(--primary-accent-color);
         border: 2px solid var(--primary-accent-color);
         border-radius: 100rem;
-        &:hover{
-        color: var(--secondary-accent-color);
-        border: 2px solid var(--secondary-accent-color);
+        &:hover {
+          color: var(--secondary-accent-color);
+          border: 2px solid var(--secondary-accent-color);
         }
       }
 
@@ -216,16 +195,32 @@ const handleSubmit = async () => {
 
     .btn {
       width: 100%;
-        border: 0.125em solid var(--primary-accent-color);
-        color: var(--primary-accent-color);
-        font-size: 1.2rem;
+      border: 0.125em solid var(--primary-accent-color);
+      color: var(--primary-accent-color);
+      font-size: 1.2rem;
 
-        &:hover {
-          color: var(--secondary-accent-color);
+      &:hover {
+        color: var(--secondary-accent-color);
         border: 0.125em solid var(--secondary-accent-color);
-          background-color: var(--tertiary-bg-color);
-        }
+        background-color: var(--tertiary-bg-color);
       }
+    }
   }
+
+    .modifyUserInfo-enter-active,
+.modifyUserInfo-leave-active {
+  transition: all 0.5s;
 }
+
+.modifyUserInfo-enter-from {
+  transform: translate(-50%,-50%) scale(0.7);
+  opacity: 0;
+}
+
+.modifyUserInfo-leave-to {
+  transform: translate(-50%,-50%) translateY(3rem);
+  opacity: 0;
+}
+
+
 </style>

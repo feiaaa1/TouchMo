@@ -30,17 +30,19 @@
   border-radius: 0.7rem;
   color: var(--primary-font-color);
   overflow: hidden;
+  animation: slideUp 1.1s ease -0.2s;
 
   &:hover {
     .inner-card {
       opacity: 1;
       transform: translateX(1rem) translateY(-50%);
-  color: var(--always-white-color);
+      color: var(--always-white-color);
     }
   }
   h1 {
     font-size: 2.3rem;
     line-height: 1.3;
+    animation-delay: 0.2s;
   }
   p {
     font-weight: 300;
@@ -58,7 +60,7 @@
     background-color: var(--secondary-accent-color);
     transform: translateY(-50%);
     opacity: 0;
-    transition: all 0.3s;
+    transition: all 0.4s;
 
     .icon-plane {
       font-size: 5rem;

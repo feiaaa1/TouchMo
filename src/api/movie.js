@@ -15,7 +15,6 @@ export function getMovieSource(filmId) {
   return request.get(`/film/open?filmId=${filmId}`)
 }
 
-
 //获取搜索电影列表
 export function getSearchMovieList(data) {
   return request.get('/search', {
@@ -38,26 +37,21 @@ export function getActorProfile(id) {
   return request.get(`/follow/${id}`)
 }
 
-
-
 //获取电影评论
 export function getMovieComment(data) {
   return request.get('/comment', {
-    params:data
+    params: data,
   })
 }
 
-
 //用户评论电影
 export function subMovieComment(data) {
-  return request.post('/comment',data)
+  return request.post('/comment', data)
 }
-
-
 
 //用户修改评论
 export function editMovieComment(data) {
-  return request.put('/comment',data)
+  return request.put('/comment', data)
 }
 
 //用户删除评论
@@ -74,4 +68,3 @@ export function starMovieComment(commentId) {
 export function removeStarMovieComment(commentId) {
   return request.delete(`/comment/star?commentId=${commentId}`)
 }
-

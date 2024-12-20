@@ -1,9 +1,9 @@
 /* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: 'iconfont';  /* Project id 4781923 */
-  src: url('//at.alicdn.com/t/c/font_4781923_vs3ean4no7r.woff2?t=1734636152626') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4781923_vs3ean4no7r.woff?t=1734636152626') format('woff'),
-       url('//at.alicdn.com/t/c/font_4781923_vs3ean4no7r.ttf?t=1734636152626') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.woff2?t=1734721808192') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.woff?t=1734721808192') format('woff'),
+       url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.ttf?t=1734721808192') format('truetype');
 }
 .iconfont {
   font-family: 'iconfont' !important;
@@ -85,7 +85,6 @@
   content: '\e6a7';
 }
 
-
 .icon-sex-man:before {
   content: '\e610';
 }
@@ -116,4 +115,16 @@
 
 .icon-comment:before {
   content: '\e9b1';
+}
+
+.icon-close:before {
+  content: '\e657';
+}
+
+.icon-username:before {
+  content: '\e689';
+}
+
+.icon-password:before {
+  content: '\e638';
 }

@@ -5,7 +5,7 @@
     </div>
     <div class="detail-container">
       <p>{{ props.area }}</p>
-      <h1>{{ '[' + props.language + '] ' + props.title }}</h1>
+      <h1>{{ '【' + props.language + '】 ' + props.title }}</h1>
       <div class="tags-views-container">
         <div ref="tag-list" class="tags-container">
           <TagComponent
@@ -55,8 +55,7 @@ const props = defineProps({
   },
 })
 
-
-console.log();
+console.log()
 const router = useRouter()
 
 import { useStyleStateStore } from '@/stores/styleState'
@@ -69,19 +68,13 @@ function navigateToMovieDetail(id) {
   })
 }
 
-
-
 function showModifyFavoritesCard(e) {
   e.stopPropagation()
   styleStore.showBox('isShowModifyFavoritesCard', props.id)
 }
 
-
-
-
-
 //移除电影收藏逻辑
-import {deleteMovieFromFavorites } from '@/api/user'
+import { deleteMovieFromFavorites } from '@/api/user'
 function submitDeleteFavorites(e) {
   e.stopPropagation()
   const params = {
@@ -155,12 +148,14 @@ function submitDeleteFavorites(e) {
       color: var(--primary-font-color);
       font-size: 2%;
       font-style: italic;
+      opacity: .6;
     }
 
     h1 {
       color: var(--secondary-font-color);
       font-size: 1.2rem;
       transition: all 0.5s;
+      margin-left: -.5rem;
     }
 
     .tags-views-container {
@@ -171,9 +166,10 @@ function submitDeleteFavorites(e) {
 
       .tags-container {
         display: flex;
-        gap: 0.7rem;
         width: 80%;
         overflow: hidden;
+      margin-left: -.4rem;
+      opacity: .9;
 
         .hidden {
           display: none !important;
@@ -184,7 +180,9 @@ function submitDeleteFavorites(e) {
         color: var(--primary-font-color);
 
         .icon {
+          display: inline-block;
           margin-right: 5px;
+          transform: scale(1.3);
 
           &:hover {
             color: var(--primary-accent-color);

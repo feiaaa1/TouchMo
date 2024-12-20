@@ -1,8 +1,11 @@
 <template>
-  <div class="back-container" @click="navigateToHome()"
-  :style="{
-  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
-  }">
+  <div
+    class="back-container"
+    @click="navigateToHome()"
+    :style="{
+      color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
+    }"
+  >
     <h3>TouchMo</h3>
     <span class="icon iconfont icon-home"></span>
   </div>
@@ -11,7 +14,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 const router = useRouter()
-import { useStyleStateStore } from '@/stores/styleState';
+import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 
 function navigateToHome() {

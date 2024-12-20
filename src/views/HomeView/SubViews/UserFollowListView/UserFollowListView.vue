@@ -4,7 +4,7 @@
       <h1 class="title">关注列表</h1>
       <div v-for="item in followList" :key="item.id" class="actor-box">
         <div class="detail-container">
-            <img :src="item.avatar" alt="" />
+          <img :src="item.avatar" alt="" />
           <div class="title-container">
             <h1>{{ item.name }}</h1>
             <button class="removeFollowBtn" @click="subDeleteFollow(item.id)">取消关注</button>
@@ -22,7 +22,7 @@
 import { ref } from 'vue'
 import FilmList from '@/components/FilmList.vue'
 import { getFollow } from '@/api/user'
-import { ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus'
 
 const followList = ref([])
 function getFollowList() {
@@ -37,9 +37,9 @@ import { deleteFollow } from '@/api/user'
 function subDeleteFollow(id) {
   deleteFollow(id).then((res) => {
     if (res.code === 0) {
-                        ElMessage({
+      ElMessage({
         message: '取消成功',
-        type: 'success'
+        type: 'success',
       })
       getFollowList()
     }
@@ -67,7 +67,7 @@ function subDeleteFollow(id) {
     flex-direction: column;
     gap: 2rem;
 
-    .title{
+    .title {
       color: var(--primary-accent-color);
     }
 
@@ -123,7 +123,7 @@ function subDeleteFollow(id) {
           height: 7.5rem;
           border-radius: 0.5rem;
           overflow: hidden;
-            object-fit: cover;
+          object-fit: cover;
         }
       }
     }

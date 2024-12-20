@@ -1,8 +1,11 @@
 <template>
-  <div class="console-container" @click="changeThemeStyle()"
-   :style="{
-  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
-  }">
+  <div
+    class="console-container"
+    @click="changeThemeStyle()"
+    :style="{
+      color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
+    }"
+  >
     <span class="icon iconfont icon-console"></span>
   </div>
 </template>

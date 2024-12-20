@@ -1,7 +1,11 @@
 <template>
-  <div class="search-container" @click="showSearchBox()"  :style="{
-  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
-  }">
+  <div
+    class="search-container"
+    @click="showSearchBox()"
+    :style="{
+      color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
+    }"
+  >
     <span class="icon iconfont icon-search"></span>
   </div>
 </template>
@@ -30,7 +34,9 @@ function showSearchBox() {
   transition: all 0.3s;
   &:hover {
     background-color: var(--primary-accent-color);
-    color: var(--secondary-font-color);
+    .icon {
+      color: var(--secondary-font-color);
+    }
   }
 
   .icon {

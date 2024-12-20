@@ -1,15 +1,24 @@
 <template>
   <div
-  ref="tag"
+    ref="tag"
     @click="navigateToTagCorrelation($event)"
     :class="['tag-container', { border: props.isborder }]"
     :style="{ padding: `0rem ${fontSize / 2}rem` }"
   >
-    <p :style="{ fontSize: `${props.fontSize}rem` }">{{ '# ' + props.name }}</p>
+  <span class="icon iconfont icon-link"></span>
+    <p :style="{
+  fontSize: `${props.fontSize}rem`,
+    color: styleStore.NavigationState.isMovieDetail?'var(--always-white-color)':'var(--secondary-font-color)'
+    }">{{ props.name }}</p>
   </div>
 </template>
 
 <script setup>
+
+import { useStyleStateStore } from '@/stores/styleState';
+
+const styleStore = useStyleStateStore()
+
 const props = defineProps({
   id: {
     type: Number,
@@ -24,14 +33,9 @@ const props = defineProps({
     type: Number,
     default: 0.83,
   },
-  isHover: {
-    type: Boolean,
-    default: true
-  }
 })
 
 
-import { onMounted, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -46,14 +50,6 @@ function navigateToTagCorrelation(e) {
   })
 }
 
-const tagEle = useTemplateRef('tag')
-
-onMounted(() => {
-  if (!props.isHover) {
-    tagEle.value.removeEventListener('mouseenter', tagEle.value.onmouseenter);
-    tagEle.value.removeEventListener('mouseleave', tagEle.value.onmouseleave);
-  }
-})
 </script>
 
 <style lang="scss" scoped>
@@ -65,14 +61,18 @@ onMounted(() => {
   justify-content: center;
   gap: 2px;
 
-  &:hover {
-    p {
-      color: var(--primary-func-color);
-    }
+  .icon{
+    color: var(--tertiary-font-color);
+    opacity: .5;
+    transition: all 0.2s;
   }
+        &:hover {
+          .icon,p {
+            color: var(--primary-func-color)
+          }
+      }
 
   p {
-    color: var(--secondary-font-color);
     transition: all 0.2s;
     text-overflow: ellipsis;
     font-style: italic;

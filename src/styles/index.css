@@ -134,3 +134,14 @@ html::-webkit-scrollbar-thumb {
 .btn:active {
   transform: translateY(0);
 }
+
+@keyframes slideUp {
+  from {
+    transform: translateY(1.4rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

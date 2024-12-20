@@ -23,10 +23,11 @@ function navigateToTagsPage() {
   width: 45%;
   height: 100%;
   border-radius: 0.7rem;
-  background: linear-gradient(to right, #2453b2, #448cd5);
+  background: linear-gradient(to right, #1a51be, #448cd5);
   transition: all 1.2s;
   color: var(--always-white-color);
   overflow: hidden;
+  animation: slideUp .9s ease;
 
   &:hover {
     flex-shrink: 0;

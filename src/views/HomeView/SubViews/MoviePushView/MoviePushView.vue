@@ -55,7 +55,7 @@ getPushMovieList().then((data) => {
   overflow: hidden;
   .header-section {
     width: 100%;
-    height: 20.5rem;
+    height: 21.5rem;
     display: flex;
     gap: 1rem;
 
@@ -66,6 +66,7 @@ getPushMovieList().then((data) => {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
+      overflow: hidden;
 
       .tab-container {
         flex-shrink: 1;
@@ -91,12 +92,15 @@ getPushMovieList().then((data) => {
       width: 75%;
       display: flex;
       flex-direction: column;
+  animation: slideUp 1.1s ease;
+
     }
 
     .ranking-section {
       position: sticky;
       top: 5rem;
       width: 100%;
+  animation: slideUp 1.1s ease -.1s;
     }
   }
 }

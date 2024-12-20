@@ -1,13 +1,17 @@
 <template>
-  <div class="random-container" @click="navigateToRandomMovie()" :style="{
-  color: `${styleStore.NavigationState.isMovieDetail?styleStore.NavigationState.isScrollTop?'white':'var(--primary-font-color)':'var(--primary-font-color)'}`
-  }">
+  <div
+    class="random-container"
+    @click="navigateToRandomMovie()"
+    :style="{
+      color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
+    }"
+  >
     <span class="icon iconfont icon-random"></span>
   </div>
 </template>
 
 <script setup>
-import { useStyleStateStore } from '@/stores/styleState';
+import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 function navigateToRandomMovie() {}
 </script>
@@ -28,7 +32,9 @@ function navigateToRandomMovie() {}
   transition: all 0.3s;
   &:hover {
     background-color: var(--primary-accent-color);
-    color: var(--secondary-font-color);
+    .icon {
+      color: var(--secondary-font-color);
+    }
   }
 
   .icon {
