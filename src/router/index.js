@@ -2,6 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useStyleStateStore } from '@/stores/styleState'
 
 const router = createRouter({
+  scrollBehavior(to, from, savedPosition) {
+    // 始终滚动到顶部
+    return { top: 0 }
+  },
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
@@ -61,10 +65,6 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  next()
-  window.scrollTo(0, 0)
-})
 
 router.beforeResolve(async (to) => {
 
@@ -75,7 +75,7 @@ router.beforeResolve(async (to) => {
 })
 
 router.afterEach((to, from) => {
-  if (from.name === 'movieDetail') {
+  if (to.name !== 'movieDetail') {
     const styleStore = useStyleStateStore()
     styleStore.NavigationState.isMovieDetail = false
   }

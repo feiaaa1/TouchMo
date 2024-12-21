@@ -1,9 +1,9 @@
 /* 在线链接服务仅供平台体验和调试使用，平台不承诺服务的稳定性，企业客户需下载字体包自行发布使用并做好备份。 */
 @font-face {
   font-family: 'iconfont';  /* Project id 4781923 */
-  src: url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.woff2?t=1734721808192') format('woff2'),
-       url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.woff?t=1734721808192') format('woff'),
-       url('//at.alicdn.com/t/c/font_4781923_bakr5dfcbr5.ttf?t=1734721808192') format('truetype');
+  src: url('//at.alicdn.com/t/c/font_4781923_mts3d707qt9.woff2?t=1734799780554') format('woff2'),
+       url('//at.alicdn.com/t/c/font_4781923_mts3d707qt9.woff?t=1734799780554') format('woff'),
+       url('//at.alicdn.com/t/c/font_4781923_mts3d707qt9.ttf?t=1734799780554') format('truetype');
 }
 .iconfont {
   font-family: 'iconfont' !important;
@@ -74,7 +74,7 @@
 }
 
 .icon-more:before {
-  content: '\e643';
+  content: '\e636';
 }
 
 .icon-favorite:before {
@@ -127,4 +127,31 @@
 
 .icon-password:before {
   content: '\e638';
+}
+
+
+.icon-plus:before {
+  content: '\e64d';
+}
+
+.icon-dir:before {
+  content: '\e609';
+}
+
+.icon-description:before {
+  content: '\e702';
+}
+
+
+.icon-hot:before {
+  content: '\ec7f';
+}
+
+.icon-duration:before {
+  content: '\e61b';
+}
+
+
+.icon-back:before {
+  content: '\e837';
 }

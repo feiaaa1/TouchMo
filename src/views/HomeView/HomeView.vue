@@ -100,7 +100,7 @@ userStore.getUser()
     top: 0;
     left: 0;
     z-index: 10;
-    opacity: 0.4;
+    opacity: 0.6;
   }
 }
 

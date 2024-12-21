@@ -1,18 +1,18 @@
 <template>
   <div class="ranking-container">
-    <h2>热门推荐</h2>
-    <FilmList :filmList="movieList" :columns="1" />
+    <div class="title-container">
+      <span class="icon iconfont icon-hot"></span>
+      <h2>热门推荐</h2>
+    </div>
+    <FilmList :filmList="props.movieList" :columns="1" />
   </div>
 </template>
 
 <script setup>
 import FilmList from '@/components/FilmList.vue'
-import { getHotPushMovieList } from '@/api/movie'
-import { ref } from 'vue'
-const movieList = ref([])
-getHotPushMovieList().then((data) => {
-  console.log('hotPushMovieList===>', data)
-  movieList.value = data.data
+
+const props = defineProps( {
+  movieList: Array
 })
 </script>
 
@@ -23,9 +23,15 @@ getHotPushMovieList().then((data) => {
   background-color: var(--tertiary-bg-color);
   border-radius: 0.9rem;
   border: 1px solid var(--primary-border-color);
-  h2 {
-    color: var(--secondary-font-color);
+  .title-container{
+    display: flex;
+    align-items: center;
     margin-bottom: 1rem;
+    color: var(--primary-font-color);
+    gap: .5rem;
+    .icon{
+      font-size: 1.5rem;
+    }
   }
 }
 </style>

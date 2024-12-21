@@ -1,5 +1,5 @@
 <template>
-  <div class="welcom-container">
+  <div class="welcom-container" @click="navigateToRandomMovie()">
     <h1>
       欢迎访问<br />
       TouchMo
@@ -15,7 +15,31 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import {getPushMovieList} from '@/api/movie'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const movieList = ref([])
+getPushMovieList().then((res) => {
+  movieList.value = res.data
+})
+
+async function navigateToRandomMovie() {
+  //判断列表里的数据是否全都已经被跳转过，是重新获取电影列表
+
+
+  const randomIndex = Math.floor(Math.random() * movieList.value.length)
+  const randomMovie = movieList.value[randomIndex]
+
+  router.push({
+    name: 'movieDetail',
+    params: {
+      id: randomMovie.id,
+    },
+  })
+}
+</script>
 
 <style lang="scss" scoped>
 .welcom-container {

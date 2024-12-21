@@ -88,7 +88,6 @@ function submit() {
   padding: 2rem;
   border-radius: 0.8rem;
   color: var(--secondary-font-color);
-  background-color: var(--tertiary-bg-color);
   background: linear-gradient(to top,var(--secondary-bg-color),var(--tertiary-bg-color));
   display: flex;
   flex-direction: column;

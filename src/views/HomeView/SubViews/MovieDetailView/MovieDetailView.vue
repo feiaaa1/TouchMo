@@ -1,7 +1,8 @@
 <template>
-  <div class="detail-container">
+  <div v-if="isLoadComplete" class="detail-container">
     <header>
       <img :src="filmDetail.cover" alt="" />
+      <div class="header-main-container">
         <div class="tags-container">
           <TagComponent
           v-for="item in filmDetail.categories"
@@ -9,16 +10,27 @@
           :name="item.name"
           :id="item.id"
           :fontSize="1"
-          :isHover="false"
         />
       </div>
-      <h1>{{ '【' + filmDetail.language + '】' + filmDetail.title }}</h1>
-      <div class="releaseTime-container">
-        <span class="icon iconfont icon-calendar"></span>
-        <span>{{ '发表于 ' + filmDetail.releaseTime }}</span>
+
+        <h1>{{ '【' + filmDetail.language + '】' + filmDetail.title }}</h1>
+        <div class="releaseTime-container">
+          <span class="icon iconfont icon-calendar"></span>
+          <span>{{ '发表于 ' + filmDetail.releaseTime }}</span>
+        </div>
       </div>
     </header>
     <main>
+
+
+
+
+
+
+
+
+
+
       <div class="left-container">
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
@@ -26,17 +38,37 @@
         </div>
         <p>{{ filmDetail.description }}</p>
 
+
+
+
+
+
+
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影海报</h1>
         </div>
         <img :src="filmDetail.cover" alt="" />
 
+
+
+
+
+
+
+
+
+
+
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影PV</h1>
         </div>
         <video :src="filmSource" width="100%" height="auto" controls></video>
+
+
+
+
 
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
@@ -57,6 +89,10 @@
           </div>
         </div>
 
+
+
+
+
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>评个分吧</h1>
@@ -69,6 +105,37 @@
           :colors="colors"
           @change="handleRateMovie()"
         />
+
+
+
+
+          <div class="title-container">
+    <span class="icon iconfont icon-deloperator"></span>
+    <h1>点击收藏</h1>
+  </div>
+  <button v-if="true" @click="styleStore.showBox('isShowModifyFavoritesCard',filmDetail.id)"  class="source-btn">收藏</button>
+    <button v-else class="removeFollowBtn btn" @click="submitRemoveFollow()">已关注</button>
+
+
+
+
+
+
+  <div class="title-container">
+    <span class="icon iconfont icon-deloperator"></span>
+    <h1>电影资源</h1>
+  </div>
+  <button class="source-btn">点我获取</button>
+
+
+
+
+
+
+
+
+
+
 
         <div class="title-container">
           <span class="icon iconfont icon-comment"></span>
@@ -115,11 +182,6 @@
           </div>
         </div>
 
-        <div class="title-container">
-          <span class="icon iconfont icon-deloperator"></span>
-          <h1>电影资源</h1>
-        </div>
-        <button class="source-btn">点我获取</button>
       </div>
       <div class="right-container"></div>
     </main>
@@ -132,13 +194,16 @@ import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
 // import { ElRate,ElInput } from 'element-plus';
 import { useUserStore } from '@/stores/user'
+import { useStyleStateStore } from '@/stores/styleState'
 const userStore = useUserStore()
+const styleStore = useStyleStateStore()
 const route = useRoute()
 const router = useRouter()
+const isLoadComplete = ref(false)
 
 //获取电影详情信息逻辑
 import { getMovieDetail, getMovieSource } from '@/api/movie'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const filmDetail = ref({})
 const filmSource = ref('')
@@ -159,17 +224,25 @@ function navigateToActorProfile(data) {
     },
   })
 }
+
+
+
+
 //获取电影详情信息
-getMovieDetail(route.params.id).then((res) => {
-  filmDetail.value = res.data
-  console.log('getFilmDetail--->', filmDetail.value)
+function getMovie() {
+  getMovieDetail(route.params.id).then((res) => {
+    filmDetail.value = res.data
+    console.log('getFilmDetail--->', filmDetail.value)
+    isLoadComplete.value = true
 })
 
 //获取电影pv资源
 getMovieSource(route.params.id).then((res) => {
   filmSource.value = res.data
-  console.log(res.data)
 })
+
+}
+
 
 //获取电影所有评论
 import { getMovieComment } from '@/api/movie'
@@ -183,7 +256,16 @@ async function getComment() {
   console.log('getMovieComment--->', res)
   commentsList.value = res.data.record
 }
+
 getComment()
+getMovie()
+
+watch(() => route.params.id, () => {
+  getMovie()
+  getComment()
+})
+
+
 
 //评论区和评分逻辑
 import { subMovieComment } from '@/api/movie'
@@ -203,7 +285,6 @@ async function handleSubmitComment() {
       const res = await subMovieComment(params)
       console.log('submitComment--->', res)
     } else {
-      console.log(params)
       const res = await editMovieComment(params)
       console.log('editComment--->', res)
     }
@@ -264,8 +345,8 @@ async function handleRemoveStarComment(commentId) {
 
 // 实现评分逻辑，例如发送请求到后端保存评分
 import { rateMovie } from '@/api/user'
-const colors = ref(['#99A9BF', '#F7BA2A', '#FF9900'])
-const rateVal = ref('')
+const colors = ref(['var(--primary-border-color)', 'var(--primary-accent-color)', 'var(--secondary-accent-color)'])
+const rateVal = ref(0)
 async function handleRateMovie() {
   const params = {
     id: route.params.id,
@@ -295,7 +376,7 @@ async function handleRateMovie() {
   header {
     position: relative;
     width: 100%;
-    height: 20rem;
+    height: 30rem;
     overflow: hidden;
     display: flex;
     align-items: flex-start;
@@ -314,21 +395,29 @@ async function handleRateMovie() {
       transform: scale(1.4);
     }
 
+    .header-main-container{
+      display: flex;
+      flex-direction: column;
+      gap: .7rem;
+      animation: slideUp 1.1s ease -.2s;
       h1 {
         transform: translateX(-1.5rem);
-        font-size: 3rem;
+        font-size: 3.5rem;
       }
 
       .tags-container {
         display: flex;
         align-items: center;
         justify-content: start;
+        opacity: .9;
       }
 
       .releaseTime-container {
+        opacity: .7;
         display: flex;
         gap: 5px;
       }
+    }
     }
 
 
@@ -347,6 +436,7 @@ async function handleRateMovie() {
       padding: 2.3rem;
       border: 1px solid var(--primary-border-color);
       background-color: var(--tertiary-bg-color);
+      animation: slideUp 1.1s ease -.1s;
 
       video {
         border-radius: 0.7rem;
@@ -360,8 +450,11 @@ async function handleRateMovie() {
         display: flex;
         align-items: center;
         gap: 1rem;
-        margin-top: 2rem;
-        margin-bottom: 0.8rem;
+        margin-top: 3rem;
+        margin-bottom: 0.6rem;
+        &:first-child {
+          margin-top: 1rem;
+        }
         .icon {
           font-size: 1.2rem;
         }
@@ -532,6 +625,7 @@ async function handleRateMovie() {
         gap: 2rem;
         overflow-y: hidden;
         cursor: pointer;
+        padding: 1rem 0;
 
         &::-webkit-scrollbar {
           height: 10px;
@@ -628,6 +722,7 @@ async function handleRateMovie() {
       border-radius: 0.8rem;
       height: 30rem;
       background-color: var(--tertiary-bg-color);
+      animation: slideUp 1.1s ease ;
     }
   }
 }

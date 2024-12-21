@@ -13,7 +13,7 @@ export function canvasStar() {
   canvas.height = container.offsetHeight
 
   // 星星数量
-  const numStars = 500
+  const numStars = 300
 
   // 星星对象数组
   const stars = []

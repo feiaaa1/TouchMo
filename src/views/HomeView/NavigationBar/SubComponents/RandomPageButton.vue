@@ -13,7 +13,32 @@
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
-function navigateToRandomMovie() {}
+
+
+
+
+
+import {getPushMovieList} from '@/api/movie'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const movieList = ref([])
+getPushMovieList().then((res) => {
+  movieList.value = res.data
+})
+
+async function navigateToRandomMovie() {
+
+  const randomIndex = Math.floor(Math.random() * movieList.value.length)
+  const randomMovie = movieList.value[randomIndex]
+
+  router.push({
+    name: 'movieDetail',
+    params: {
+      id: randomMovie.id,
+    },
+  })
+}
 </script>
 
 <style lang="scss" scoped>

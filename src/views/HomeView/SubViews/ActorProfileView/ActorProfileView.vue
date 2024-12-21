@@ -5,7 +5,10 @@
         <img :src="actorProfile.avatar" alt="" />
         <div class="title-container">
           <h1>{{ actorProfile.name }}</h1>
-          <button class="followBtn btn" @click="submitFollow()">关注</button>
+          <button v-if="!actorProfile.isFollow" class="followBtn btn" @click="submitFollow()">
+            关注
+          </button>
+          <button v-else class="removeFollowBtn btn" @click="submitRemoveFollow()">已关注</button>
         </div>
       </div>
       <h1>参演作品</h1>
@@ -23,29 +26,62 @@ import FilmList from '@/components/FilmList.vue'
 import { ElMessage } from 'element-plus'
 const route = useRoute()
 
-import { follow } from '@/api/user'
-function submitFollow() {
-  follow(route.params.actorId).then((res) => {
-    if (res.code === 0) {
-      ElMessage({
-        message: '关注成功',
-        type: 'success',
-      })
-    }
-    if (res.code === 1) {
-      ElMessage({
-        message: '已经关注了哟~',
-        type: 'warning',
-      })
-    }
-  })
-}
-
 const actorProfile = ref([])
 
-getActorProfile(route.params.actorId).then((res) => {
-  actorProfile.value = res.data
-})
+async function getInfo() {
+  try {
+    const res = await getActorProfile(route.params.actorId)
+    actorProfile.value = res.data
+    console.log('actorProfile-->', actorProfile.value)
+  } catch (error) {
+    ElMessage({
+      message: '获取演员信息失败' + error,
+      type: 'error',
+    })
+  }
+}
+
+getInfo()
+
+//添加关注逻辑
+import { follow } from '@/api/user'
+async function submitFollow() {
+  try {
+    const res = await follow(route.params.actorId)
+    console.log('followRes-->', res)
+    ElMessage({
+      message: '关注成功',
+      type: 'success',
+    })
+  } catch (error) {
+    ElMessage({
+      message: '关注失败' + error,
+      type: 'error',
+    })
+  } finally {
+    getInfo()
+  }
+}
+
+//取消关注逻辑
+import { deleteFollow } from '@/api/user'
+async function submitRemoveFollow() {
+  try {
+    const res = await deleteFollow(route.params.actorId)
+    console.log('deleteFollowRes-->', res)
+    ElMessage({
+      message: '取消关注成功',
+      type: 'success',
+    })
+  } catch (error) {
+    ElMessage({
+      message: '取消关注失败' + error,
+      type: 'error',
+    })
+  } finally {
+    getInfo()
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -88,6 +124,11 @@ getActorProfile(route.params.actorId).then((res) => {
             color: var(--primary-accent-color);
             border: 0.125em solid var(--primary-accent-color);
           }
+        }
+        .removeFollowBtn {
+          border: 0.125em solid var(--primary-font-color);
+          color: var(--primary-font-color);
+          padding: 0.2rem 1rem;
         }
       }
       img {

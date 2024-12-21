@@ -1,5 +1,5 @@
 <template>
-  <div class="push-container">
+  <div v-if="isLoadComplete" class="push-container">
     <div class="header-section">
       <div class="header-left">
         <WelcomCard />
@@ -16,11 +16,11 @@
 
     <div class="main-content">
       <div class="film-list-section">
-        <FilmList :filmList="movieList" :columns="2" />
+        <FilmList :filmList="movieList" :columns="2" :isShowRate="true" :isShowDuration="true" />
       </div>
-      <div class="ranking-section">
-        <RankingBox />
-      </div>
+        <div class="ranking-section">
+          <RankingBox :movieList="rankingMovieList" />
+        </div>
     </div>
   </div>
 </template>
@@ -36,15 +36,24 @@ import RankingBox from './SubComponents/RankingBox.vue'
 import { ref } from 'vue'
 import { getPushMovieList } from '@/api/movie'
 const movieList = ref([])
+const isLoadComplete = ref(false)
 getPushMovieList().then((data) => {
   console.log(data)
   movieList.value = data.data
+})
+
+import { getHotPushMovieList } from '@/api/movie'
+const rankingMovieList = ref([])
+getHotPushMovieList().then((data) => {
+  console.log('hotPushMovieList===>', data)
+  rankingMovieList.value = data.data
+  isLoadComplete.value = true
 })
 </script>
 
 <style lang="scss" scoped>
 .push-container {
-  color: #fffb1c;
+  color: var(--primary-font-color);
   position: relative;
   z-index: 1;
   width: 100%;
@@ -97,8 +106,8 @@ getPushMovieList().then((data) => {
     }
 
     .ranking-section {
-      position: sticky;
-      top: 5rem;
+        position: sticky;
+  top: 5rem;
       width: 100%;
   animation: slideUp 1.1s ease -.1s;
     }

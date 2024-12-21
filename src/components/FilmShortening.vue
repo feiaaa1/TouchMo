@@ -4,9 +4,22 @@
       <img :src="props.cover" alt="" />
     </div>
     <div class="detail-container">
-      <p>{{ props.area }}</p>
-      <h1>{{ '【' + props.language + '】 ' + props.title }}</h1>
-      <div class="tags-views-container">
+      <div  class="detail-container-header">
+        <h1>{{ '【' + props.language + '】 ' + props.title }}</h1>
+      </div>
+      <div class="detail-container-main" v-if="props.isShowRate">
+        <el-rate
+        v-if="props.score !== 0"
+        :model-value="props.score/2"
+        disabled
+          show-score
+          text-color="var(--primary-accent-color)"
+          :scoreTemplate="`${props.score.toFixed(1)}`"
+          style="font-weight: 600"
+        />
+        <p v-else>暂无用户评分</p>
+      </div>
+      <div class="detail-container-footer">
         <div ref="tag-list" class="tags-container">
           <TagComponent
             v-for="item in props.categories"
@@ -15,21 +28,20 @@
             :id="item.id"
           />
         </div>
-        <div class="views-container">
+        <div class="duration-container" v-if="props.isShowDuration">
+          <span  class="icon iconfont icon-duration"></span>
+          <p>{{props.duration}}分钟</p>
+        </div>
+          <div class="more-container" >
           <span
-            @click="showModifyFavoritesCard($event)"
-            class="icon icon-favorite iconfont"
-            v-if="!isMore"
+            @click="submitDeleteFavorites($event)"
+            class="icon icon-delete iconfont"
+            v-if="props.isMore"
           ></span>
           <span
             @click="showModifyFavoritesCard($event)"
             class="icon icon-more iconfont"
-            v-if="isMore"
-          ></span>
-          <span
-            @click="submitDeleteFavorites($event)"
-            class="icon icon-delete iconfont"
-            v-if="isMore"
+            v-if="props.isMore"
           ></span>
         </div>
       </div>
@@ -49,13 +61,22 @@ const props = defineProps({
   categories: Object,
   viewNum: Number,
   id: Number,
+  score: Number,
+  duration: Number,
   isMore: {
+    type: Boolean,
+    default: false,
+  },
+  isShowRate: {
+    type: Boolean,
+    default: false,
+  },
+  isShowDuration: {
     type: Boolean,
     default: false,
   },
 })
 
-console.log()
 const router = useRouter()
 
 import { useStyleStateStore } from '@/stores/styleState'
@@ -99,10 +120,11 @@ function submitDeleteFavorites(e) {
   transition: all 0.5s;
   display: flex;
   flex-direction: column;
+
   &:hover {
     border: 1px solid var(--primary-accent-color);
 
-    .detail-container h1 {
+    .detail-container .detail-container-header h1 {
       color: var(--primary-accent-color);
     }
 
@@ -127,6 +149,7 @@ function submitDeleteFavorites(e) {
       background-color: #2b2b2b50;
     }
     img {
+      width: 100vmin;
       position: absolute;
       top: 50%;
       left: 50%;
@@ -138,27 +161,41 @@ function submitDeleteFavorites(e) {
   .detail-container {
     height: 100%;
     width: 100%;
-    padding: 4% 6%;
+    padding: 2% 6%;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: space-between;
+    justify-content: center;
 
-    p {
-      color: var(--primary-font-color);
-      font-size: 2%;
-      font-style: italic;
-      opacity: .6;
+    .detail-container-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      h1 {
+        width: 100%;
+        color: var(--secondary-font-color);
+        font-size: 1.2rem;
+        transition: all 0.5s;
+        margin-left: -0.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
-    h1 {
-      color: var(--secondary-font-color);
-      font-size: 1.2rem;
-      transition: all 0.5s;
-      margin-left: -.5rem;
+    .detail-container-main {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      p{
+        margin: .4rem 0;
+        color: var(--primary-font-color);
+      }
     }
 
-    .tags-views-container {
+    .detail-container-footer {
       width: 100%;
       display: flex;
       align-items: center;
@@ -168,16 +205,32 @@ function submitDeleteFavorites(e) {
         display: flex;
         width: 80%;
         overflow: hidden;
-      margin-left: -.4rem;
-      opacity: .9;
+        margin-left: -0.4rem;
+        opacity: 0.9;
 
         .hidden {
           display: none !important;
         }
       }
 
-      .views-container {
+      .duration-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         color: var(--primary-font-color);
+        opacity: .8;
+        font-size: .9rem;
+        margin-left: 0.5rem;
+        gap: .5rem;
+        transform: translateX(1rem);
+        .icon {
+          transform: scale(1);
+        }
+      }
+
+      .more-container {
+        color: var(--primary-font-color);
+        transform: translateY(1rem);
 
         .icon {
           display: inline-block;
@@ -187,11 +240,11 @@ function submitDeleteFavorites(e) {
           &:hover {
             color: var(--primary-accent-color);
           }
-
-          .icon-delete {
-            &:hover {
-              color: #ff0000;
-            }
+        }
+        .icon-delete {
+          margin-right: 1rem;
+          &:hover {
+            color: var(--secondary-func-color);
           }
         }
       }

@@ -9,7 +9,11 @@
       :language="item.language"
       :categories="item.categories"
       :id="item.id"
+      :score="item.score"
+      :duration="item.duration"
       :isMore="props.isMore"
+      :isShowRate="props.isShowRate"
+      :isShowDuration="props.isShowDuration"
     />
   </div>
 </template>
@@ -27,6 +31,22 @@ const props = defineProps({
     type: Object,
   },
   isMore: {
+    type: Boolean,
+    default: false,
+  },
+    isFavorite: {
+    type: Boolean,
+    default: false,
+  },
+  score: {
+    type: Number,
+    default: 0,
+  },
+  isShowRate: {
+    type: Boolean,
+    default: false,
+  },
+  isShowDuration: {
     type: Boolean,
     default: false,
   },
