@@ -1,5 +1,5 @@
 <template>
-  <div class="actor-container">
+  <div v-if="isLoadingComplete" class="actor-container">
     <div class="left-container">
       <div class="detail-container">
         <img :src="actorProfile.avatar" alt="" />
@@ -26,6 +26,7 @@ import FilmList from '@/components/FilmList.vue'
 import { ElMessage } from 'element-plus'
 const route = useRoute()
 
+const isLoadingComplete = ref(false)
 const actorProfile = ref([])
 
 async function getInfo() {
@@ -33,6 +34,7 @@ async function getInfo() {
     const res = await getActorProfile(route.params.actorId)
     actorProfile.value = res.data
     console.log('actorProfile-->', actorProfile.value)
+    isLoadingComplete.value = true
   } catch (error) {
     ElMessage({
       message: '获取演员信息失败' + error,
@@ -92,6 +94,7 @@ async function submitRemoveFollow() {
   display: flex;
   gap: 1rem;
   color: var(--secondary-font-color);
+  animation: slideUp 0.5s ease;
   .left-container {
     width: 75%;
     padding: 2rem;

@@ -62,6 +62,7 @@ const styleObject = reactive({
   width: 100%;
   display: grid;
   gap: 1rem;
+  animation: slideUp 0.5s ease;
 }
 
 @media (max-width: 1024px) {

@@ -62,10 +62,7 @@
       </main>
     </div>
     <div class="right-container">
-      <template v-if="curDir">
-        <h2>{{curDir.name}}</h2>
-        <p>{{curDir.description}}</p>
-      </template>
+
     </div>
   </div>
 </template>
@@ -233,6 +230,7 @@ function subModifyFavorites(e, favoritesId) {
     border-radius: 0.8rem;
     background-color: var(--tertiary-bg-color);
     border: 1px solid var(--primary-border-color);
+    padding: 1rem 1.5rem;
   }
 }
 

@@ -51,6 +51,7 @@ userStore.getUser()
   --always-entire-white-color: #ffffff;
   --always-white-color: #f3f3f3;
   --always-black-color: #111014;
+  --always-yellow-color: #f2c66d;
   --primary-bg-color: #000000;
   --secondary-bg-color: #111014;
   --tertiary-bg-color: #1d1e22;
@@ -60,11 +61,12 @@ userStore.getUser()
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;
   --quaternary-font-color: #e3e3e3;
-  --primary-accent-color: #f2c66d;
+  --primary-accent-color: #e9b348;
   --secondary-accent-color: #d5a62f;
-  --primary-func-color: #2d6cf5;
+  --primary-func-color: #4759e6;
   --tertiary-func-color: #4ce89a;
   --secondary-func-color: #ce3e3e;
+  --quaternary-func-color: #1c52c6;
   background-color: var(--secondary-bg-color);
 }
 
@@ -72,6 +74,7 @@ userStore.getUser()
   --always-entire-white-color: #ffffff;
   --always-white-color: #fafafa;
   --always-black-color: #111014;
+  --always-yellow-color: #f2c66d;
   --primary-bg-color: #ffffff;
   --secondary-bg-color: #f5f5f5;
   --tertiary-bg-color: #fafafa;
@@ -81,10 +84,11 @@ userStore.getUser()
   --secondary-font-color: #313131;
   --tertiary-font-color: #b8b8b8;
   --quaternary-font-color: #e3e3e3;
-  --primary-accent-color: #2d6cf5;
+  --primary-accent-color: #4759e6;
   --secondary-accent-color: #2f56d5;
   --primary-func-color: #e9bb5f;
   --secondary-func-color: #ce3e3e;
+  --quaternary-func-color: #d5a62f;
   background-color: var(--secondary-bg-color);
 }
 

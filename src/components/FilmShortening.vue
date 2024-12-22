@@ -1,7 +1,7 @@
 <template>
   <div class="shorteing-container" ref="container" @click="navigateToMovieDetail(props.id)">
     <div class="img-container">
-      <img :src="props.cover" alt="" />
+      <img :class="{isShowOpacity: isLoadImgComplete}" ref="img" :src="imgSrc" alt="" />
     </div>
     <div class="detail-container">
       <div  class="detail-container-header">
@@ -13,7 +13,7 @@
         :model-value="props.score/2"
         disabled
           show-score
-          text-color="var(--primary-accent-color)"
+          text-color="var(--always-yellow-color)"
           :scoreTemplate="`${props.score.toFixed(1)}`"
           style="font-weight: 600"
         />
@@ -52,6 +52,7 @@
 <script setup>
 import TagComponent from './TagComponent.vue'
 import { useRouter } from 'vue-router'
+import { onMounted,ref, useTemplateRef } from 'vue';
 
 const props = defineProps({
   cover: String,
@@ -76,6 +77,33 @@ const props = defineProps({
     default: false,
   },
 })
+
+
+const isLoadImgComplete = ref(false)
+const imgSrc = ref('')
+const img = useTemplateRef('img')
+
+//实现图片懒加载功能
+onMounted(() => {
+const observer = new IntersectionObserver(changes => {
+  //changes 是被观察的元素集合
+  for(let i = 0, len = changes.length; i < len; i++) {
+    let change = changes[i];
+    // 通过这个属性判断是否在视口中
+    if(change.isIntersecting) {
+      const imgElement = change.target;
+      imgSrc.value = props.cover;
+      isLoadImgComplete.value = true;
+      observer.unobserve(imgElement);
+    }
+  }
+
+})
+observer.observe(img.value)
+})
+
+
+
 
 const router = useRouter()
 
@@ -109,6 +137,9 @@ function submitDeleteFavorites(e) {
 </script>
 
 <style lang="scss" scoped>
+.isShowOpacity {
+  opacity: 1 !important;
+}
 .shorteing-container {
   cursor: pointer;
   width: 100%;
@@ -155,6 +186,7 @@ function submitDeleteFavorites(e) {
       left: 50%;
       transform: translate(-50%, -50%);
       transition: all 0.5s;
+      opacity: 0;
     }
   }
 

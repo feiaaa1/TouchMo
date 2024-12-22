@@ -2,11 +2,11 @@
   <div
     ref="tag"
     @click="navigateToTagCorrelation($event)"
-    :class="['tag-container', { border: props.isborder }, {tagDisplayStyle: props.isShowFilmNum}]"
+    :class="['tag-container', { border: props.isborder }, {tagDisplayStyle: props.isShowFilmNum},{moviePushStyle: route.name === 'home'}]"
     :style="{ padding: `${fontSize/5}rem ${fontSize / 3}rem` }"
   >
-  <span class="icon iconfont icon-link"></span>
-    <p :style="{
+  <span v-if="props.isLinkIcon" class="icon iconfont icon-link"></span>
+    <p class="tagName" :style="{
   fontSize: `${props.fontSize}rem`,
     color: styleStore.NavigationState.isMovieDetail?'var(--always-white-color)':'var(--secondary-font-color)'
     }">{{ props.name }}</p>
@@ -15,10 +15,12 @@
 </template>
 
 <script setup>
-
 import { useStyleStateStore } from '@/stores/styleState';
 
 const styleStore = useStyleStateStore()
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
 
 const props = defineProps({
   id: {
@@ -44,6 +46,10 @@ const props = defineProps({
   isShowFilmNum: {
     type: Boolean,
     default: false,
+  },
+  isLinkIcon: {
+    type: Boolean,
+    default: true,
   },
 })
 
@@ -73,6 +79,7 @@ function navigateToTagCorrelation(e) {
   justify-content: center;
   gap: 2px;
   padding: 0.5rem 1rem;
+  
   .icon{
     color: var(--tertiary-font-color);
     opacity: .5;
@@ -109,10 +116,30 @@ function navigateToTagCorrelation(e) {
   &:hover {
     transform: scale(1.05);
     background-color: var(--primary-accent-color);
-
+    .tagName{
+      color: #f7f7f7 !important;
+    }
     .filmNum{
       color: var(--primary-accent-color);
       background-color: var(--tertiary-bg-color);
+    }
+  }
+}
+
+.moviePushStyle {
+  transition: all 0.4s;
+  border-radius: .5rem !important;
+  padding: .1rem .8rem !important;
+  .tagName {
+    font-size: 1.1rem !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    color: var(--primary-font-color) !important;
+  }
+  &:hover {
+    background-color: var(--primary-accent-color);
+    .tagName{
+      color: #f7f7f7 !important;
     }
   }
 }

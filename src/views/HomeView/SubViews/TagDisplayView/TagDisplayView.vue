@@ -34,13 +34,15 @@ getAllTagsList().then((res) => {
 <style lang="scss" scoped>
 .tags-container {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   padding: 3rem;
   display: flex;
   gap: 1rem;
   color: var(--secondary-font-color);
+  animation: slideUp 1.2s ease;
   .left-container {
     width: 75%;
+    height: fit-content;
     padding: 2rem;
     flex-shrink: 0;
     min-height: 20rem;
@@ -56,6 +58,7 @@ getAllTagsList().then((res) => {
       align-items: center;
       justify-content: center;
       gap: 1rem;
+      animation: slideUp 1.2s ease;
     }
   }
 
@@ -67,6 +70,7 @@ getAllTagsList().then((res) => {
     border-radius: 0.8rem;
     background-color: var(--tertiary-bg-color);
     border: 1px solid var(--primary-border-color);
+
   }
 }
 </style>

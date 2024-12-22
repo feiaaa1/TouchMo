@@ -4,13 +4,16 @@
       <header>
         <div class="title-container">
           <label for="search" class="title">搜索</label>
-          <span @click="closeBox" class="icon iconfont icon-close"></span>
+          <span @click="styleStore.closeBox()" class="icon iconfont icon-close"></span>
         </div>
-        <input id="search" @input="debouncedGetFilmArr" type="text" v-model="input" />
+        <input placeholder="搜索文章" id="search" @input="debouncedGetFilmArr" type="text" v-model="input" />
         <div v-show="isShowHistory" class="history-list">
           <div class="history-header">
             <p class="hitory-title">搜索历史</p>
+            <div class="deleteHistory-container">
+              <span class="icon iconfont icon-delete"></span>
             <p class="deleteHistoryBtn" @click="handleDeleteHistory()">清空历史记录</p>
+          </div>
           </div>
           <div class="history-main">
             <p
@@ -26,8 +29,10 @@
       </header>
       <main>
         <p v-show="isLoading">Loading...</p>
-        <FilmList v-if="filmList" :film-list="filmList" :columns="1" />
-      </main>
+        <template v-if="filmList.length">
+          <FilmList :film-list="filmList" :columns="1" />
+        </template>
+        </main>
     </div>
   </transition>
 </template>
@@ -35,7 +40,7 @@
 <script setup>
 import FilmList from './FilmList.vue'
 import { useStyleStateStore } from '@/stores/styleState'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 const styleStore = useStyleStateStore()
 
 //是否显示搜索历史
@@ -100,6 +105,13 @@ async function getFilmArr() {
 const debouncedGetFilmArr = debounce(getFilmArr, 400) // 延迟500毫秒
 
 //关闭逻辑 关闭后 1.清空电影list 2.清空输入框内容
+
+watch(styleStore.showBoxList, (newVal ) => {
+  if (!newVal.isShowSearchBox) {
+    closeBox()
+  }
+})
+
 function closeBox() {
   input.value = ''
   filmList.value = []
@@ -109,7 +121,6 @@ function closeBox() {
     console.log('getHistoryList--->', res)
     historyList.value = res.data
   })
-  styleStore.closeBox()
 }
 </script>
 
@@ -119,7 +130,7 @@ function closeBox() {
   z-index: 25;
   left: 50%;
   top: 5rem;
-  width: 37rem;
+  width: 30rem;
   transform: translateX(-50%);
   max-height: 85vh;
   border-radius: 0.8rem;
@@ -159,12 +170,12 @@ function closeBox() {
       width: 100%;
       background-color: var(--secondary-bg-color);
       border-radius: 100rem;
-      border: 1px solid var(--primary-border-color);
+      border: 2px solid var(--primary-border-color);
       padding: 0.2rem 0.5rem;
       color: var(--primary-font-color);
 
       &:focus {
-        border: 1px solid var(--primary-func-color);
+        border: 2px solid var(--primary-func-color);
       }
     }
 
@@ -183,10 +194,14 @@ function closeBox() {
         align-items: center;
         justify-content: space-between;
 
-        .deleteHistoryBtn {
+        .deleteHistory-container{
+          display: flex;
+          gap: .2rem;
           cursor: pointer;
+          transition: color 0.2s;
+
           &:hover {
-            color: var(--primary-accent-color);
+            color: var(--quaternary-func-color);
           }
         }
       }
@@ -201,10 +216,12 @@ function closeBox() {
         .historyItem {
           cursor: pointer;
           flex-shrink: 0;
-          border-radius: 0.3rem;
+          border-radius: 0.5rem;
+          opacity: .7;
           padding: 0.2rem 0.5rem;
-          color: var(--primary-font-color);
-          border: 1px solid var(--primary-font-color);
+          color: var(--tertiary-font-color);
+          border: 1px solid var(--tertiary-font-color);
+          transition: all 0.2s;
           &:hover {
             color: var(--primary-func-color);
             border: 1px solid var(--primary-func-color);
@@ -216,6 +233,7 @@ function closeBox() {
 
   main {
     overflow: scroll;
+    height: fit-content;
     p {
       color: var(--secondary-font-color);
     }

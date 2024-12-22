@@ -1,10 +1,12 @@
 <template>
   <div class="welcom-container" @click="navigateToRandomMovie()">
-    <h1>
-      欢迎访问<br />
-      TouchMo
-    </h1>
-    <p>免费 高质量</p>
+    <div class="header-container">
+      <h1>
+        欢迎访问<br />
+        TouchMo
+      </h1>
+      <p>免费 高质量</p>
+    </div>
     <div class="inner-card">
       <span class="iconfont icon icon-plane"></span>
       <div class="content-box">
@@ -54,7 +56,7 @@ async function navigateToRandomMovie() {
   border-radius: 0.7rem;
   color: var(--primary-font-color);
   overflow: hidden;
-  animation: slideUp 1.1s ease -0.2s;
+  animation: slideUp 1.3s ease -0.4s;
 
   &:hover {
     .inner-card {
@@ -63,16 +65,19 @@ async function navigateToRandomMovie() {
       color: var(--always-white-color);
     }
   }
-  h1 {
-    font-size: 2.3rem;
-    line-height: 1.3;
-    animation-delay: 0.2s;
-  }
-  p {
-    font-weight: 300;
-    font-size: smaller;
-    margin-top: 1rem;
-  }
+  .header-container {
+    animation: slideUp 1.1s ease;
+    h1 {
+      font-size: 2.3rem;
+      line-height: 1.3;
+      animation-delay: 0.2s;
+    }
+    p {
+      font-weight: 300;
+      font-size: smaller;
+      margin-top: 1rem;
+    }
+    }
   .inner-card {
     position: absolute;
     top: 50%;

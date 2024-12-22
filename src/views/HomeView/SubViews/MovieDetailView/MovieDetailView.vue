@@ -284,13 +284,24 @@ async function handleSubmitComment() {
     if (!isEdit.value) {
       const res = await subMovieComment(params)
       console.log('submitComment--->', res)
+      ElMessage({
+        message: '评论成功',
+        type: 'success',
+      })
     } else {
       const res = await editMovieComment(params)
       console.log('editComment--->', res)
+            ElMessage({
+        message: '修改成功',
+        type: 'success',
+      })
     }
     getComment()
   } catch (error) {
-    console.log('评论提交失败', error)
+    ElMessage({
+      message: '评论失败' + error,
+      type: 'error',
+    })
   } finally {
     commentInput.value = ''
     isEdit.value = false
@@ -299,12 +310,13 @@ async function handleSubmitComment() {
 }
 
 //修改用户评论
-// import { scrollToElementCenter } from '@/utils/scrollToElement';
+import { scrollToElementCenter } from '@/utils/scrollToElement';
 async function handleEditComment(content, commentId) {
   commentInput.value = content
   isEdit.value = true
   currentCommentId.value = commentId
-  // scrollToElementCenter('comment-textarea')
+  document.getElementById('comment-textarea').focus()
+  scrollToElementCenter('comment-textarea')
 }
 //删除用户评论
 import { deleteMovieComment } from '@/api/movie'
@@ -632,7 +644,7 @@ async function handleRateMovie() {
         }
         &::-webkit-scrollbar-thumb {
           border-radius: 10px;
-          background: var(--secondary-accent-color);
+          background: var(--primary-border-color);
         }
         &::-webkit-scrollbar-track {
           border-radius: 10px;

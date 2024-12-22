@@ -188,6 +188,7 @@ async function handleLogOut() {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        transition: color 0.3s;
         &:hover {
           color: var(--primary-accent-color);
         }

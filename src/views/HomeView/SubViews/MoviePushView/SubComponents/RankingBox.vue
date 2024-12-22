@@ -18,6 +18,8 @@ const props = defineProps( {
 
 <style lang="scss" scoped>
 .ranking-container {
+  position: sticky;
+  top: 5rem;
   width: 100%;
   padding: 1rem 2rem;
   background-color: var(--tertiary-bg-color);

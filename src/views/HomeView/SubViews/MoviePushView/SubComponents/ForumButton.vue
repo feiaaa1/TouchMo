@@ -18,7 +18,6 @@
   transition: all 1.2s;
   color: var(--always-white-color);
   overflow: hidden;
-  animation: slideUp .9s ease;
 
   &:hover {
     flex-shrink: 0;

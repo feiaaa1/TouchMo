@@ -8,7 +8,7 @@ export function scrollToElementCenter(elementId) {
     const windowHeight = window.innerHeight
 
     // 计算滚动位置，使得元素位于页面中间
-    const scrollToPosition = rect.top + rect.height / 2 - windowHeight / 2
+    const scrollToPosition = element.offsetTop - (windowHeight - rect.height) / 2
 
     // 平滑滚动到指定位置
     window.scrollTo({

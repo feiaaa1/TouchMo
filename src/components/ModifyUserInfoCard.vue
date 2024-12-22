@@ -41,7 +41,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
@@ -56,10 +56,16 @@ const email = ref('')
 const emailError = ref('')
 const isSubmitting = ref(false)
 
-name.value = userStore.userInfo.name
-sex.value = userStore.userInfo.sex
-email.value = userStore.userInfo.email
-avatarUrl.value = userStore.userInfo.avatar
+watch(styleStore.showBoxList, (newVal) => {
+  if (newVal.isShowModifyUserInfoCard) {
+    name.value = userStore.userInfo.name
+    sex.value = userStore.userInfo.sex
+    email.value = userStore.userInfo.email
+    avatarUrl.value = userStore.userInfo.avatar
+  }
+}
+)
+
 
 // 处理头像上传
 const handleAvatarChange = (event) => {

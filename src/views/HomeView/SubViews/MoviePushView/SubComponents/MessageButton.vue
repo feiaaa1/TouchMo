@@ -18,7 +18,6 @@
   background: linear-gradient(to right, #1e9b65, #499f8c);
   transition: all 1.2s;
   color: var(--always-white-color);
-  animation: slideUp .9s ease;
 
   &:hover {
     flex-shrink: 0;

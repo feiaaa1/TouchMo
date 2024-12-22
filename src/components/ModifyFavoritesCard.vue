@@ -36,10 +36,12 @@
         >
           <div class="input-container">
             <span class="icon iconfont icon-dir"></span>
+                        <label for="description">名称</label>
             <input placeholder="添加收藏夹名字" v-model="name" id="name" type="text" />
           </div>
           <div class="input-container">
             <span class="icon iconfont icon-description"></span>
+            <label for="description">描述(可选)</label>
             <input
               placeholder="添加收藏夹描述(可选)"
               v-model="description"
@@ -118,6 +120,8 @@ function handleFavorite() {
   }
 }
 
+
+
 watch(styleStore.showBoxList, (newVal) => {
   if (!newVal.isShowModifyFavoritesCard) {
   (name.value = ''), (description.value = null)
@@ -131,6 +135,9 @@ watch(styleStore.showBoxList, (newVal) => {
     })
   }
 })
+
+
+
 
 //处理电影进入指定收藏夹（添加或移动）
 import { addMovieToFavorites } from '@/api/user'
@@ -250,11 +257,14 @@ async function handleMovie(favoritesId) {
       .input-container {
         width: 100%;
         position: relative;
+        label {
+          font-size: 1.2rem;
+      }
         .icon {
           position: absolute;
           top: 50%;
           left: 1rem;
-          transform: translateY(-40%);
+          transform: translateY(20%);
           color: var(--primary-accent-color);
         }
         input {
@@ -263,12 +273,12 @@ async function handleMovie(favoritesId) {
           outline: none;
           width: 100%;
           color: var(--primary-font-color);
-          margin-top: 0.5rem;
           background-color: var(--secondary-bg-color);
           border-radius: 0.6rem;
           padding: 0.6rem 1rem;
           padding-left: 2.5rem;
           font-style: italic;
+          margin-top: 0.5rem;
           &:focus {
             border: 1px solid var(--primary-accent-color);
           }

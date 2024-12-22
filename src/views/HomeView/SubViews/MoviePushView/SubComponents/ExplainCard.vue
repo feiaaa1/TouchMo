@@ -25,7 +25,6 @@
   background-image: url('https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg');
   background-position: center;
   background-clip: cover;
-  animation: slideUp 1.1s ease -0.1s;
 
   &::before {
     content: '';

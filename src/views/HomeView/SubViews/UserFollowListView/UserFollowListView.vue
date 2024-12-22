@@ -3,15 +3,13 @@
     <div class="left-container">
       <h1 class="title">关注列表</h1>
       <div v-for="item in followList" :key="item.id" class="actor-box">
-        <div class="detail-container">
+        <div @click="navigateToActorProfile(item.id)" class="detail-container">
           <img :src="item.avatar" alt="" />
           <div class="title-container">
             <h1>{{ item.name }}</h1>
             <button class="removeFollowBtn" @click="subDeleteFollow(item.id)">取消关注</button>
           </div>
         </div>
-        <h1>参演作品</h1>
-        <FilmList :filmList="item.films" />
       </div>
     </div>
     <div class="right-container"></div>
@@ -20,9 +18,22 @@
 
 <script setup>
 import { ref } from 'vue'
-import FilmList from '@/components/FilmList.vue'
 import { getFollow } from '@/api/user'
 import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+
+
+function navigateToActorProfile(id) {
+  router.push({
+    name: 'actors',
+    params: {
+      actorId: id,
+    },
+  })
+}
+
 
 const followList = ref([])
 function getFollowList() {
@@ -76,6 +87,7 @@ function subDeleteFollow(id) {
       margin-bottom: 3rem;
 
       .detail-container {
+        cursor: pointer;
         display: flex;
         align-items: flex-start;
         gap: 1rem;

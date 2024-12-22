@@ -1,6 +1,6 @@
 <template>
   <div
-    class="console-container"
+    class="user-container"
     @click="showLoginBox()"
     :style="{
       color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
@@ -19,7 +19,7 @@ function showLoginBox() {
 </script>
 
 <style lang="scss" scoped>
-.console-container {
+.user-container {
   box-sizing: border-box;
   cursor: pointer;
   height: 2.2rem;
