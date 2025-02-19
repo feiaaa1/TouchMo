@@ -128,11 +128,6 @@ html::-webkit-scrollbar-thumb {
   color: var(--secondary-font-color);
   border: 0.125em solid var(--secondary-font-color);
   background-color: var(--tertiary-bg-color);
-  transform: translateY(-2px);
-}
-
-.btn:active {
-  transform: translateY(0);
 }
 
 @keyframes slideUp {

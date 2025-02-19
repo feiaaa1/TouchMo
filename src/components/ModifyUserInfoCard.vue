@@ -1,12 +1,11 @@
 <template>
   <transition name="modifyUserInfo">
-
     <div class="user-edit-form" v-if="styleStore.showBoxList.isShowModifyUserInfoCard">
-      <h1>编辑用户信息</h1>
+      <h1>账号资料</h1>
       <form @submit.prevent="handleSubmit">
         <!-- 头像上传 -->
         <div class="avatar-upload">
-          <label for="avatar">头像上传</label>
+          <label for="avatar">上传图片</label>
           <input type="file" id="avatar" @change="handleAvatarChange" />
           <img v-if="avatarUrl" :src="avatarUrl" alt="用户头像" class="avatar-preview" />
         </div>
@@ -14,27 +13,35 @@
         <!-- 名字输入 -->
         <div class="form-group">
           <label for="name">名字</label>
-          <input type="text" id="name" v-model="name" required />
+          <input type="text" id="name" v-model="name" />
         </div>
 
         <!-- 性别选择 -->
         <div class="form-group">
           <label for="sex">性别</label>
-          <select id="sex" v-model="sex" required>
-            <option :value="1">男</option>
-            <option :value="0">女</option>
-          </select>
+          <el-select v-model="sex" placeholder="Select" size="large" style="width: 240px">
+            <el-option label="男" :value="1" />
+            <el-option label="女" :value="0" />
+          </el-select>
         </div>
 
-        <!-- 邮箱编写和验证 -->
+        <!-- 邮箱编写和验证
         <div class="form-group">
           <label for="email">邮箱</label>
-          <input type="email" id="email" v-model="email" @blur="validateEmail" required />
+          <input type="email" id="email" v-model="email" @blur="validateEmail" />
           <span v-if="emailError" class="error">{{ emailError }}</span>
-        </div>
+        </div> -->
 
         <!-- 提交按钮 -->
-        <button class="submitBtn btn" type="submit" :disabled="isSubmitting">提交</button>
+        <ButtonEle
+         type="submit"
+          text="保存"
+          height="3.2rem"
+          padding="0.7rem 2rem"
+          color="var(--primary-accent-color)"
+          border-radius="100rem"
+          :isLoading="isLoading"
+        ></ButtonEle>
       </form>
     </div>
   </transition>
@@ -44,6 +51,7 @@
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useStyleStateStore } from '@/stores/styleState'
+import ButtonEle from './ButtonEle.vue'
 const styleStore = useStyleStateStore()
 const userStore = useUserStore()
 
@@ -54,7 +62,7 @@ const name = ref('')
 const sex = ref(1) // 默认为男性
 const email = ref('')
 const emailError = ref('')
-const isSubmitting = ref(false)
+const isLoading = ref(false)
 
 watch(styleStore.showBoxList, (newVal) => {
   if (newVal.isShowModifyUserInfoCard) {
@@ -63,9 +71,7 @@ watch(styleStore.showBoxList, (newVal) => {
     email.value = userStore.userInfo.email
     avatarUrl.value = userStore.userInfo.avatar
   }
-}
-)
-
+})
 
 // 处理头像上传
 const handleAvatarChange = (event) => {
@@ -89,144 +95,168 @@ const validateEmail = () => {
 // 处理表单提交
 import { modifyUserInfo } from '@/api/user'
 import { upload } from '@/api/user'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 const handleSubmit = async () => {
   try {
-  isSubmitting.value = true
-  // 处理图片上传 更新数据为返回的url
-  const formData = new FormData()
-  formData.append('file', avatarFile.value)
-  const uploadRes = await upload(formData)
-  console.log('uploadRes--->', uploadRes)
-  avatarFile.value = uploadRes.data
+    isLoading.value = true
+    // 处理图片上传 更新数据为返回的url
+    const formData = new FormData()
+    formData.append('file', avatarFile.value)
+    const uploadRes = await upload(formData)
+    console.log('uploadRes--->', uploadRes)
+    avatarFile.value = uploadRes.data
 
-  const params = {
-    id: userStore.userInfo.id,
-    avatar: avatarFile.value,
-    name: name.value,
-    sex: sex.value,
-    email: email.value,
-  }
+    const params = {
+      avatar: avatarFile.value,
+      name: name.value,
+      sex: sex.value,
+    }
     const res = await modifyUserInfo(params)
-    console.log('modify res-->', res.msg)
-    userStore.getUser()
-    ElMessage({
-      type: 'success',
-      message: '修改成功！'
-    })
-  } catch (error) {
-    ElMessage({
-      type: 'error',
-      message: `提交失败${error}`,
-    })
-  } finally {
+    console.log('modifyRes-->', res)
+    if (res.code === 200) {
+      userStore.getUser()
+      ElMessage({
+        type: 'success',
+        message: '修改成功！',
+      })
     styleStore.closeBox()
-    isSubmitting.value = false
+    isLoading.value = false
+    }
+    else {
+      ElMessage({
+        type: 'error',
+        message: `修改失败${res.msg}`,
+      })
+      isLoading.value = false
+    }
+  } catch (error) {
+    console.error(error)
+    isLoading.value = false
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .user-edit-form {
-    position: fixed;
-    top: 50vh;
-    left: 50vw;
-    transform: translate(-50%, -50%);
-    z-index: 25;
-    width: 30vw;
-    max-width: 500px;
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: var(--tertiary-bg-color);
-    color: var(--primary-font-color);
+.user-edit-form {
+  position: fixed;
+  top: 50vh;
+  left: 50vw;
+  transform: translate(-50%, -50%);
+  z-index: 25;
+  width: 30vw;
+  max-width: 500px;
+  padding: 2rem;
+  border-radius: 10px;
+  background-color: var(--tertiary-bg-color);
+  color: var(--primary-font-color);
 
-    .avatar-upload {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      margin: 1rem 0rem;
+  .avatar-upload {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 1rem 0rem;
 
-      label {
-        cursor: pointer;
-        padding: 0.2rem 0.5rem;
-        color: var(--primary-accent-color);
-        border: 2px solid var(--primary-accent-color);
-        border-radius: 100rem;
-        &:hover {
-          color: var(--secondary-accent-color);
-          border: 2px solid var(--secondary-accent-color);
-        }
-      }
-
-      input[type='file'] {
-        display: none;
-      }
-
-      .avatar-preview {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid var(--primary-font-color);
-      }
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-
-      label {
-        display: inline-block;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-      }
-
-      input,
-      select {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid var(--primary-font-color);
-        border-radius: 5px;
-        font-size: 1rem;
-        background-color: transparent;
-        color: var(--primary-font-color);
-      }
-
-      .error {
-        color: red;
-        font-size: 0.875rem;
-        margin-top: 0.5rem;
-      }
-    }
-
-    .btn {
-      width: 100%;
-      border: 0.125em solid var(--primary-accent-color);
-      color: var(--primary-accent-color);
-      font-size: 1.2rem;
-
+    label {
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      color: var(--primary-font-color);
+      border: 1.5px solid var(--primary-font-color);
+      border-radius: 100rem;
+      transition: all 0.3s;
       &:hover {
-        color: var(--secondary-accent-color);
-        border: 0.125em solid var(--secondary-accent-color);
-        background-color: var(--tertiary-bg-color);
+        color: var(--tertiary-font-color);
+        border: 1.5px solid var(--tertiary-font-color);
       }
+    }
+
+    input[type='file'] {
+      display: none;
+    }
+
+    .avatar-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-font-color);
     }
   }
 
-    .modifyUserInfo-enter-active,
+  .form-group {
+    margin-bottom: 1.5rem;
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--primary-border-color);
+      border-radius: 0.4rem;
+      font-size: 1rem;
+      background-color: transparent;
+      color: var(--primary-font-color);
+      outline: none;
+      transition: all 0.3s;
+      cursor: text;
+
+      &:hover {
+        border-color: var(--primary-font-color);
+      }
+
+      &:focus {
+        border-color: var(--primary-accent-color);
+      }
+    }
+
+    .el-select {
+      width: 100% !important;
+      :deep(.el-select__wrapper) {
+        font-size: 1rem;
+        padding: 0.5rem;
+        background-color: transparent;
+        border-radius: 0.4rem;
+        box-shadow: 0 0 0 1px var(--primary-border-color) inset;
+        transition: all 0.3s;
+
+        &:hover {
+          box-shadow: 0 0 0 1px var(--primary-font-color) inset;
+        }
+      }
+
+      :deep(.is-focused) {
+        box-shadow: 0 0 0 1px var(--primary-accent-color) inset !important;
+      }
+
+      :deep(.el-select__placeholder) {
+        color: var(--primary-font-color);
+      }
+    }
+
+    .error {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+  }
+}
+
+.modifyUserInfo-enter-active,
 .modifyUserInfo-leave-active {
   transition: all 0.5s;
 }
 
 .modifyUserInfo-enter-from {
-  transform: translate(-50%,-50%) scale(0.7);
+  transform: translate(-50%, -50%) scale(0.7);
   opacity: 0;
 }
 
 .modifyUserInfo-leave-to {
-  transform: translate(-50%,-50%) translateY(3rem);
+  transform: translate(-50%, -50%) translateY(3rem);
   opacity: 0;
 }
-
-
 </style>

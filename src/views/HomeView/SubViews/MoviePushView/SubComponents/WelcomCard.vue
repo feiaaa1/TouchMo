@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import {getPushMovieList} from '@/api/movie'
+import { getPushMovieList } from '@/api/movie'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -29,7 +29,6 @@ getPushMovieList().then((res) => {
 
 async function navigateToRandomMovie() {
   //判断列表里的数据是否全都已经被跳转过，是重新获取电影列表
-
 
   const randomIndex = Math.floor(Math.random() * movieList.value.length)
   const randomMovie = movieList.value[randomIndex]
@@ -56,7 +55,7 @@ async function navigateToRandomMovie() {
   border-radius: 0.7rem;
   color: var(--primary-font-color);
   overflow: hidden;
-  animation: slideUp 1.3s ease -0.4s;
+  animation: slideUp 1.3s ease -.2s;
 
   &:hover {
     .inner-card {
@@ -66,7 +65,7 @@ async function navigateToRandomMovie() {
     }
   }
   .header-container {
-    animation: slideUp 1.1s ease;
+      animation: slideUp 1.1s ease ;
     h1 {
       font-size: 2.3rem;
       line-height: 1.3;
@@ -77,7 +76,7 @@ async function navigateToRandomMovie() {
       font-size: smaller;
       margin-top: 1rem;
     }
-    }
+  }
   .inner-card {
     position: absolute;
     top: 50%;

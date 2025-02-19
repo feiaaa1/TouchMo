@@ -57,6 +57,7 @@ userStore.getUser()
   --tertiary-bg-color: #1d1e22;
   --quaternary-bg-color: #111014;
   --primary-border-color: #444444;
+  --secondary-border-color: #858585;
   --primary-font-color: #cbcbcb;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;
@@ -80,10 +81,11 @@ userStore.getUser()
   --tertiary-bg-color: #fafafa;
   --quaternary-bg-color: #a9a9a9;
   --primary-border-color: #b8b8b8;
+  --secondary-border-color: #939393;
   --primary-font-color: #4d4d4d;
   --secondary-font-color: #313131;
   --tertiary-font-color: #b8b8b8;
-  --quaternary-font-color: #e3e3e3;
+  --quaternary-font-color: #3b3b3b;
   --primary-accent-color: #4759e6;
   --secondary-accent-color: #2f56d5;
   --primary-func-color: #e9bb5f;

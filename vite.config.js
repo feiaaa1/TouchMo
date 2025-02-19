@@ -7,7 +7,6 @@ import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
@@ -22,6 +21,18 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  build: {
+    // 配置 terser 选项
+    terserOptions: {
+      compress: {
+        drop_console: true, // 去除 console.log
+        drop_debugger: true, // 去除 debugger
+      },
+      format: {
+        comments: false, // 移除所有注释
+      },
     },
   },
 })

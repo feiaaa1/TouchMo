@@ -4,7 +4,12 @@
       <header>
         <div v-if="!styleStore.FavoriteState.isModifyFavorites">
           <h2 v-if="!isCreate && !styleStore.FavoriteState.isOnlyCreate" class="title">收藏至</h2>
-          <p v-if="!styleStore.FavoriteState.isOnlyCreate" @click="isCreate = !isCreate">
+          <p
+            v-if="
+              !styleStore.FavoriteState.isOnlyCreate && !styleStore.FavoriteState.currentFavoritesId
+            "
+            @click="isCreate = !isCreate"
+          >
             {{ isCreate ? '返回' : '新建收藏夹' }}
           </p>
         </div>
@@ -36,7 +41,7 @@
         >
           <div class="input-container">
             <span class="icon iconfont icon-dir"></span>
-                        <label for="description">名称</label>
+            <label for="description">名称</label>
             <input placeholder="添加收藏夹名字" v-model="name" id="name" type="text" />
           </div>
           <div class="input-container">
@@ -120,11 +125,9 @@ function handleFavorite() {
   }
 }
 
-
-
 watch(styleStore.showBoxList, (newVal) => {
   if (!newVal.isShowModifyFavoritesCard) {
-  (name.value = ''), (description.value = null)
+    ;(name.value = ''), (description.value = null)
   } else if (styleStore.FavoriteState.isModifyFavorites) {
     //处理修改电影自动填充
     userStore.userInfo.favorites.forEach((item) => {
@@ -136,9 +139,6 @@ watch(styleStore.showBoxList, (newVal) => {
   }
 })
 
-
-
-
 //处理电影进入指定收藏夹（添加或移动）
 import { addMovieToFavorites } from '@/api/user'
 import { moveMovieToOtherFavorites } from '@/api/user'
@@ -148,9 +148,9 @@ async function handleMovie(favoritesId) {
       const params = {
         filmId: styleStore.FavoriteState.currentFilmId,
         favoriteId: favoritesId,
-    }
-    const res = await addMovieToFavorites(params)
-    console.log('addMovie--->', res)
+      }
+      const res = await addMovieToFavorites(params)
+      console.log('addMovie--->', res)
       styleStore.closeBox()
       ElMessage({
         message: '收藏成功！',
@@ -163,14 +163,14 @@ async function handleMovie(favoritesId) {
         newFavoriteId: favoritesId,
       }
       const res = await moveMovieToOtherFavorites(params)
-        console.log('moveMovie---->', res)
-        styleStore.closeBox()
+      console.log('moveMovie---->', res)
+      styleStore.closeBox()
       ElMessage({
         message: '移动成功！',
         type: 'success',
       })
-  }
-  }catch(err){
+    }
+  } catch (err) {
     console.log(err)
   } finally {
     //最后拉取用户信息
@@ -235,7 +235,7 @@ async function handleMovie(favoritesId) {
       h1 {
         transition: color 0.3s;
       }
-      p{
+      p {
         opacity: 0.7;
         font-style: italic;
       }
@@ -259,7 +259,7 @@ async function handleMovie(favoritesId) {
         position: relative;
         label {
           font-size: 1.2rem;
-      }
+        }
         .icon {
           position: absolute;
           top: 50%;

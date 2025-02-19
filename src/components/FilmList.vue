@@ -7,13 +7,16 @@
       :area="item.area"
       :title="item.title"
       :language="item.language"
-      :categories="item.categories"
+      :labels="item.labels"
       :id="item.id"
       :score="item.score"
-      :duration="item.duration"
+      :status="item.status"
+      :releaseTime="item.releaseTime"
       :isMore="props.isMore"
       :isShowRate="props.isShowRate"
-      :isShowDuration="props.isShowDuration"
+      :isShowReleaseTime="props.isShowReleaseTime"
+      :isShowStatus="props.isShowStatus"
+      :isShowHotLabel="props.isShowHotLabel"
     />
   </div>
 </template>
@@ -34,7 +37,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-    isFavorite: {
+  isFavorite: {
     type: Boolean,
     default: false,
   },
@@ -46,7 +49,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  isShowDuration: {
+  isShowReleaseTime: {
+    type: Boolean,
+    default: false,
+  },
+  isShowHotLabel: {
+    type: Boolean,
+    default: false,
+  },
+  isShowStatus: {
     type: Boolean,
     default: false,
   },

@@ -12,7 +12,9 @@
         </div>
         <div class="pop-confirm__footer">
           <button @click="onCancel">{{ cancelButtonText }}</button>
-          <button @click="onConfirm" class="pop-confirm__confirm-button">{{ confirmButtonText }}</button>
+          <button @click="onConfirm" class="pop-confirm__confirm-button">
+            {{ confirmButtonText }}
+          </button>
         </div>
       </div>
     </transition>
@@ -20,52 +22,47 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
- const props = defineProps( {
-    title: {
-      type: String,
-      default: '确认？',
-    },
-    confirmButtonText: {
-      type: String,
-      default: '确认',
-    },
-    cancelButtonText: {
-      type: String,
-      default: '取消',
-    },
-    placement: {
-      type: String,
-      default: 'bottom', // or 'top', 'left', 'right'
-    },
- })
+const props = defineProps({
+  title: {
+    type: String,
+    default: '确认？',
+  },
+  confirmButtonText: {
+    type: String,
+    default: '确认',
+  },
+  cancelButtonText: {
+    type: String,
+    default: '取消',
+  },
+  placement: {
+    type: String,
+    default: 'bottom', // or 'top', 'left', 'right'
+  },
+})
 
+const visible = ref(false)
+const triggerRef = ref(null)
+const popoverStyle = computed(() => {
+  // Here you can add logic to calculate the popover's position based on the placement prop
+  return {
+    // Example: position the popover below the trigger
+    position: 'absolute',
+    top: `${triggerRef.value.offsetHeight}px`,
+    left: '0',
+    // Add more styles as needed
+  }
+})
 
+const showPopconfirm = () => {
+  visible.value = true
+}
 
-    const visible = ref(false);
-    const triggerRef = ref(null);
-    const popoverStyle = computed(() => {
-      // Here you can add logic to calculate the popover's position based on the placement prop
-      return {
-        // Example: position the popover below the trigger
-        position: 'absolute',
-        top: `${triggerRef.value.offsetHeight}px`,
-        left: '0',
-        // Add more styles as needed
-      };
-    });
-
-
-    const showPopconfirm = () => {
-      visible.value = true;
-    };
-
-    const hidePopconfirm = () => {
-      visible.value = false;
-    };
-
-
+const hidePopconfirm = () => {
+  visible.value = false
+}
 </script>
 
 <style lang="scss">
@@ -82,10 +79,12 @@ import { ref, computed } from 'vue';
     width: 200px; // Adjust as needed
 
     // Positioning and transitions
-    &.fade-enter-active, &.fade-leave-active {
+    &.fade-enter-active,
+    &.fade-leave-active {
       transition: opacity 0.3s;
     }
-    &.fade-enter, &.fade-leave-to {
+    &.fade-enter,
+    &.fade-leave-to {
       opacity: 0;
     }
   }
@@ -114,7 +113,7 @@ import { ref, computed } from 'vue';
   }
 
   &__confirm-button {
-    background-color: #409EFF;
+    background-color: #409eff;
     color: #fff;
     border: none;
     padding: 0.5rem 1rem;

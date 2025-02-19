@@ -22,7 +22,7 @@
   width: 100%;
   border-radius: 0.7rem;
   overflow: hidden;
-  background-image: url('https://i.ibb.co/L9KM33L/frame-at-0m3s.jpg');
+  background-image: url('https://i.ibb.co/Zp0Lwndc/frame-at-0m3s.jpg');
   background-position: center;
   background-clip: cover;
 

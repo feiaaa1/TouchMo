@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', () => {
     id: '',
     follow: [],
     favorites: [],
-    avatar: '',
+    avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png',
     name: '',
     sex: '',
   })
@@ -31,10 +31,9 @@ export const useUserStore = defineStore('user', () => {
   async function getUser() {
     //获取用户信息并更新仓库
     isFirstGetUser.value = false
-    try {
       const res = await getUserInfo()
-
-      if (res.code === 0) {
+      console.log('getuser----->',res);
+      if (res.code === 200) {
         isLogin.value = true
         userInfo.value = res.data
 
@@ -47,16 +46,12 @@ export const useUserStore = defineStore('user', () => {
         //重置用户信息
         resetUserInfo()
         ElNotification({
+          title: 'Warning',
           message: '用户登录失效',
           type: 'warning',
         })
       }
-    } catch (error) {
-      ElNotification({
-        message: error,
-        type: 'error',
-      })
-    }
+
   }
 
   return { isLogin, userInfo, getUser, resetUserInfo }

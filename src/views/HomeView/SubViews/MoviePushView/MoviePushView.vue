@@ -18,15 +18,22 @@
       <div class="film-list-section">
         <div class="select-bar">
           <p>推荐</p>
-          <TagComponent v-for="tag in tagList" :key="tag.id" :id="tag.id" :name="tag.name" :isLinkIcon="false" />
+          <TagComponent
+            v-for="tag in tagList"
+            :key="tag.id"
+            :id="tag.id"
+            :name="tag.name"
+            :isLinkIcon="false"
+            :is-filter-style="true"
+          />
           <span class="icon iconfont icon-shoMore"></span>
           <span class="showMoreBtn" @click="router.push('tags')">更多</span>
         </div>
-        <FilmList :filmList="movieList" :columns="2" :isShowRate="true" :isShowDuration="true" />
+        <FilmList :filmList="movieList" :columns="2" :isShowRate="true" :isShowReleaseTime="true" :isShowStatus="true" />
       </div>
-        <div class="ranking-section">
-          <RankingBox :movieList="rankingMovieList" />
-        </div>
+      <div class="ranking-section">
+        <RankingBox :movieList="rankingMovieList" />
+      </div>
     </div>
   </div>
 </template>
@@ -44,15 +51,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-
-
-
-
 import { getPushMovieList } from '@/api/movie'
 const movieList = ref([])
 const isLoadComplete = ref(false)
 getPushMovieList().then((data) => {
-  console.log(data)
+  console.log('getPushMovieList----->',data)
   movieList.value = data.data
 })
 
@@ -60,7 +63,7 @@ import { getAllTagsList } from '@/api/movie'
 const tagList = ref([])
 getAllTagsList().then((data) => {
   console.log('tagList===>', data)
-  tagList.value = data.data.slice(0,8)
+  tagList.value = data.data.slice(0, 8)
 })
 
 import { getHotPushMovieList } from '@/api/movie'
@@ -103,15 +106,14 @@ getHotPushMovieList().then((data) => {
         height: 100%;
         display: flex;
         gap: 1rem;
-  animation: slideUp 1.3s ease -.3s;
+        animation: slideUp 1.1s ease;
       }
     }
 
     .header-right {
       width: 100%;
       height: 100%;
-  animation: slideUp 1.3s ease -.1s;
-
+      animation: slideUp 1.1s ease -0.1s;
     }
   }
 
@@ -124,29 +126,29 @@ getHotPushMovieList().then((data) => {
       width: 75%;
       display: flex;
       flex-direction: column;
-  animation: slideUp 1.3s ease;
-  gap: 1rem;
+      animation: slideUp 1.1s ease;
+      gap: 1rem;
       .select-bar {
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: start;
-        gap: .3rem;
-        padding: .7rem;
+        gap: 0.3rem;
+        padding: 0.7rem;
         border: 1px solid var(--primary-border-color);
-        transition: border .3s;
-        border-radius: .7rem;
+        transition: border 0.3s;
+        border-radius: 0.7rem;
         background-color: var(--tertiary-bg-color);
         &:hover {
           border-color: var(--primary-accent-color);
         }
-        .icon-shoMore{
+        .icon-shoMore {
           color: var(--primary-font-color);
           font-size: 1.1rem;
           cursor: pointer;
           margin-left: 1.5rem;
-          margin-right: .6rem;
-          transition: all .3s;
+          margin-right: 0.6rem;
+          transition: all 0.3s;
 
           &:hover {
             color: var(--primary-accent-color);
@@ -157,29 +159,27 @@ getHotPushMovieList().then((data) => {
           font-weight: 600;
           font-size: 1.1rem;
           color: var(--primary-font-color);
-            transition: all 0.4s;
-            &:hover{
-              color: var(--primary-accent-color);
-            }
+          transition: all 0.4s;
+          &:hover {
+            color: var(--primary-accent-color);
+          }
         }
         p {
           font-weight: 600;
           font-size: 1.1rem;
-          color: var(--primary-font-color);
-            transition: all 0.4s;
-  border-radius: .5rem !important;
-  padding: .1rem .8rem !important;
+          color: var(--always-white-color);
+          transition: all 0.4s;
+          border-radius: 0.5rem !important;
+          padding: 0.1rem 0.8rem !important;
           cursor: pointer;
-            color: var(--secondary-font-color);
-            background-color: var(--primary-accent-color);
+          background-color: var(--primary-accent-color);
         }
       }
-
     }
 
     .ranking-section {
       width: 100%;
-  animation: slideUp 1.3s ease -.1s;
+      animation: slideUp 1.3s ease -0.1s;
     }
   }
 }

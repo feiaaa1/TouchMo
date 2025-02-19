@@ -14,11 +14,7 @@
 import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 
-
-
-
-
-import {getPushMovieList} from '@/api/movie'
+import { getPushMovieList } from '@/api/movie'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -28,7 +24,6 @@ getPushMovieList().then((res) => {
 })
 
 async function navigateToRandomMovie() {
-
   const randomIndex = Math.floor(Math.random() * movieList.value.length)
   const randomMovie = movieList.value[randomIndex]
 

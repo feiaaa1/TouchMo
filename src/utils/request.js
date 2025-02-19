@@ -1,8 +1,9 @@
 import axios from 'axios'
+import { ElMessage, ElNotification } from 'element-plus'
 
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
-  baseURL: 'http://www.free.svipss.top', // 替换为你的 API 基础 URL
+  baseURL: 'http://kyz.free.svipss.top', // 替换为你的 API 基础 URL
   timeout: 20000, // 请求超时时间
 })
 
@@ -29,10 +30,27 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => {
     // 对响应数据做些什么
+    // 如果响应头中有 token，则更新本地存储中的 token
+    if (response.headers.token) {
+      localStorage.setItem('token', response.headers.token)
+    }
     return response.data
   },
   (error) => {
-    // 对响应错误做些什么
+    // 所有请求若网络超时都弹出网络错误
+    console.log(error)
+    if (error.message === 'Network Error') {
+      ElMessage({
+        message: '网络错误',
+        type: 'error',
+      })
+    }
+    else if (error.message.includes('timeout')) {
+      ElMessage({
+        message: '请求超时',
+        type: 'error',
+      })
+    }
     return Promise.reject(error)
   },
 )

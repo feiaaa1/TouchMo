@@ -1,5 +1,5 @@
 <template>
-  <div class="followList-container">
+  <div v-if="isLoadComplete" class="followList-container">
     <div class="left-container">
       <h1 class="title">关注列表</h1>
       <div v-for="item in followList" :key="item.id" class="actor-box">
@@ -23,7 +23,7 @@ import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-
+const isLoadComplete = ref(false)
 
 function navigateToActorProfile(id) {
   router.push({
@@ -34,11 +34,11 @@ function navigateToActorProfile(id) {
   })
 }
 
-
 const followList = ref([])
 function getFollowList() {
   getFollow().then((res) => {
     followList.value = res.data
+    isLoadComplete.value = true
   })
 }
 
@@ -66,6 +66,7 @@ function subDeleteFollow(id) {
   display: flex;
   gap: 1rem;
   color: var(--secondary-font-color);
+  animation: slideUp 0.5s ease;
   .left-container {
     width: 75%;
     padding: 2rem;
@@ -85,6 +86,7 @@ function subDeleteFollow(id) {
     .actor-box {
       width: 100%;
       margin-bottom: 3rem;
+      animation: slideUp 0.5s ease;
 
       .detail-container {
         cursor: pointer;

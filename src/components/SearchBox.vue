@@ -6,14 +6,20 @@
           <label for="search" class="title">搜索</label>
           <span @click="styleStore.closeBox()" class="icon iconfont icon-close"></span>
         </div>
-        <input placeholder="搜索文章" id="search" @input="debouncedGetFilmArr" type="text" v-model="input" />
+        <input
+          placeholder="搜索文章"
+          id="search"
+          @input="debouncedGetFilmArr"
+          type="text"
+          v-model="input"
+        />
         <div v-show="isShowHistory" class="history-list">
           <div class="history-header">
             <p class="hitory-title">搜索历史</p>
             <div class="deleteHistory-container">
               <span class="icon iconfont icon-delete"></span>
-            <p class="deleteHistoryBtn" @click="handleDeleteHistory()">清空历史记录</p>
-          </div>
+              <p class="deleteHistoryBtn" @click="handleDeleteHistory()">清空历史记录</p>
+            </div>
           </div>
           <div class="history-main">
             <p
@@ -32,7 +38,7 @@
         <template v-if="filmList.length">
           <FilmList :film-list="filmList" :columns="1" />
         </template>
-        </main>
+      </main>
     </div>
   </transition>
 </template>
@@ -41,6 +47,7 @@
 import FilmList from './FilmList.vue'
 import { useStyleStateStore } from '@/stores/styleState'
 import { ref, watch } from 'vue'
+
 const styleStore = useStyleStateStore()
 
 //是否显示搜索历史
@@ -104,13 +111,14 @@ async function getFilmArr() {
 // 使用防抖函数包装的搜索函数
 const debouncedGetFilmArr = debounce(getFilmArr, 400) // 延迟500毫秒
 
-//关闭逻辑 关闭后 1.清空电影list 2.清空输入框内容
 
-watch(styleStore.showBoxList, (newVal ) => {
+//关闭逻辑 关闭后 1.清空电影list 2.清空输入框内容
+watch(styleStore.showBoxList, (newVal) => {
   if (!newVal.isShowSearchBox) {
     closeBox()
   }
 })
+
 
 function closeBox() {
   input.value = ''
@@ -194,9 +202,9 @@ function closeBox() {
         align-items: center;
         justify-content: space-between;
 
-        .deleteHistory-container{
+        .deleteHistory-container {
           display: flex;
-          gap: .2rem;
+          gap: 0.2rem;
           cursor: pointer;
           transition: color 0.2s;
 
@@ -217,7 +225,7 @@ function closeBox() {
           cursor: pointer;
           flex-shrink: 0;
           border-radius: 0.5rem;
-          opacity: .7;
+          opacity: 0.7;
           padding: 0.2rem 0.5rem;
           color: var(--tertiary-font-color);
           border: 1px solid var(--tertiary-font-color);

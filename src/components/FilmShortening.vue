@@ -1,38 +1,52 @@
 <template>
   <div class="shorteing-container" ref="container" @click="navigateToMovieDetail(props.id)">
+    <!-- 热门图标 -->
+    <span v-if="isShowHotLabel" class="icon iconfont icon-hotLabel">
+      <div class="bg-white"></div>
+    </span>
+    <!-- 图片容器 -->
     <div class="img-container">
-      <img :class="{isShowOpacity: isLoadImgComplete}" ref="img" :src="imgSrc" alt="" />
+      <!-- 状态
+  <span v-if="isShowStatus" class="status">{{ props.status }}</span> -->
+      <img :class="{ isShowOpacity: isLoadImgComplete }" ref="img" :src="imgSrc" alt="" />
     </div>
+    <!-- 详情容器 -->
     <div class="detail-container">
-      <div  class="detail-container-header">
+      <!-- 详情容器头部 -->
+      <div class="detail-container-header">
         <h1>{{ '【' + props.language + '】 ' + props.title }}</h1>
       </div>
+
+      <!-- 详情容器主体 -->
       <div class="detail-container-main" v-if="props.isShowRate">
         <el-rate
-        v-if="props.score !== 0"
-        :model-value="props.score/2"
-        disabled
+          :model-value="props.score / 2"
+          disabled
           show-score
           text-color="var(--always-yellow-color)"
           :scoreTemplate="`${props.score.toFixed(1)}`"
           style="font-weight: 600"
         />
-        <p v-else>暂无用户评分</p>
       </div>
+
+      <!-- 详情容器底部 -->
       <div class="detail-container-footer">
+        <!-- 标签容器 -->
         <div ref="tag-list" class="tags-container">
           <TagComponent
-            v-for="item in props.categories"
+            v-for="item in props.labels"
             :key="item.id"
             :name="item.name"
             :id="item.id"
           />
         </div>
-        <div class="duration-container" v-if="props.isShowDuration">
-          <span  class="icon iconfont icon-duration"></span>
-          <p>{{props.duration}}分钟</p>
+        <!-- 日期容器 -->
+        <div class="releaseTime-container" v-if="props.isShowReleaseTime">
+          <span class="icon iconfont icon-releaseTime"></span>
+          <p>{{ props.releaseTime?props.releaseTime.slice(0,4):'暂无日期' }}</p>
         </div>
-          <div class="more-container" >
+        <!-- 更多容器 -->
+        <div class="more-container">
           <span
             @click="submitDeleteFavorites($event)"
             class="icon icon-delete iconfont"
@@ -52,7 +66,9 @@
 <script setup>
 import TagComponent from './TagComponent.vue'
 import { useRouter } from 'vue-router'
-import { onMounted,ref, useTemplateRef } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue'
+
+
 
 const props = defineProps({
   cover: String,
@@ -63,7 +79,9 @@ const props = defineProps({
   viewNum: Number,
   id: Number,
   score: Number,
-  duration: Number,
+  status: String,
+  releaseTime: String,
+  labels: Array,
   isMore: {
     type: Boolean,
     default: false,
@@ -72,38 +90,59 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  isShowDuration: {
+  isShowReleaseTime: {
+    type: Boolean,
+    default: false,
+  },
+  isShowHotLabel: {
+    type: Boolean,
+    default: false,
+  },
+  isShowStatus: {
     type: Boolean,
     default: false,
   },
 })
 
 
+
+//实现图片懒加载功能
 const isLoadImgComplete = ref(false)
 const imgSrc = ref('')
 const img = useTemplateRef('img')
-
-//实现图片懒加载功能
-onMounted(() => {
-const observer = new IntersectionObserver(changes => {
-  //changes 是被观察的元素集合
-  for(let i = 0, len = changes.length; i < len; i++) {
-    let change = changes[i];
-    // 通过这个属性判断是否在视口中
-    if(change.isIntersecting) {
-      const imgElement = change.target;
-      imgSrc.value = props.cover;
-      isLoadImgComplete.value = true;
-      observer.unobserve(imgElement);
+function lazyLoading() {
+   const observer = new IntersectionObserver((changes) => {
+    //changes 是被观察的元素集合
+    for (let i = 0, len = changes.length; i < len; i++) {
+      let change = changes[i]
+      // 通过这个属性判断是否在视口中
+      if (change.isIntersecting) {
+        //获取图片元素
+        const imgElement = change.target
+        //更改img元素的src
+        imgSrc.value = props.cover
+        //设置当img图片资源加载完毕后才显示图片(添加类并修改透明度)
+        imgElement.onload = function () {
+          isLoadImgComplete.value = true
+        }
+        observer.unobserve(imgElement)
+      }
     }
-  }
+  })
+  observer.observe(img.value)
+}
 
+
+// 实现文字缩放
+//获取容器元素
+const container = useTemplateRef('container');
+
+
+
+
+onMounted(() => {
+  lazyLoading()
 })
-observer.observe(img.value)
-})
-
-
-
 
 const router = useRouter()
 
@@ -151,6 +190,7 @@ function submitDeleteFavorites(e) {
   transition: all 0.5s;
   display: flex;
   flex-direction: column;
+  position: relative;
 
   &:hover {
     border: 1px solid var(--primary-accent-color);
@@ -164,12 +204,44 @@ function submitDeleteFavorites(e) {
     }
   }
 
+
+
+  .icon-hotLabel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 20;
+    color: var(--secondary-func-color);
+    font-size: 1.5rem;
+    padding: 0.2rem 0.5rem;
+    .bg-white {
+      position: absolute;
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, -50%);
+      z-index: -1;
+      width: 78%;
+      height: 50%;
+      background-color: var(--always-white-color);
+    }
+  }
+
+
   .img-container {
     flex-shrink: 0;
     width: 100%;
     height: 55%;
     overflow: hidden;
     position: relative;
+    .status {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      z-index: 20;
+      color: var(--primary-accent-color);
+      font-size: .8rem;
+      padding: 0.2rem 0.5rem;
+    }
 
     &::before {
       content: '';
@@ -185,7 +257,7 @@ function submitDeleteFavorites(e) {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      transition: all 0.5s;
+      transition: all .2s;
       opacity: 0;
     }
   }
@@ -206,8 +278,8 @@ function submitDeleteFavorites(e) {
       justify-content: space-between;
       h1 {
         width: 100%;
-        color: var(--secondary-font-color);
         font-size: 1.2rem;
+        color: var(--secondary-font-color);
         transition: all 0.5s;
         margin-left: -0.5rem;
         white-space: nowrap;
@@ -221,8 +293,8 @@ function submitDeleteFavorites(e) {
       display: flex;
       align-items: center;
       justify-content: start;
-      p{
-        margin: .4rem 0;
+      p {
+        margin: 0.4rem 0;
         color: var(--primary-font-color);
       }
     }
@@ -245,15 +317,15 @@ function submitDeleteFavorites(e) {
         }
       }
 
-      .duration-container {
+      .releaseTime-container {
         display: flex;
         align-items: center;
         justify-content: center;
         color: var(--primary-font-color);
-        opacity: .8;
-        font-size: .9rem;
+        opacity: 0.8;
+        font-size: 0.9rem;
         margin-left: 0.5rem;
-        gap: .5rem;
+        gap: 0.5rem;
         transform: translateX(1rem);
         .icon {
           transform: scale(1);

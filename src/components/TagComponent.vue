@@ -2,25 +2,35 @@
   <div
     ref="tag"
     @click="navigateToTagCorrelation($event)"
-    :class="['tag-container', { border: props.isborder }, {tagDisplayStyle: props.isShowFilmNum},{moviePushStyle: route.name === 'home'}]"
-    :style="{ padding: `${fontSize/5}rem ${fontSize / 3}rem` }"
+    :class="[
+      'tag-container',
+  { border: props.isborder },
+      //列出全部标签样式(这时会显示电影数量，所以通过这个来判断)
+      { tagDisplayStyle: props.isShowFilmNum },
+      { filterStyle: props.isFilterStyle },
+    ]"
+    :style="{ padding: `${fontSize / 5}rem ${fontSize / 3}rem` }"
   >
-  <span v-if="props.isLinkIcon" class="icon iconfont icon-link"></span>
-    <p class="tagName" :style="{
-  fontSize: `${props.fontSize}rem`,
-    color: styleStore.NavigationState.isMovieDetail?'var(--always-white-color)':'var(--secondary-font-color)'
-    }">{{ props.name }}</p>
-    <p class="filmNum" v-if="props.isShowFilmNum">{{props.filmNum}}</p>
+    <span v-if="props.isLinkIcon" class="icon iconfont icon-link"></span>
+    <p
+      class="tagName"
+      :style="{
+        fontSize: `${props.fontSize}rem`,
+        color: styleStore.NavigationState.isMovieDetail
+          ? 'var(--always-white-color)'
+          : 'var(--secondary-font-color)',
+      }"
+    >
+      {{ props.name }}
+    </p>
+    <p class="filmNum" v-if="props.isShowFilmNum">{{ props.filmNum }}</p>
   </div>
 </template>
 
 <script setup>
-import { useStyleStateStore } from '@/stores/styleState';
+import { useStyleStateStore } from '@/stores/styleState'
 
 const styleStore = useStyleStateStore()
-import { useRoute } from 'vue-router';
-
-const route = useRoute();
 
 const props = defineProps({
   id: {
@@ -31,28 +41,37 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  //获取电影数
   filmNum: {
     type: Number,
     default: 0,
   },
+  //是否增加边框
   isborder: {
     type: Boolean,
     default: false,
   },
+  //设置字体大小
   fontSize: {
     type: Number,
     default: 0.83,
   },
+  //是否显示电影数
   isShowFilmNum: {
     type: Boolean,
     default: false,
   },
+  //是否显示链接图标
   isLinkIcon: {
     type: Boolean,
     default: true,
   },
+  //是否显示筛选样式
+  isFilterStyle: {
+    type: Boolean,
+    default: false,
+  }
 })
-
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -67,7 +86,6 @@ function navigateToTagCorrelation(e) {
     },
   })
 }
-
 </script>
 
 <style lang="scss" scoped>
@@ -79,10 +97,16 @@ function navigateToTagCorrelation(e) {
   justify-content: center;
   gap: 2px;
   padding: 0.5rem 1rem;
-  
-  .icon{
+
+  &:hover {
+    p,.icon{
+      color: var(--primary-func-color) !important;
+    }
+  }
+
+  .icon {
     color: var(--tertiary-font-color);
-    opacity: .5;
+    opacity: 0.5;
     transition: all 0.2s;
   }
 
@@ -94,16 +118,15 @@ function navigateToTagCorrelation(e) {
 
   .filmNum {
     font-style: normal;
-    font-size: .8rem;
+    font-size: 0.8rem;
     color: var(--primary-font-color);
     border: 1px solid var(--primary-border-color);
-    padding: 0 .3rem;
-    border-radius: .3rem;
-    margin-left: .7rem;
+    padding: 0 0.3rem;
+    border-radius: 0.3rem;
+    margin-left: 0.7rem;
     transition: all 0.4s;
   }
 }
-
 
 //动态类
 .border {
@@ -116,20 +139,20 @@ function navigateToTagCorrelation(e) {
   &:hover {
     transform: scale(1.05);
     background-color: var(--primary-accent-color);
-    .tagName{
+    .tagName {
       color: #f7f7f7 !important;
     }
-    .filmNum{
+    .filmNum {
       color: var(--primary-accent-color);
       background-color: var(--tertiary-bg-color);
     }
   }
 }
 
-.moviePushStyle {
+.filterStyle {
   transition: all 0.4s;
-  border-radius: .5rem !important;
-  padding: .1rem .8rem !important;
+  border-radius: 0.5rem !important;
+  padding: 0.1rem 0.8rem !important;
   .tagName {
     font-size: 1.1rem !important;
     font-style: normal !important;
@@ -138,7 +161,7 @@ function navigateToTagCorrelation(e) {
   }
   &:hover {
     background-color: var(--primary-accent-color);
-    .tagName{
+    .tagName {
       color: #f7f7f7 !important;
     }
   }

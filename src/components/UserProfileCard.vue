@@ -6,7 +6,7 @@
         <div class="detail-container">
           <div class="name-sex-container">
             <h2>
-              {{ userStore.userInfo.name || '未设置姓名' }}
+              {{ userStore.userInfo.name || '' }}
             </h2>
             <span
               class="icon iconfont"
@@ -16,17 +16,16 @@
               }"
             ></span>
           </div>
-          <p>{{ userStore.userInfo.email || '未绑定邮箱' }}</p>
         </div>
       </header>
       <main>
-        <h1
+        <button
           @click="styleStore.showBox('isShowLoginBox')"
-          class="login-button"
+          class="btn login-button"
           v-if="!userStore.isLogin"
         >
-          点击登录
-        </h1>
+          立即登录
+        </button>
         <div v-show="userStore.isLogin" class="main-detail-container">
           <div class="main-detail-sub-container follow-container" @click="navigateToFollwPage()">
             <span class="icon iconfont icon-follow"></span>
@@ -50,7 +49,7 @@
           class="editUserBtn btn"
           @click="styleStore.showBox('isShowModifyUserInfoCard')"
         >
-          编辑用户信息
+          编辑资料
         </button>
         <button v-show="userStore.isLogin" class="LogOutBtn btn" @click="handleLogOut()">
           退出登录
@@ -96,6 +95,7 @@ async function handleLogOut() {
     message: '退出成功！',
     type: 'success',
   })
+  location.reload(true)
 }
 </script>
 
@@ -123,7 +123,7 @@ async function handleLogOut() {
       height: 5rem;
       width: 5rem;
       border-radius: 100rem;
-      border: 1px solid var(--primary-accent-color);
+      border: 0.125em solid var(--primary-font-color);
       background-color: var(--tertiary-bg-color);
       object-fit: cover;
     }
@@ -172,8 +172,10 @@ async function handleLogOut() {
     .login-button {
       cursor: pointer;
       transition: all 0.3s;
+      font-size: 1.2rem;
       &:hover {
         color: var(--primary-func-color);
+        border: 0.125em solid var(--primary-func-color);
       }
     }
 

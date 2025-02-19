@@ -1,17 +1,18 @@
 <template>
-  <div class="tags-container">
+  <div v-if="isLoadComplete" class="tags-container">
     <div class="left-container">
       <h1>标签</h1>
       <div class="tags-list-container">
         <tag-component
-          :font-size="1.5"
-          v-for="item in tagsList"
-          :key="item.id"
-          :name="item.name"
-          :id="item.id"
-          :filmNum="item.filmNum"
-          :is-show-film-num="true"
-          :isborder="true"
+        :font-size="1.5"
+        v-for="(item, index) in tagsList"
+        :key="item.id"
+        :name="item.name"
+        :id="item.id"
+        :filmNum="item.total"
+        :is-show-film-num="true"
+        :isborder="true"
+        :class="[`delay-${index}`]"
         />
       </div>
     </div>
@@ -23,11 +24,13 @@
 import { ref } from 'vue'
 import { getAllTagsList } from '@/api/movie'
 import TagComponent from '@/components/TagComponent.vue'
+const isLoadComplete = ref(false)
 
 const tagsList = ref([])
 getAllTagsList().then((res) => {
   console.log('getTagsList----->', res)
   tagsList.value = res.data
+  isLoadComplete.value = true
 })
 </script>
 
@@ -49,7 +52,7 @@ getAllTagsList().then((res) => {
     border-radius: 0.8rem;
     background-color: var(--tertiary-bg-color);
     border: 1px solid var(--primary-border-color);
-
+    animation: slideUp 1.1s ease;
     .tags-list-container {
       margin-top: 2rem;
       width: 100%;
@@ -58,7 +61,11 @@ getAllTagsList().then((res) => {
       align-items: center;
       justify-content: center;
       gap: 1rem;
-      animation: slideUp 1.2s ease;
+      @for $i from 0 through 500 {
+  .delay-#{$i} {
+    animation:slideUp #{$i * 0.08s} ease; // 每个div延迟增加0.05s
+  }
+}
     }
   }
 
@@ -70,7 +77,6 @@ getAllTagsList().then((res) => {
     border-radius: 0.8rem;
     background-color: var(--tertiary-bg-color);
     border: 1px solid var(--primary-border-color);
-
   }
 }
 </style>

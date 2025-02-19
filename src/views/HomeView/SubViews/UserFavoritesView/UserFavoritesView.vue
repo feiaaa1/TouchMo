@@ -61,9 +61,7 @@
         </transition>
       </main>
     </div>
-    <div class="right-container">
-
-    </div>
+    <div class="right-container"></div>
   </div>
 </template>
 

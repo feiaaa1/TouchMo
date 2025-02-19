@@ -5,8 +5,7 @@
 <script setup></script>
 
 <style lang="scss" scoped>
-
-.foot-container{
+.foot-container {
   height: 7rem;
   width: 100%;
 }

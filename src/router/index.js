@@ -65,9 +65,7 @@ const router = createRouter({
   ],
 })
 
-
 router.beforeResolve(async (to) => {
-
   if (to.name === 'movieDetail') {
     const styleStore = useStyleStateStore()
     styleStore.NavigationState.isMovieDetail = true

@@ -3,32 +3,46 @@
     <div class="login-box" v-if="store.showBoxList.isShowLoginBox">
       <h1 v-if="title === 'Login'">Welcome!</h1>
       <h1 v-else>Sign up</h1>
-      <form @submit.prevent="handleLogin" class="login-form">
-
-
+      <form @submit.prevent="submit()" class="login-form">
         <div class="input-container">
           <span class="icon iconfont icon-username"></span>
-          <input type="text" v-model="username"
-          placeholder="Enter your username" id="username" required />
+          <input
+            type="text"
+            v-model="username"
+            placeholder="Enter your username"
+            id="username"
+          />
         </div>
-
 
         <div class="input-container">
           <span class="icon iconfont icon-password"></span>
-        <input type="password" v-model="password"
-        placeholder="Enter your Password" id="password" required />
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Enter your password"
+            id="password"
+          />
         </div>
 
-
-                <p class="forgot" v-if="title === 'Login'">{{ "Forgot password?"}}</p>
-                <!-- 占位当作空格 -->
-                <p v-else class="forgot"></p>
-        <button class="btn submit-btn" @click="submit()" type="submit">{{ title }}</button>
+        <p class="forgot" v-if="title === 'Login'">{{ 'Forgot password?' }}</p>
+        <!-- 占位当作空格 -->
+        <p v-else class="forgot"></p>
+        <ButtonEle
+        type="submit"
+          :text="title"
+          height="3.2rem"
+          padding="0.7rem 2rem"
+          color="var(--primary-accent-color)"
+          border-radius="100rem"
+          :isLoading="isLoading"
+        ></ButtonEle>
       </form>
       <div class="change-container">
-        <p v-if="title === 'Login'">{{ "Don't have an account?"}}</p>
-        <p v-else>{{'Change to'}}</p>
-        <p class="changeButton" @click="switchForm()">{{title === 'Login'?'Sign up':'Login'}}</p>
+        <p v-if="title === 'Login'">{{ "Don't have an account?" }}</p>
+        <p v-else>{{ 'Change to' }}</p>
+        <p class="changeButton" @click="switchForm()">
+          {{ title === 'Login' ? 'Sign up' : 'Login' }}
+        </p>
       </div>
     </div>
   </transition>
@@ -37,46 +51,128 @@
 <script setup>
 import { useStyleStateStore } from '@/stores/styleState'
 import { useUserStore } from '@/stores/user'
+const styleStore = useStyleStateStore()
 const userStore = useUserStore()
 const store = useStyleStateStore()
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 const title = ref('Login')
 
+//更改注册、登录页面
 function switchForm() {
   title.value = title.value === 'Login' ? 'Sign up' : 'Login'
   username.value = ''
   password.value = ''
 }
 
+//双向绑定用户名和密码
 const username = ref('')
 const password = ref('')
+const isLoading = ref(false)
 import { userLogin, userRegister } from '@/api/user'
 import { ElNotification } from 'element-plus'
-function submit() {
-  if (title.value === 'Login') {
-    userLogin(username.value, password.value).then(async (data) => {
-      localStorage.setItem('token', data.data)
-      await userStore.getUser()
-      ElNotification({
-        title: 'Success',
-        message: '登录成功',
-        type: 'success',
-      })
-      store.closeBox()
+import { ElMessage } from 'element-plus'
+//表单验证逻辑
+function validation() {
+  const reg = /.{6,}/
+  if (!reg.test(username.value)) {
+    ElMessage({
+      message: '用户名长度至少为6位',
+      type: 'warning',
     })
-  } else {
-    userRegister(username.value, password.value).then(() => {
-      ElNotification({
-        title: 'Success',
-        message: '注册成功',
-        type: 'success',
-      })
+    return false
+  }
+  if (!reg.test(password.value)) {
+    ElMessage({
+      message: '密码长度至少为6位',
+      type: 'warning',
     })
+    return false
+  }
+  return true
+}
+
+
+
+import ButtonEle from './ButtonEle.vue'
+//提交登录、注册逻辑
+async function submit() {
+  try {
+    if (title.value === 'Login') {
+      //开启加载动画
+      isLoading.value = true
+      //表单验证
+      if (!validation()) {
+        isLoading.value = false
+        return
+      }
+      //登录请求
+      const res = await userLogin(username.value, password.value)
+      console.log('Login--->', res)
+      //成功状态码为200
+      if (res.code === 200) {
+        localStorage.setItem('token', res.data.token)
+        await userStore.getUser()
+        ElNotification({
+          title: 'Success',
+          message: '登录成功',
+          type: 'success',
+        })
+        isLoading.value = false
+        store.closeBox()
+        //登陆成功后刷新页面 重新获取资源
+        location.reload(true)
+      } else {
+        ElNotification({
+          title: 'Error',
+          message: res.msg,
+          type: 'error',
+        })
+        isLoading.value = false
+      }
+    } else {
+      isLoading.value = true
+      if (!validation()) {
+        isLoading.value = false
+        return
+      }
+      const res = await userRegister(username.value, password.value)
+      console.log('Register--->', res)
+      if (res.code === 200) {
+        switchForm()
+        ElNotification({
+          title: 'Success',
+          message: '注册成功',
+          type: 'success',
+        })
+        isLoading.value = false
+      } else {
+        ElNotification({
+          title: 'Error',
+          message: res.msg,
+          type: 'error',
+        })
+        isLoading.value = false
+      }
+    }
+  }
+  //状态码不为200，网络错误, 关闭加载动画
+  catch (err) {
+    console.error(err)
+    isLoading.value = false
   }
 }
+
+//关闭逻辑 关闭后 清空输入框内容
+watch(styleStore.showBoxList, (newVal) => {
+  if (!newVal.isShowSearchBox) {
+    username.value = ''
+    password.value = ''
+  }
+})
 </script>
 
 <style lang="scss" scoped>
+
 .login-box {
   position: fixed;
   z-index: 25;
@@ -88,7 +184,7 @@ function submit() {
   padding: 2rem;
   border-radius: 0.8rem;
   color: var(--secondary-font-color);
-  background: linear-gradient(to top,var(--secondary-bg-color),var(--tertiary-bg-color));
+  background: linear-gradient(to top, var(--secondary-bg-color), var(--tertiary-bg-color));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,36 +192,36 @@ function submit() {
   gap: 1rem;
   border: 1px solid var(--primary-border-color);
 
-  h1{
+  h1 {
     font-family: 'Chewy-Regular';
     color: var(--secondary-font-color);
   }
 
-  .change-container{
+  .change-container {
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--tertiary-font-color);
-    font-size: .8rem;
+    font-size: 0.8rem;
     .changeButton {
       cursor: pointer;
-    text-decoration-line: underline;
-    font-style: italic;
-    color: var(--primary-accent-color);
+      text-decoration-line: underline;
+      font-style: italic;
+      color: var(--primary-accent-color);
 
-    &:hover {
-      color: var(--secondary-accent-color);
+      &:hover {
+        color: var(--secondary-accent-color);
+      }
     }
   }
-}
 
   .login-form {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: .3rem;
+    gap: 0.3rem;
     align-items: center;
-    .input-container{
+    .input-container {
       position: relative;
       .icon {
         position: absolute;
@@ -142,13 +238,14 @@ function submit() {
         color: #d3d3d3;
         margin-top: 0.5rem;
         background-color: var(--secondary-bg-color);
-        border-radius: .6rem;
+        border-radius: 0.6rem;
         padding: 0.6rem 1rem;
         padding-left: 2.5rem;
-        &:focus{
+        transition: all 0.3s;
+        &:focus {
           border: 1px solid var(--primary-accent-color);
         }
-        &::placeholder{
+        &::placeholder {
           font-style: italic;
           font-weight: 300;
         }
@@ -156,25 +253,18 @@ function submit() {
     }
   }
 
-  .forgot{
+  .forgot {
     cursor: pointer;
-    margin: .7rem 0;
-     text-decoration-line: underline;
+    margin: 0.7rem 0;
+    text-decoration-line: underline;
     font-style: italic;
     color: var(--primary-accent-color);
-  font-size: .9rem;
-  &:hover{
-    color: var(--secondary-accent-color);
-  }
+    font-size: 0.9rem;
+    &:hover {
+      color: var(--secondary-accent-color);
+    }
   }
 
-  .submit-btn{
-    width: 100%;
-    color: var(--primary-accent-color);
-    border-color: var(--primary-accent-color);
-    padding: .7rem 2rem;
-    border-radius: 100rem;
-  }
 }
 
 .login-enter-active,
@@ -183,7 +273,7 @@ function submit() {
 }
 
 .login-enter-from {
-  transform: translate(-50%, -50%) scale(.9);
+  transform: translate(-50%, -50%) scale(0.9);
   opacity: 0;
 }
 
