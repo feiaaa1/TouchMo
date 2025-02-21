@@ -39,6 +39,8 @@ async function getInfo() {
     ElMessage({
       message: '获取演员信息失败' + error,
       type: 'error',
+      plain: true,
+
     })
   }
 }
@@ -54,11 +56,15 @@ async function submitFollow() {
     ElMessage({
       message: '关注成功',
       type: 'success',
+      plain: true,
+
     })
   } catch (error) {
     ElMessage({
       message: '关注失败' + error,
       type: 'error',
+      plain: true,
+
     })
   } finally {
     getInfo()
@@ -74,11 +80,15 @@ async function submitRemoveFollow() {
     ElMessage({
       message: '取消关注成功',
       type: 'success',
+      plain: true,
+
     })
   } catch (error) {
     ElMessage({
       message: '取消关注失败' + error,
       type: 'error',
+      plain: true,
+
     })
   } finally {
     getInfo()

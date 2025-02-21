@@ -44,6 +44,12 @@ export function getMovieComment(data) {
   })
 }
 
+//查询指定评论
+export function getCommentDetail(commentId) {
+  return request.get(`/user/comment?commentId=${commentId}`)
+}
+
+
 //用户评论电影
 export function subMovieComment(data) {
   return request.post('/user/comment', data)
@@ -60,7 +66,7 @@ export function replyMovieComment(data) {
 }
 
 //用户查看更多评论
-export function getMoreMovieComment(data) {
+export function getRepliesCommentList(data) {
   return request.get('/user/comment/children', {
     params: data,
   })

@@ -98,6 +98,8 @@ function handleFavorite() {
         title: 'Success',
         message: '创建成功',
         type: 'success',
+      plain: true,
+
       })
       isCreate.value = false
       userStore.getUser()
@@ -119,6 +121,8 @@ function handleFavorite() {
       ElMessage({
         message: '修改成功',
         type: 'success',
+      plain: true,
+
       })
       userStore.getUser()
     })
@@ -155,6 +159,8 @@ async function handleMovie(favoritesId) {
       ElMessage({
         message: '收藏成功！',
         type: 'success',
+      plain: true,
+
       })
     } else {
       const params = {
@@ -168,6 +174,8 @@ async function handleMovie(favoritesId) {
       ElMessage({
         message: '移动成功！',
         type: 'success',
+      plain: true,
+
       })
     }
   } catch (err) {

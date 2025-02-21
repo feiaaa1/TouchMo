@@ -30,8 +30,10 @@ watch(() => route.params.tagId, async (newVal) => {
       isLoadComplete.value = true
     } else {
       ElMessage({
-        message: res.msg,
+        message: '获取失败 '+res.msg,
         type: 'error',
+          plain: true,
+
       })
     }
 

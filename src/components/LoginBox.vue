@@ -78,6 +78,7 @@ function validation() {
     ElMessage({
       message: '用户名长度至少为6位',
       type: 'warning',
+      plain: true,
     })
     return false
   }
@@ -85,6 +86,8 @@ function validation() {
     ElMessage({
       message: '密码长度至少为6位',
       type: 'warning',
+      plain: true,
+
     })
     return false
   }
@@ -96,13 +99,12 @@ function validation() {
 import ButtonEle from './ButtonEle.vue'
 //提交登录、注册逻辑
 async function submit() {
+  //开启加载动画
+      isLoading.value = true
   try {
     if (title.value === 'Login') {
-      //开启加载动画
-      isLoading.value = true
       //表单验证
       if (!validation()) {
-        isLoading.value = false
         return
       }
       //登录请求
@@ -117,22 +119,18 @@ async function submit() {
           message: '登录成功',
           type: 'success',
         })
-        isLoading.value = false
         store.closeBox()
         //登陆成功后刷新页面 重新获取资源
         location.reload(true)
       } else {
         ElNotification({
           title: 'Error',
-          message: res.msg,
+          message: '登录失败，' + res.msg,
           type: 'error',
         })
-        isLoading.value = false
       }
     } else {
-      isLoading.value = true
       if (!validation()) {
-        isLoading.value = false
         return
       }
       const res = await userRegister(username.value, password.value)
@@ -144,21 +142,21 @@ async function submit() {
           message: '注册成功',
           type: 'success',
         })
-        isLoading.value = false
       } else {
         ElNotification({
           title: 'Error',
-          message: res.msg,
+          message: '注册失败，'+res.msg,
           type: 'error',
         })
-        isLoading.value = false
       }
     }
   }
   //状态码不为200，网络错误, 关闭加载动画
   catch (err) {
     console.error(err)
+  } finally {
     isLoading.value = false
+
   }
 }
 

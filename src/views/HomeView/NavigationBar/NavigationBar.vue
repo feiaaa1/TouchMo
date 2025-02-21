@@ -10,8 +10,9 @@
     <BackHomeButton />
     <div class="nav-right-container">
       <RandomPageButton />
-      <SearchButton />
       <ConsoleButton />
+      <SearchButton />
+      <MessageButton />
       <userButton />
     </div>
   </div>
@@ -23,6 +24,7 @@ import RandomPageButton from './SubComponents/RandomPageButton.vue'
 import SearchButton from './SubComponents/SearchButton.vue'
 import ConsoleButton from './SubComponents/ConsoleButton.vue'
 import UserButton from './SubComponents/UserButton.vue'
+import MessageButton from './SubComponents/MessageButton.vue'
 import { useStyleStateStore } from '@/stores/styleState'
 const styleStore = useStyleStateStore()
 

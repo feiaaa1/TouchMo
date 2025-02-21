@@ -99,6 +99,8 @@ function subDeleteFavorites(e, favoriteId) {
     ElMessage({
       message: '删除成功',
       type: 'success',
+          plain: true,
+
     })
     userStore.getUser()
   })

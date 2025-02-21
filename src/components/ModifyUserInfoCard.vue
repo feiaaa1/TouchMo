@@ -118,6 +118,8 @@ const handleSubmit = async () => {
       ElMessage({
         type: 'success',
         message: '修改成功！',
+      plain: true,
+
       })
     styleStore.closeBox()
     isLoading.value = false
@@ -126,11 +128,21 @@ const handleSubmit = async () => {
       ElMessage({
         type: 'error',
         message: `修改失败${res.msg}`,
+      plain: true,
+
       })
       isLoading.value = false
     }
   } catch (error) {
-    console.error(error)
+    {
+      ElMessage({
+        type: 'error',
+        message: `修改失败${error}`,
+      plain: true,
+
+      })
+      isLoading.value = false
+    }
     isLoading.value = false
   }
 }

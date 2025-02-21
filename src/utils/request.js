@@ -43,6 +43,7 @@ axiosInstance.interceptors.response.use(
       ElMessage({
         message: '网络错误',
         type: 'error',
+        plain: true,
       })
     }
     else if (error.message.includes('timeout')) {

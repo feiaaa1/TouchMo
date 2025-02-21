@@ -51,6 +51,8 @@ function subDeleteFollow(id) {
       ElMessage({
         message: '取消成功',
         type: 'success',
+          plain: true,
+
       })
       getFollowList()
     }

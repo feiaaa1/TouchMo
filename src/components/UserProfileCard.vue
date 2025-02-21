@@ -94,6 +94,8 @@ async function handleLogOut() {
   ElMessage({
     message: '退出成功！',
     type: 'success',
+      plain: true,
+
   })
   location.reload(true)
 }

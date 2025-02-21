@@ -10,7 +10,7 @@ export const useUserStore = defineStore('user', () => {
     id: '',
     follow: [],
     favorites: [],
-    avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png',
+    avatar: '',
     name: '',
     sex: '',
   })

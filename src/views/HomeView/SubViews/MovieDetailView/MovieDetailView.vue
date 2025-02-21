@@ -22,24 +22,20 @@
     </header>
     <main>
       <div class="left-container">
+        <!-- 电影介绍 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影介绍</h1>
         </div>
         <p class="description">{{ filmDetail.description }}</p>
-
+        <!-- 电影海报 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影海报</h1>
         </div>
         <img :src="filmDetail.cover" alt="" />
 
-        <div class="title-container">
-          <span class="icon iconfont icon-deloperator"></span>
-          <h1>电影PV</h1>
-        </div>
-        <!-- <M3U8Player :videoUrl="filmSource" /> -->
-
+        <!-- 演职员 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>演职员</h1>
@@ -59,6 +55,7 @@
           </div>
         </div>
 
+        <!-- 评分区 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>评个分吧</h1>
@@ -72,6 +69,7 @@
           @change="handleRateMovie()"
         />
 
+        <!-- 收藏区 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>点击收藏</h1>
@@ -85,12 +83,14 @@
         </button>
         <button v-else class="removeFollowBtn btn" @click="submitRemoveFollow()">已关注</button>
 
+        <!-- 资源获取区 -->
         <div class="title-container">
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影资源</h1>
         </div>
         <button class="source-btn">点我获取</button>
 
+        <!-- 评论区 -->
         <div class="title-container">
           <span class="icon iconfont icon-comment"></span>
           <h1>{{ isEdit ? '修改评论' : '评论' }}</h1>
@@ -100,7 +100,12 @@
           <div class="button-group">
             <ButtonEle
               v-if="isEdit"
-              @click="((isEdit = false), (currentCommentId = null), (commentInput = ''))"
+              @click="
+                ((isEdit = false),
+                (currentModifyCommentId = null),
+                (commentInput = ''),
+                (currentModifyRootComment = null))
+              "
               color="var(--tertiary-font-color)"
               fontSize="16px"
               borderRadius="0.5rem"
@@ -109,7 +114,6 @@
               height="3rem"
               type="button"
               text="取消"
-              :isLoading="isLoading"
             ></ButtonEle>
             <ButtonEle
               @click="handleSubmitComment()"
@@ -150,7 +154,7 @@
                     <button>
                       <!-- 未点赞图标 -->
                       <span
-                        @click="handleCommentAction(item.id, 1)"
+                        @click="handleCommentAction(item.id, 1, item.id)"
                         v-show="item.actionType === null || item.actionType === 0"
                         class="icon iconfont icon-love-empty"
                       ></span>
@@ -169,7 +173,7 @@
                     <button>
                       <!-- 未踩图标 -->
                       <span
-                        @click="handleCommentAction(item.id, 0)"
+                        @click="handleCommentAction(item.id, 0, item.id)"
                         v-show="item.actionType !== 0"
                         class="icon iconfont icon-hate-empty"
                       ></span>
@@ -192,10 +196,18 @@
                   </div>
                   <!-- 修改、删除评论 -->
                   <div class="more">
-                    <button @click="handleEditComment(item.content, item.id)">
-                      <!-- v-if="item.userId === userStore.userInfo.id" -->
-                      <span class="icon iconfont icon-more"></span>
-                    </button>
+                    <PopupSelector
+                      :options="[
+                        { text: '删除', value: 0 },
+                        { text: '修改', value: 1 },
+                      ]"
+                      @select="handleMoreBtnEvent($event, item.id, item.content, item.id)"
+                    >
+                      <button>
+                        <!-- v-if="item.userId === userStore.userInfo.id" -->
+                        <span class="icon iconfont icon-more"></span>
+                      </button>
+                    </PopupSelector>
                   </div>
                 </div>
               </div>
@@ -238,7 +250,7 @@
                           <button>
                             <!-- 未点赞图标 -->
                             <span
-                              @click="handleCommentAction(childItem.id, 1)"
+                              @click="handleCommentAction(childItem.id, 1, item.id)"
                               v-show="childItem.actionType === null || childItem.actionType === 0"
                               class="icon iconfont icon-love-empty"
                             ></span>
@@ -257,7 +269,7 @@
                           <button>
                             <!-- 未踩图标 -->
                             <span
-                              @click="handleCommentAction(childItem.id, 0)"
+                              @click="handleCommentAction(childItem.id, 0, item.id)"
                               v-show="childItem.actionType !== 0"
                               class="icon iconfont icon-hate-empty"
                             ></span>
@@ -279,7 +291,7 @@
                               handleReplyFocus(
                                 childItem.name,
                                 childItem.id,
-                                true,
+                                false,
                                 childItem.rootCommentId,
                               )
                             "
@@ -304,7 +316,7 @@
                 <!-- 子评论未展开时展示 -->
                 <div class="show-more" v-if="!repliesMap.has(item.id)">
                   <span>{{ `共 ${item.children} 条回复，` }}</span>
-                  <button @click="handleGetMoreReplise(item.id, item.children)">点击查看</button>
+                  <button @click="getRepliesComment(item.id, 1, item.children)">点击查看</button>
                 </div>
                 <!-- 子评论展开时展示 -->
                 <div class="pagination" v-else>
@@ -318,19 +330,19 @@
                       v-for="pageIndex in repliesMap.get(item.id).pageList"
                       :key="pageIndex"
                     >
-                      <button @click="handleGetPageReplies(item.id, pageIndex)">
+                      <button @click="getRepliesComment(item.id, pageIndex, item.children)">
                         {{ pageIndex }}
                       </button>
                     </div>
                     <div class="pageBtn">
                       <button
-                        @click="handleGetPageReplies(item.id, repliesMap.get(item.id).curPage + 1)"
+                        @click="getRepliesComment(item.id, repliesMap.get(item.id).curPage + 1)"
                         v-if="repliesMap.get(item.id).curPage < repliesMap.get(item.id).totalPage"
                       >
                         下一页
                       </button>
                       <button
-                        @click="handleGetPageReplies(item.id, repliesMap.get(item.id).curPage - 1)"
+                        @click="getRepliesComment(item.id, repliesMap.get(item.id).curPage - 1)"
                         v-if="repliesMap.get(item.id).curPage > 1"
                       >
                         上一页
@@ -379,6 +391,8 @@
 </template>
 
 <script setup>
+import { delay } from '@/utils/delay'
+import PopupSelector from '@/components/PopupSelector.vue'
 import { ElMessage } from 'element-plus'
 import { useRoute } from 'vue-router'
 import { useRouter } from 'vue-router'
@@ -389,7 +403,7 @@ const userStore = useUserStore()
 const styleStore = useStyleStateStore()
 const route = useRoute()
 const router = useRouter()
-const isLoadComplete = ref(true)
+const isLoadComplete = ref(false)
 
 //获取电影详情信息逻辑
 import { getMovieDetail, getMovieSource } from '@/api/movie'
@@ -416,62 +430,45 @@ function navigateToActorProfile(data) {
 }
 
 //获取电影详情信息
-function getMovie() {
-  getMovieDetail(route.params.id).then((res) => {
-    filmDetail.value = res.data
-    console.log('getFilmDetail--->', filmDetail.value)
-    isLoadComplete.value = true
-  })
+async function getMovie() {
+  try {
+    const res = await getMovieDetail(route.params.id)
+    console.log('获取电影信息getFilmDetail--->', res)
+    if (res.code === 200) {
+      filmDetail.value = res.data
+      isLoadComplete.value = true
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '获取电影信息失败，' + res.msg,
+        plain: true,
+      })
+      return
+    }
 
-  //获取电影pv资源
-  getMovieSource(route.params.id).then((res) => {
-    filmSource.value = res.data
+    //获取电影pv资源
+    getMovieSource(route.params.id).then((res) => {
+      filmSource.value = res.data
 
-    console.log('getMovieSource--->', filmSource.value)
-  })
+      console.log('getMovieSource--->', filmSource.value)
+    })
+  } catch (error) {
+    ElMessage({
+      type: 'error',
+      message: '获取电影信息失败，' + error,
+      plain: true,
+    })
+  }
 }
 
 //获取电影所有评论
 import { getMovieComment } from '@/api/movie'
-//评论列表
-const commentsList = ref([
-  {
-    id: 1, //评论id
-    mediaId: 6, //影视作品id
-    userId: 1, //评论作者id
-    content: '不错', //内容
-    reviewStatus: 1, //审核状态（0表示正在审核中，1表示审核通过，2表示审核不通过）
-    rootCommentId: null, //根评论id（null表示该评论为根评论)
-    parentCommentId: null, //父评论id（null表示该评论为父评论, -1表示回复的评论被删除）
-    thumpsUpNum: 0, //点赞个数
-    actionType: 1, //用户动作（null表示无动作，0表示不赞同，1表示赞同）
-    children: 16, //子评论个数（只有根评论才会查询）
-    name: '周立', //作者名称
-    avatar:
-      'https://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpg', //作者头像
-    createTime: '2025-02-12 15:19:33', //评论创建时间
-    updateTime: '2025-02-12 15:19:33', //评论更新时间
-  },
-  {
-    id: 2, //评论id
-    mediaId: 6, //影视作品id
-    userId: 1, //评论作者id
-    content:
-      '不错https://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpg', //内容
-    reviewStatus: 1, //审核状态（0表示正在审核中，1表示审核通过，2表示审核不通过）
-    rootCommentId: null, //根评论id（null表示该评论为根评论)
-    parentCommentId: null, //父评论id（null表示该评论为父评论, -1表示回复的评论被删除）
-    thumpsUpNum: 10, //点赞个数
-    actionType: 0, //用户动作（null表示无动作，0表示不赞同，1表示赞同）
-    children: 0, //子评论个数（只有根评论才会查询）
-    name: '空银子', //作者名称
-    avatar:
-      'https://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpg', //作者头像
-    createTime: '2025-02-12 15:19:33', //评论创建时间
-    updateTime: '2025-02-12 15:19:33', //评论更新时间
-  },
-])
-//获取评论列表
+//获取子评论列表
+import { getRepliesCommentList } from '@/api/movie'
+//根评论列表
+const commentsList = ref([])
+const repliesMap = ref(new Map()) //用Map存储子评论，键为根评论id，值为对象：子评论数组、当前页、页列表、总页
+//获取根评论列表
 async function getComment() {
   const res = await getMovieComment({
     mediaId: route.params.id,
@@ -479,6 +476,17 @@ async function getComment() {
   })
   console.log('getMovieComment--->', res)
   commentsList.value = res.data.records
+}
+// 获取当前根评论页的子评论列表，刷新当前Map
+async function refreshRepliesComment(rootCommentId) {
+  //获取当前页
+  console.log(repliesMap.value, rootCommentId)
+  if (repliesMap.value.get(rootCommentId)) {
+    let { curPage } = repliesMap.value.get(rootCommentId)
+    await getRepliesComment(rootCommentId, curPage)
+  } else {
+    await getRepliesComment(rootCommentId, 1)
+  }
 }
 
 getComment()
@@ -497,13 +505,16 @@ watch(
 import { subMovieComment, editMovieComment } from '@/api/movie'
 const isEdit = ref(false) //是否在修改评论
 const commentInput = ref('')
-const currentCommentId = ref(null)
+const currentModifyCommentId = ref(null)
+const currentModifyRootComment = ref(null)
 const isLoading = ref(false)
+
+//提交评论逻辑
 async function handleSubmitComment() {
   try {
     isLoading.value = true
     const params = {
-      id: currentCommentId.value,
+      id: currentModifyCommentId.value,
       content: commentInput.value,
       mediaId: route.params.id,
     }
@@ -511,32 +522,44 @@ async function handleSubmitComment() {
       const res = await subMovieComment(params)
       console.log('submitComment--->', res)
       if (res.code === 200) {
+        await getComment()
         ElMessage({
-          message: '评论成功',
+          message: '评论成功，请等待审核通过',
           type: 'success',
+          plain: true,
         })
         commentInput.value = ''
       } else {
         ElMessage({
           message: `评论失败,${res.msg}`,
           type: 'error',
+          plain: true,
         })
       }
     } else {
       const res = await editMovieComment(params)
       console.log('editComment--->', res)
       if (res.code === 200) {
+          //审核通过执行成功逻辑
+          if (currentModifyRootComment.value === currentModifyCommentId.value) {
+            await getComment()
+          } else {
+          await refreshRepliesComment(currentModifyRootComment.value)
+        }
         ElMessage({
-          message: '修改成功',
+          message: '修改成功，请等待审核通过',
           type: 'success',
+          plain: true,
         })
         isEdit.value = false
         commentInput.value = ''
-        currentCommentId.value = null
+        currentModifyCommentId.value = null
+        currentModifyRootComment.value = null
       } else {
         ElMessage({
           message: `修改失败,${res.msg}`,
           type: 'error',
+          plain: true,
         })
       }
     }
@@ -545,13 +568,14 @@ async function handleSubmitComment() {
     ElMessage({
       message: '评论失败' + error,
       type: 'error',
+      plain: true,
     })
   } finally {
     isLoading.value = false
   }
 }
 
-//回复评论
+//回复评论逻辑
 import { replyMovieComment } from '@/api/movie'
 const isReplyLoading = ref(false) //回复按钮加载状态
 const replyCommentInput = ref('') //回复框内容
@@ -566,30 +590,36 @@ async function handleReplyComment() {
     // 若回复的是子评论，则需要拼接回复内容
     const res = await replyMovieComment({
       parentCommentId: replyCommentId.value,
-      replyCommentInput: isReplyRootComment.value
+      content: isReplyRootComment.value
         ? replyCommentInput.value
         : `回复 @${replyCommentUserName.value}: ${replyCommentInput.value}`,
     })
     console.log('replyComment--->', res)
     if (res.code === 200) {
+      // 根据当前回复的评论所在的根评论，刷新子评论列表，显示回复的评论
+      await refreshRepliesComment(showReplyBoxId.value)
+      //回复提交成功，将数据清空
       replyCommentInput.value = ''
       showReplyBoxId.value = null
       replyCommentId.value = null
       replyCommentUserName.value = null
       ElMessage({
-        message: '回复成功',
+        message: '回复成功，请等待审核通过',
         type: 'success',
+        plain: true,
       })
     } else {
       ElMessage({
         message: `回复失败,${res.msg}`,
         type: 'error',
+        plain: true,
       })
     }
   } catch (error) {
     ElMessage({
       message: '回复失败' + error,
       type: 'error',
+      plain: true,
     })
   } finally {
     isReplyLoading.value = false
@@ -622,24 +652,45 @@ function handleReplyFocus(username, commentId, isRootComment, rootCommentId) {
   })
 }
 
-//修改用户评论
-async function handleEditComment(content, commentId) {
-  commentInput.value = content
-  isEdit.value = true
-  currentCommentId.value = commentId
-  document.getElementById('comment-textarea').focus()
-  scrollToElementCenter('comment-textarea')
-}
-//删除用户评论
+// 点击更多按钮逻辑 删除或修改
 import { deleteMovieComment } from '@/api/movie'
-async function handleDeleteComment(commentId) {
-  try {
-    const res = await deleteMovieComment(commentId)
-    console.log('deleteComment--->', res)
-  } catch (error) {
-    console.log(error)
-  } finally {
-    getComment()
+async function handleMoreBtnEvent(value, commentId, content, rootCommentId) {
+  //value 0删除 1修改
+  if (value === 0) {
+    //执行删除逻辑
+    try {
+      const res = await deleteMovieComment(commentId)
+      console.log('deleteComment--->', res)
+      if (res.code === 200) {
+        if (rootCommentId === null) {
+          //为根评论，更新根组件列表
+          getComment()
+        } else {
+          //为子评论，更新当前根组件子评论页列表
+          refreshRepliesComment(rootCommentId)
+        }
+      } else {
+        ElMessage({
+          message: '删除失败,' + res.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
+    } catch (error) {
+      ElMessage({
+        message: '删除失败,' + error,
+        type: 'error',
+        plain: true,
+      })
+    }
+  } else if (value === 1) {
+    //执行修改逻辑
+    commentInput.value = content
+    isEdit.value = true
+    currentModifyCommentId.value = commentId
+    currentModifyRootComment.value = rootCommentId
+    document.getElementById('comment-textarea').focus()
+    scrollToElementCenter('comment-textarea')
   }
 }
 
@@ -647,7 +698,7 @@ async function handleDeleteComment(commentId) {
 import { MovieCommentAction } from '@/api/movie'
 import { removeMovieCommentAction } from '@/api/movie'
 //点赞、踩 评论
-async function handleCommentAction(commentId, actionType) {
+async function handleCommentAction(commentId, actionType, rootCommentId) {
   try {
     const res = await MovieCommentAction({
       commentId,
@@ -656,169 +707,88 @@ async function handleCommentAction(commentId, actionType) {
     console.log('starComment--->', res)
     if (res.code === 200) {
       //成功重新获取数据 更新视图
-      getComment()
+      if (rootCommentId === commentId) {
+        getComment()
+      } else {
+        refreshRepliesComment(rootCommentId)
+      }
     } else {
       ElMessage({
         message: '操作失败,' + res.msg,
         type: 'error',
+        plain: true,
       })
     }
   } catch (error) {
     ElMessage({
       message: '操作失败,' + error,
       type: 'error',
+      plain: true,
     })
   }
 }
 //取消点赞、踩评论
-async function handleRemoveCommentAction(commentId) {
+async function handleRemoveCommentAction(commentId, rootCommentId) {
   try {
     const res = await removeMovieCommentAction(commentId)
     console.log('removeStarComment--->', res)
     if (res.code === 200) {
       //成功重新获取数据 更新视图
-      getComment()
+      if (rootCommentId === commentId) {
+        getComment()
+      } else {
+        refreshRepliesComment(rootCommentId)
+      }
     } else {
       ElMessage({
         message: '操作失败,' + res.msg,
         type: 'error',
+        plain: true,
       })
     }
   } catch (error) {
     ElMessage({
       message: '操作失败,' + error,
       type: 'error',
+      plain: true,
     })
   }
 }
 
 //实现子评论逻辑
-const repliesMap = ref(new Map()) //用Map存储子评论，键为根评论id，值为对象：子评论数组、当前页、页列表
-//获取子评论
-import { getMoreMovieComment } from '@/api/movie'
-//处理‘点击查看按钮’ 获取第一页子评论
-async function handleGetMoreReplise(commentId, totalReplies) {
-  // try {
-  //   const res = await getMoreMovieComment({
-  //     commentId,
-  //     page: 1,
-  //   })
-  //   console.log('getMoreComment--->', res)
-  //   if(res.code === 200) {
-  //     repliesMap.value.set(commentId, { replies: res.data.records, curPage: 1 })
-  //   } else {
-  //     ElMessage({
-  //       message: '获取子评论失败' + res.msg,
-  //       type: 'error',
-  //     })
-  //   }
-  // } catch (error) {
-  //   ElMessage({
-  //     message: '获取子评论失败' + error,
-  //     type: 'error',
-  //   })
-  // }
-  repliesMap.value.set(commentId, {
-    replies: [
-      //记录数组
-      {
-        id: 9, //评论id
-        mediaId: 6, //影视作品id
-        userId: 2, //用户id
-        content: '不错https://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.jpghttps://kyz-media-push.oss-cn-guangzhou.aliyuncs.com/64d58976-3882-47fd-bcef-bb6024a9d7e1_1.j', //内容
-        reviewStatus: 1, //审核状态（0表示审核中，1表示审核通过，2表示审核失败）
-        rootCommentId: 1, //根评论id（null表示根评论）
-        parentCommentId: -1, //父评论id（null表示根评论，-1表示父评论被删除）
-        thumpsUpNum: 6, //点赞个数
-        actionType: 0, //用户动作（0表示不赞同，1表示赞同）
-        children: null, //子评论（只有根评论才会用到）
-        name: '蒸的吸', //用户名称
-        avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png', //用户头像
-        createTime: '2025-02-13 20:22:24', //评论创建时间
-        updateTime: '2025-02-13 20:22:24', //评论更新时间
-      },
-      {
-        id: 9, //评论id
-        mediaId: 6, //影视作品id
-        userId: 2, //用户id
-        content: '不错', //内容
-        reviewStatus: 1, //审核状态（0表示审核中，1表示审核通过，2表示审核失败）
-        rootCommentId: 1, //根评论id（null表示根评论）
-        parentCommentId: -1, //父评论id（null表示根评论，-1表示父评论被删除）
-        thumpsUpNum: 6, //点赞个数
-        actionType: 0, //用户动作（0表示不赞同，1表示赞同）
-        children: null, //子评论（只有根评论才会用到）
-        name: '蒸的吸', //用户名称
-        avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png', //用户头像
-        createTime: '2025-02-13 20:22:24', //评论创建时间
-        updateTime: '2025-02-13 20:22:24', //评论更新时间
-      },
-      {
-        id: 9, //评论id
-        mediaId: 6, //影视作品id
-        userId: 2, //用户id
-        content: '不错', //内容
-        reviewStatus: 1, //审核状态（0表示审核中，1表示审核通过，2表示审核失败）
-        rootCommentId: 1, //根评论id（null表示根评论）
-        parentCommentId: -1, //父评论id（null表示根评论，-1表示父评论被删除）
-        thumpsUpNum: 6, //点赞个数
-        actionType: 0, //用户动作（0表示不赞同，1表示赞同）
-        children: null, //子评论（只有根评论才会用到）
-        name: '蒸的吸', //用户名称
-        avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png', //用户头像
-        createTime: '2025-02-13 20:22:24', //评论创建时间
-        updateTime: '2025-02-13 20:22:24', //评论更新时间
-      },
-      {
-        id: 9, //评论id
-        mediaId: 6, //影视作品id
-        userId: 2, //用户id
-        content: '不错', //内容
-        reviewStatus: 1, //审核状态（0表示审核中，1表示审核通过，2表示审核失败）
-        rootCommentId: 1, //根评论id（null表示根评论）
-        parentCommentId: -1, //父评论id（null表示根评论，-1表示父评论被删除）
-        thumpsUpNum: 6, //点赞个数
-        actionType: 0, //用户动作（0表示不赞同，1表示赞同）
-        children: null, //子评论（只有根评论才会用到）
-        name: '蒸的吸', //用户名称
-        avatar: 'https://i.ibb.co/dwMMvY9G/Snipaste-2025-02-18-14-55-43.png', //用户头像
-        createTime: '2025-02-13 20:22:24', //评论创建时间
-        updateTime: '2025-02-13 20:22:24', //评论更新时间
-      },
-    ],
-    curPage: 1,
-    totalPage: Math.floor(totalReplies / 10) + 1,
-    pageList: calcPageList(Math.floor(totalReplies / 10) + 1, 1),
-  })
-  console.log('repliesMap--->', repliesMap.value.get(commentId))
-}
 //维护动态分页列表,返回分页列表
 function calcPageList(totalPage, curPage) {
   console.log(totalPage)
   return Array.from({ length: totalPage }, (v, k) => k + 1)
 }
-//获取分页子评论
-async function handleGetPageReplies(commentId, page) {
+//获取不同页子评论
+async function getRepliesComment(commentId, page) {
   try {
-    const res = await getMoreMovieComment({
+    const res = await getRepliesCommentList({
       commentId,
       page,
     })
     console.log('getMoreComment--->', res)
     if (res.code === 200) {
       //成功后更新子评论列表和当前页码，重新计算分页列表，更新视图
-      repliesMap.value.set(commentId, { replies: res.data.records, curPage: page })
-      calcPageList()
+      repliesMap.value.set(commentId, {
+        replies: res.data.records,
+        curPage: page,
+        totalPage: Math.floor(res.data.total / 10) + 1,
+        pageList: calcPageList(Math.floor(res.data.total / 10) + 1, 1),
+      })
     } else {
       ElMessage({
         message: '获取子评论失败' + res.msg,
         type: 'error',
+        plain: true,
       })
     }
   } catch (error) {
     ElMessage({
       message: '获取子评论失败' + error,
       type: 'error',
+      plain: true,
     })
   }
 }
@@ -846,12 +816,14 @@ async function handleRateMovie() {
     ElMessage({
       message: '评分成功',
       type: 'success',
+      plain: true,
     })
   } catch (error) {
     console.error('提交用户信息时出错：', error)
     ElMessage({
       message: '评分失败',
       type: 'error',
+      plain: true,
     })
   }
 }
@@ -1076,7 +1048,7 @@ async function handleRateMovie() {
                 .more {
                   margin-left: auto;
                   margin-right: 20px;
-                  opacity: 0;
+                  opacity: 1;
                 }
               }
             }
@@ -1087,7 +1059,6 @@ async function handleRateMovie() {
             margin-left: auto;
 
             .child-comment-item {
-              border-bottom: 1px solid var(--primary-border-color);
               width: 100%;
               min-height: 3rem;
               display: flex;
@@ -1124,13 +1095,12 @@ async function handleRateMovie() {
                     }
                   }
                   .child-comment-content-name {
-
                     .child-comment-name {
                       font-size: 1.1rem;
                       color: var(--primary-accent-color);
                       width: auto;
                       display: inline-block;
-                      margin-right: .7rem;
+                      margin-right: 0.7rem;
                     }
 
                     .child-comment-content {
