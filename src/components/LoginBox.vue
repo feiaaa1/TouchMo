@@ -6,12 +6,7 @@
       <form @submit.prevent="submit()" class="login-form">
         <div class="input-container">
           <span class="icon iconfont icon-username"></span>
-          <input
-            type="text"
-            v-model="username"
-            placeholder="Enter your username"
-            id="username"
-          />
+          <input type="text" v-model="username" placeholder="Enter your username" id="username" />
         </div>
 
         <div class="input-container">
@@ -28,9 +23,9 @@
         <!-- 占位当作空格 -->
         <p v-else class="forgot"></p>
         <ButtonEle
-        type="submit"
+          type="submit"
           :text="title"
-          height="3.2rem"
+          height="3.2"
           padding="0.7rem 2rem"
           color="var(--primary-accent-color)"
           border-radius="100rem"
@@ -87,20 +82,17 @@ function validation() {
       message: '密码长度至少为6位',
       type: 'warning',
       plain: true,
-
     })
     return false
   }
   return true
 }
 
-
-
 import ButtonEle from './ButtonEle.vue'
 //提交登录、注册逻辑
 async function submit() {
   //开启加载动画
-      isLoading.value = true
+  isLoading.value = true
   try {
     if (title.value === 'Login') {
       //表单验证
@@ -145,18 +137,16 @@ async function submit() {
       } else {
         ElNotification({
           title: 'Error',
-          message: '注册失败，'+res.msg,
+          message: '注册失败，' + res.msg,
           type: 'error',
         })
       }
     }
-  }
-  //状态码不为200，网络错误, 关闭加载动画
-  catch (err) {
+  } catch (err) {
+    //状态码不为200，网络错误, 关闭加载动画
     console.error(err)
   } finally {
     isLoading.value = false
-
   }
 }
 
@@ -170,7 +160,6 @@ watch(styleStore.showBoxList, (newVal) => {
 </script>
 
 <style lang="scss" scoped>
-
 .login-box {
   position: fixed;
   z-index: 25;
@@ -262,7 +251,6 @@ watch(styleStore.showBoxList, (newVal) => {
       color: var(--secondary-accent-color);
     }
   }
-
 }
 
 .login-enter-active,

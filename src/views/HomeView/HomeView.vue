@@ -58,13 +58,14 @@ userStore.getUser()
   --quaternary-bg-color: #111014;
   --primary-border-color: #444444;
   --secondary-border-color: #858585;
+  --tertiary-border-color:#363638;
   --primary-font-color: #cbcbcb;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;
   --quaternary-font-color: #e3e3e3;
   --primary-accent-color: #e9b348;
   --secondary-accent-color: #d5a62f;
-  --primary-func-color: #4759e6;
+  --primary-func-color: #4a5ef8;
   --tertiary-func-color: #4ce89a;
   --secondary-func-color: #ce3e3e;
   --quaternary-func-color: #1c52c6;

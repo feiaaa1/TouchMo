@@ -36,7 +36,7 @@
         <ButtonEle
          type="submit"
           text="保存"
-          height="3.2rem"
+          height="3.2"
           padding="0.7rem 2rem"
           color="var(--primary-accent-color)"
           border-radius="100rem"

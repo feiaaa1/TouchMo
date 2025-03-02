@@ -111,7 +111,6 @@ export function addMovieToFavorites(data) {
 
 //从收藏夹移除电影
 export function deleteMovieFromFavorites(data) {
-  console.log(data)
   return request.delete('/user/favorites/film', {
     params: data,
   })
@@ -146,4 +145,23 @@ export function deleteHistorySearch() {
 //用户评分电影
 export function rateMovie(data) {
   return request.put('/user/media/score', data)
+}
+
+//查看消息栏
+export function fetchMessage(data) {
+  return request.get('/user/message', {
+    params: data,
+  })
+}
+
+//批量删除消息
+export function removeMessage(data) {
+  return request.delete(`/user/message?${data}`)
+}
+
+//批量已读消息
+export function setMessagesReadBatch(data) {
+  return request.put(
+    `/user/message?${data}`
+  )
 }

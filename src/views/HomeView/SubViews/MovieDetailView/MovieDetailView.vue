@@ -111,7 +111,7 @@
               borderRadius="0.5rem"
               padding="0.6rem 1rem"
               width="8rem"
-              height="3rem"
+              height="3"
               type="button"
               text="取消"
             ></ButtonEle>
@@ -122,7 +122,7 @@
               borderRadius="0.5rem"
               padding="0.6rem 1rem"
               width="8rem"
-              height="3rem"
+              height="3"
               type="button"
               text="发布"
               :isLoading="isLoading"
@@ -160,7 +160,7 @@
                       ></span>
                       <!-- 已点赞图标 -->
                       <span
-                        @click="handleRemoveCommentAction(item.id)"
+                        @click="handleRemoveCommentAction(item.id, item.id)"
                         v-show="item.actionType === 1"
                         class="icon iconfont icon-love-fill"
                       ></span>
@@ -179,7 +179,7 @@
                       ></span>
                       <!-- 已踩图标 -->
                       <span
-                        @click="handleRemoveCommentAction(item.id)"
+                        @click="handleRemoveCommentAction(item.id, item.id)"
                         v-show="item.actionType === 0"
                         class="icon iconfont icon-hate-fill"
                       ></span>
@@ -256,7 +256,9 @@
                             ></span>
                             <!-- 已点赞图标 -->
                             <span
-                              @click="handleRemoveCommentAction(childItem.id)"
+                              @click="
+                                handleRemoveCommentAction(childItem.id, childItem.rootCommentId)
+                              "
                               v-show="childItem.actionType === 1"
                               class="icon iconfont icon-love-fill"
                             ></span>
@@ -275,7 +277,9 @@
                             ></span>
                             <!-- 已踩图标 -->
                             <span
-                              @click="handleRemoveCommentAction(childItem.id)"
+                              @click="
+                                handleRemoveCommentAction(childItem.id, childItem.rootCommentId)
+                              "
                               v-show="childItem.actionType === 0"
                               class="icon iconfont icon-hate-fill"
                             ></span>
@@ -300,11 +304,27 @@
                           </button>
                         </div>
                         <!-- 修改、删除评论 -->
+                        <!-- 修改、删除评论 -->
                         <div class="more">
-                          <button @click="handleEditComment(childItem.content, childItem.id)">
-                            <!-- v-if="item.userId === userStore.userInfo.id" -->
-                            <span class="icon iconfont icon-more"></span>
-                          </button>
+                          <PopupSelector
+                            :options="[
+                              { text: '删除', value: 0 },
+                              { text: '修改', value: 1 },
+                            ]"
+                            @select="
+                              handleMoreBtnEvent(
+                                $event,
+                                childItem.id,
+                                item.content,
+                                childItem.rootCommentId,
+                              )
+                            "
+                          >
+                            <button>
+                              <!-- v-if="item.userId === userStore.userInfo.id" -->
+                              <span class="icon iconfont icon-more"></span>
+                            </button>
+                          </PopupSelector>
                         </div>
                       </div>
                     </div>
@@ -375,7 +395,7 @@
                   borderRadius="0.5rem"
                   padding="0.6rem 1rem"
                   width="6rem"
-                  height="2.7rem"
+                  height="2.7"
                   type="button"
                   text="发布"
                   :isLoading="isReplyLoading"
@@ -473,6 +493,8 @@ async function getComment() {
   const res = await getMovieComment({
     mediaId: route.params.id,
     page: 1,
+    sortType: 0,
+    sortOrder: 1,
   })
   console.log('getMovieComment--->', res)
   commentsList.value = res.data.records
@@ -540,10 +562,10 @@ async function handleSubmitComment() {
       const res = await editMovieComment(params)
       console.log('editComment--->', res)
       if (res.code === 200) {
-          //审核通过执行成功逻辑
-          if (currentModifyRootComment.value === currentModifyCommentId.value) {
-            await getComment()
-          } else {
+        //审核通过执行成功逻辑
+        if (currentModifyRootComment.value === currentModifyCommentId.value) {
+          await getComment()
+        } else {
           await refreshRepliesComment(currentModifyRootComment.value)
         }
         ElMessage({
@@ -662,7 +684,7 @@ async function handleMoreBtnEvent(value, commentId, content, rootCommentId) {
       const res = await deleteMovieComment(commentId)
       console.log('deleteComment--->', res)
       if (res.code === 200) {
-        if (rootCommentId === null) {
+        if (rootCommentId === commentId) {
           //为根评论，更新根组件列表
           getComment()
         } else {

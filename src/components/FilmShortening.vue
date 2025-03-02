@@ -1,49 +1,44 @@
 <template>
-  <div class="shorteing-container" ref="container" @click="navigateToMovieDetail(props.id)">
+  <div
+    class="shorteing-container"
+    ref="container"
+    @click="navigateToMovieDetail(props.filmItem.id)"
+  >
     <!-- 热门图标 -->
     <span v-if="isShowHotLabel" class="icon iconfont icon-hotLabel">
       <div class="bg-white"></div>
     </span>
     <!-- 图片容器 -->
     <div class="img-container">
-      <!-- 状态
-  <span v-if="isShowStatus" class="status">{{ props.status }}</span> -->
       <img :class="{ isShowOpacity: isLoadImgComplete }" ref="img" :src="imgSrc" alt="" />
     </div>
     <!-- 详情容器 -->
     <div class="detail-container">
       <!-- 详情容器头部 -->
       <div class="detail-container-header">
-        <h1>{{ '【' + props.language + '】 ' + props.title }}</h1>
+        <h1>{{ props.filmItem.title + '【' + props.filmItem.status + '】 ' }}</h1>
       </div>
 
       <!-- 详情容器主体 -->
       <div class="detail-container-main" v-if="props.isShowRate">
         <el-rate
-          :model-value="props.score / 2"
+          :model-value="props.filmItem.score / 2"
           disabled
           show-score
           text-color="var(--always-yellow-color)"
-          :scoreTemplate="`${props.score.toFixed(1)}`"
+          :scoreTemplate="`${props.filmItem.score.toFixed(1)}`"
           style="font-weight: 600"
         />
       </div>
 
       <!-- 详情容器底部 -->
       <div class="detail-container-footer">
-        <!-- 标签容器 -->
-        <div ref="tag-list" class="tags-container">
-          <TagComponent
-            v-for="item in props.labels"
-            :key="item.id"
-            :name="item.name"
-            :id="item.id"
-          />
-        </div>
         <!-- 日期容器 -->
         <div class="releaseTime-container" v-if="props.isShowReleaseTime">
           <span class="icon iconfont icon-releaseTime"></span>
-          <p>{{ props.releaseTime?props.releaseTime.slice(0,4):'暂无日期' }}</p>
+          <p>
+            {{ props.filmItem.releaseTime ? props.filmItem.releaseTime.slice(0, 4) : '暂无日期' }}
+          </p>
         </div>
         <!-- 更多容器 -->
         <div class="more-container">
@@ -68,20 +63,8 @@ import TagComponent from './TagComponent.vue'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, useTemplateRef } from 'vue'
 
-
-
 const props = defineProps({
-  cover: String,
-  area: String,
-  title: String,
-  language: String,
-  categories: Object,
-  viewNum: Number,
-  id: Number,
-  score: Number,
-  status: String,
-  releaseTime: String,
-  labels: Array,
+  filmItem: Object,
   isMore: {
     type: Boolean,
     default: false,
@@ -98,20 +81,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  isShowStatus: {
-    type: Boolean,
-    default: false,
-  },
 })
-
-
 
 //实现图片懒加载功能
 const isLoadImgComplete = ref(false)
 const imgSrc = ref('')
 const img = useTemplateRef('img')
 function lazyLoading() {
-   const observer = new IntersectionObserver((changes) => {
+  const observer = new IntersectionObserver((changes) => {
     //changes 是被观察的元素集合
     for (let i = 0, len = changes.length; i < len; i++) {
       let change = changes[i]
@@ -120,7 +97,7 @@ function lazyLoading() {
         //获取图片元素
         const imgElement = change.target
         //更改img元素的src
-        imgSrc.value = props.cover
+        imgSrc.value = props.filmItem.cover
         //设置当img图片资源加载完毕后才显示图片(添加类并修改透明度)
         imgElement.onload = function () {
           isLoadImgComplete.value = true
@@ -132,13 +109,9 @@ function lazyLoading() {
   observer.observe(img.value)
 }
 
-
 // 实现文字缩放
 //获取容器元素
-const container = useTemplateRef('container');
-
-
-
+const container = useTemplateRef('container')
 
 onMounted(() => {
   lazyLoading()
@@ -204,8 +177,6 @@ function submitDeleteFavorites(e) {
     }
   }
 
-
-
   .icon-hotLabel {
     position: absolute;
     top: 0;
@@ -226,7 +197,6 @@ function submitDeleteFavorites(e) {
     }
   }
 
-
   .img-container {
     flex-shrink: 0;
     width: 100%;
@@ -239,7 +209,7 @@ function submitDeleteFavorites(e) {
       left: 0;
       z-index: 20;
       color: var(--primary-accent-color);
-      font-size: .8rem;
+      font-size: 0.8rem;
       padding: 0.2rem 0.5rem;
     }
 
@@ -257,7 +227,7 @@ function submitDeleteFavorites(e) {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      transition: all .2s;
+      transition: all 0.2s;
       opacity: 0;
     }
   }
@@ -301,21 +271,6 @@ function submitDeleteFavorites(e) {
 
     .detail-container-footer {
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .tags-container {
-        display: flex;
-        width: 80%;
-        overflow: hidden;
-        margin-left: -0.4rem;
-        opacity: 0.9;
-
-        .hidden {
-          display: none !important;
-        }
-      }
 
       .releaseTime-container {
         display: flex;
@@ -324,7 +279,9 @@ function submitDeleteFavorites(e) {
         color: var(--primary-font-color);
         opacity: 0.8;
         font-size: 0.9rem;
-        margin-left: 0.5rem;
+        margin-left: auto;
+        margin-right: 1rem;
+        width: fit-content;
         gap: 0.5rem;
         transform: translateX(1rem);
         .icon {

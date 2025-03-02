@@ -1,12 +1,8 @@
 <template>
-          <button
-        :style="styleObject"
-          :disabled="isLoading"
-          :type="props.type"
-        >
-          <div v-show="isLoading" class="loading"></div>
-          <p v-show="!isLoading">{{ props.text }}</p>
-        </button>
+  <button :style="styleObject" :disabled="isLoading" :type="props.type">
+    <div :style="loadingStyleObj" v-show="isLoading" class="loading"></div>
+    <p v-show="!isLoading">{{ props.text }}</p>
+  </button>
 </template>
 
 <script setup>
@@ -27,7 +23,7 @@ const props = defineProps({
   },
   height: {
     type: String,
-    default: '2rem',
+    default: '2',
   },
   padding: {
     type: String,
@@ -53,13 +49,17 @@ const props = defineProps({
 
 const styleObject = ref({
   color: props.color,
-  backgroundColor: props.bgColor,
   width: props.width,
-  height: props.height,
+  height: props.height + 'rem',
   padding: props.padding,
   fontSize: props.fontSize,
   border: `0.125em solid ${props.color}`,
   borderRadius: props.borderRadius,
+})
+
+const loadingStyleObj = ref({
+  border: `2px solid ${props.color}`,
+  height: (props.height * 2) / 3 + 'rem',
 })
 </script>
 
@@ -73,9 +73,9 @@ const styleObject = ref({
     transform: rotate(360deg);
   }
 }
-button{
+button {
   appearance: none;
-  background-color: transparent;
+  background-color: var(--tertiary-bg-color);
   border: 0.125em solid var(--primary-font-color);
   border-radius: 0.9375em;
   box-sizing: border-box;
@@ -98,16 +98,16 @@ button{
 
   &:hover {
     border: 0.125em solid var(--hover-color);
-    background-color: var(--tertiary-bg-color);
+    background-color: var(--tertiary-border-color);
   }
 
-      .loading {
-      height: 100%;
-      aspect-ratio: 1/1;
-      border: 2px solid var(--primary-accent-color);
-      border-top-color: transparent;
-      border-radius: 100%;
-      animation: circle infinite 0.75s linear;
-    }
+  .loading {
+    aspect-ratio: 1/1;
+    border-top-color: transparent !important;
+    border-radius: 100%;
+    animation: circle infinite 0.75s linear;
+    margin: 0 auto;
+    width: fit-content;
+  }
 }
 </style>

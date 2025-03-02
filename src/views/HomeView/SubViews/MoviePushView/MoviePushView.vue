@@ -29,7 +29,13 @@
           <span class="icon iconfont icon-shoMore"></span>
           <span class="showMoreBtn" @click="router.push('tags')">更多</span>
         </div>
-        <FilmList :filmList="movieList" :columns="2" :isShowRate="true" :isShowReleaseTime="true" :isShowStatus="true" />
+        <FilmList
+          :filmList="movieList"
+          :columns="2"
+          :isShowRate="true"
+          :isShowReleaseTime="true"
+          :isShowStatus="true"
+        />
       </div>
       <div class="ranking-section">
         <RankingBox :movieList="rankingMovieList" />
@@ -55,21 +61,21 @@ import { getPushMovieList } from '@/api/movie'
 const movieList = ref([])
 const isLoadComplete = ref(true)
 getPushMovieList().then((data) => {
-  console.log('getPushMovieList----->',data)
+  console.log('获取推荐电影列表getPushMovieList----->', data)
   movieList.value = data.data
 })
 
 import { getAllTagsList } from '@/api/movie'
 const tagList = ref([])
 getAllTagsList().then((data) => {
-  console.log('tagList===>', data)
+  console.log('获取所有标签tagList===>', data)
   tagList.value = data.data.slice(0, 8)
 })
 
 import { getHotPushMovieList } from '@/api/movie'
 const rankingMovieList = ref([])
 getHotPushMovieList().then((data) => {
-  console.log('hotPushMovieList===>', data)
+  console.log('获取热门电影列表hotPushMovieList===>', data)
   rankingMovieList.value = data.data
   isLoadComplete.value = true
 })
