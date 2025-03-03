@@ -58,7 +58,7 @@ userStore.getUser()
   --quaternary-bg-color: #111014;
   --primary-border-color: #444444;
   --secondary-border-color: #858585;
-  --tertiary-border-color:#363638;
+  --tertiary-border-color:#272729;
   --primary-font-color: #cbcbcb;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;

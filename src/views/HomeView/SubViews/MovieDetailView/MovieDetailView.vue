@@ -5,7 +5,7 @@
       <div class="header-main-container">
         <div class="tags-container">
           <TagComponent
-            v-for="item in filmDetail.categories"
+            v-for="item in filmDetail.labels"
             :key="item.id"
             :name="item.name"
             :id="item.id"
@@ -13,7 +13,11 @@
           />
         </div>
 
-        <h1>{{ '【' + filmDetail.language + '】' + filmDetail.title }}</h1>
+        <h1>
+          {{
+            '【' + filmDetail.languages.map((item) => item.name).join('/') + '】' + filmDetail.title
+          }}
+        </h1>
         <div class="releaseTime-container">
           <span class="icon iconfont icon-calendar"></span>
           <span>{{ '发表于 ' + filmDetail.releaseTime }}</span>
@@ -43,14 +47,38 @@
         <div class="workers-container">
           <div
             @click="navigateToActorProfile(item)"
-            v-for="item in worksList"
+            v-for="item in filmDetail.memberRoleListMap['导演']"
             :key="item.id"
             class="workers-box"
           >
-            <img :src="item.avatar" alt="" />
+            <img :src="item.img" alt="" />
             <div class="workers-details-container">
               <h2>{{ item.name }}</h2>
-              <p>{{ item.role === 1 ? '演员' : '导演' }}</p>
+              <p>导演</p>
+            </div>
+          </div>
+          <div
+            @click="navigateToActorProfile(item)"
+            v-for="item in filmDetail.memberRoleListMap['演员']"
+            :key="item.id"
+            class="workers-box"
+          >
+            <img :src="item.img" alt="" />
+            <div class="workers-details-container">
+              <h2>{{ item.name }}</h2>
+              <p>演员</p>
+            </div>
+          </div>
+          <div
+            @click="navigateToActorProfile(item)"
+            v-for="item in filmDetail.memberRoleListMap['编剧']"
+            :key="item.id"
+            class="workers-box"
+          >
+            <img :src="item.img" alt="" />
+            <div class="workers-details-container">
+              <h2>{{ item.name }}</h2>
+              <p>编剧</p>
             </div>
           </div>
         </div>
@@ -66,7 +94,9 @@
           size="large"
           v-model="rateVal"
           :colors="colors"
-          @change="handleRateMovie()"
+          @change="handleRateMovie"
+          show-score
+          text-color="var(--primary-accent-color)"
         />
 
         <!-- 收藏区 -->
@@ -88,7 +118,14 @@
           <span class="icon iconfont icon-deloperator"></span>
           <h1>电影资源</h1>
         </div>
-        <button class="source-btn">点我获取</button>
+        <ButtonEle
+          color="var(--primary-accent-color)"
+          text="点击获取"
+          width="10rem"
+          height="4"
+          font-size="1.2rem"
+          @click="router.push({ name: 'moviePlayer', params: { id: route.params.id } })"
+        />
 
         <!-- 评论区 -->
         <div class="title-container">
@@ -431,14 +468,6 @@ import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 
 const filmDetail = ref({})
 const filmSource = ref('')
-//工作人员数组
-const worksList = computed(() => {
-  if (filmDetail.value.directors || filmDetail.value.actors) {
-    return [...filmDetail.value.directors, ...filmDetail.value.actors]
-  } else {
-    return []
-  }
-})
 //跳转人员详情逻辑
 function navigateToActorProfile(data) {
   router.push({
@@ -457,6 +486,10 @@ async function getMovie() {
     if (res.code === 200) {
       filmDetail.value = res.data
       isLoadComplete.value = true
+      if (filmDetail.value.userScore !== null) {
+        isScore.value = true
+        rateVal.value = filmDetail.value.userScore / 2
+      }
     } else {
       ElMessage({
         type: 'error',
@@ -465,13 +498,6 @@ async function getMovie() {
       })
       return
     }
-
-    //获取电影pv资源
-    getMovieSource(route.params.id).then((res) => {
-      filmSource.value = res.data
-
-      console.log('getMovieSource--->', filmSource.value)
-    })
   } catch (error) {
     ElMessage({
       type: 'error',
@@ -816,8 +842,7 @@ async function getRepliesComment(commentId, page) {
 }
 
 // 实现评分逻辑，例如发送请求到后端保存评分
-import { rateMovie } from '@/api/user'
-import M3U8Player from '@/components/M3U8Player.vue'
+import { firstRateMovie, modifyRateMovie } from '@/api/user'
 import ButtonEle from '@/components/ButtonEle.vue'
 const colors = ref([
   'var(--primary-border-color)',
@@ -825,25 +850,38 @@ const colors = ref([
   'var(--secondary-accent-color)',
 ])
 const rateVal = ref(0)
+const isScore = ref(false)
 async function handleRateMovie() {
   const params = {
-    id: route.params.id,
+    mediaId: +route.params.id,
     score: +rateVal.value * 2,
-    userId: userStore.userInfo.id,
   }
-
   try {
-    const res = await rateMovie(params)
+    let res
+    if (!isScore.value) {
+      res = await firstRateMovie(params)
+    } else {
+      res = await modifyRateMovie(params)
+    }
+
     console.log('rate--->', res)
-    ElMessage({
-      message: '评分成功',
-      type: 'success',
-      plain: true,
-    })
+    if (res.code === 200) {
+      ElMessage({
+        message: '评分成功',
+        type: 'success',
+        plain: true,
+      })
+      isScore.value = true
+    } else {
+      ElMessage({
+        message: '评分失败，' + res.msg,
+        type: 'error',
+        plain: true,
+      })
+    }
   } catch (error) {
-    console.error('提交用户信息时出错：', error)
     ElMessage({
-      message: '评分失败',
+      message: '评分失败，' + error,
       type: 'error',
       plain: true,
     })
@@ -1262,6 +1300,7 @@ async function handleRateMovie() {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            gap: 5px;
 
             h2 {
               white-space: nowrap;
@@ -1269,42 +1308,10 @@ async function handleRateMovie() {
               text-overflow: ellipsis;
               margin-bottom: -5px;
             }
+            p {
+              opacity: 0.6;
+            }
           }
-        }
-      }
-
-      .source-btn {
-        appearance: none;
-        background-color: transparent;
-        border: 0.125em solid var(--primary-accent-color);
-        border-radius: 0.5rem;
-        box-sizing: border-box;
-        color: var(--primary-accent-color);
-        cursor: pointer;
-        display: inline-block;
-        font-family: Roobert, sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        outline: none;
-        padding: 0.6rem 1rem;
-        text-align: center;
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        will-change: transform;
-        width: 8rem;
-        align-self: flex-end;
-
-        &:hover {
-          color: var(--secondary-accent-color);
-          border: 0.125em solid var(--secondary-accent-color);
-          background-color: var(--tertiary-bg-color);
-          transform: translateY(-2px);
-        }
-
-        &:active {
-          transform: translateY(0);
         }
       }
     }

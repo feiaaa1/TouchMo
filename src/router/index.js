@@ -33,9 +33,9 @@ const router = createRouter({
           component: () => import('@/views/HomeView/SubViews/TagDisplayView/TagDisplayView.vue'),
         },
         {
-          path: 'tags/:tagId',
-          name: 'tagCorrelation',
-          component: () => import('@/views/HomeView/SubViews/TagCorrelation/TagCorrelation.vue'),
+          path: 'MediaFilterView',
+          name: 'mediaFilterView',
+          component: () => import('@/views/HomeView/SubViews/MediaFilterView/MediaFilterView.vue'),
         },
         {
           path: 'userFollowList',

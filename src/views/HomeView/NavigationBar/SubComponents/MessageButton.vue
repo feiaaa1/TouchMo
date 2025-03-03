@@ -1,6 +1,6 @@
 <template>
   <div
-    class="message-container"
+    class="messageButton-container"
     :style="{
       color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
     }"
@@ -59,11 +59,11 @@
               <!-- 分页器 -->
               <div class="pageSelect">
                 <PaginationEle
-                  :total-items="total"
-                  :items-per-page="10"
+                  :total="total"
                   :current-page="current_page"
-                  :visible-pages="5"
+                  :pager-count="4"
                   :show-total="true"
+                  @page-change="handlePageChange"
                 />
               </div>
             </template>
@@ -159,6 +159,16 @@ const sortOrder = ref(1) //升序 降序状态
 const isBatchSelect = ref(false) //批量选择状态
 const selectedItems = ref(new Set()) //批量选择的消息列表id集合
 
+async function handlePageChange(page) {
+  console.log(page)
+  const prePage = current_page.value
+  current_page.value = page
+  const res = await getMessageList()
+  if (!res) {
+    current_page.value = prePage
+  }
+}
+
 //拉取消息列表
 async function getMessageList() {
   try {
@@ -171,11 +181,15 @@ async function getMessageList() {
     console.log('获取消息列表--->', res)
     if (res.code === 200) {
       messageList.value = res.data.records
+      total.value = res.data.total
+      return true
     } else {
       ElMessage.error('消息获取失败，' + res.msg)
+      return false
     }
   } catch (error) {
     ElMessage.error('消息获取失败，' + error)
+    return false
   }
 }
 
@@ -279,7 +293,7 @@ connectWebSocket()
 </script>
 
 <style lang="scss" scoped>
-.message-container {
+.messageButton-container {
   position: relative;
   box-sizing: border-box;
   height: 2.2rem;
@@ -304,148 +318,158 @@ connectWebSocket()
       color: var(--secondary-font-color);
     }
   }
-
-  .message-box {
+  .message-container {
     position: absolute;
     z-index: 1;
     top: 120%;
     right: 0;
-    width: 20rem;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0);
     transition: transform 0.5s;
-    background-color: var(--tertiary-bg-color);
-
-    .message-box-header {
-      padding: 0.5rem 1rem;
-      height: 3rem;
-      background-color: var(--secondary-bg-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      .icon-showMore {
-        font-size: 1.3rem;
-        transition: all 0.3s;
-        height: 2rem;
-        width: 2rem;
-        border-radius: 50%;
-        text-align: center;
-        line-height: 2rem;
-        &:hover {
-          color: var(--secondary-font-color);
-          background-color: var(--primary-accent-color);
-        }
-      }
-    }
-
-    .message-box-body {
-      height: 18rem;
-      overflow-y: auto;
-      overflow-x: hidden;
-      &::-webkit-scrollbar {
-        width: 10px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background: var(--quaternary-bg-color);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background: var(--primary-border-color);
-        border-radius: 10px;
-      }
-      &::-webkit-scrollbar-button {
-        display: none;
-      }
-      .message-item-active {
-        border: 1px solid var(--primary-accent-color);
-      }
-      .message-item {
-        cursor: pointer;
+    .message-box {
+      position: relative;
+      z-index: 2;
+      width: 20rem;
+      border-radius: 6px;
+      box-shadow: 0px 0px 10px 3px rgba(0, 0, 0);
+      background-color: var(--tertiary-bg-color);
+      transition: transform 0.5s;
+      overflow: hidden;
+      .message-box-header {
         padding: 0.5rem 1rem;
-        height: 5.6rem;
-        background-color: var(--tertiary-bg-color);
-        color: var(--primary-font-color);
-        transition: all 0.3s;
+        height: 3rem;
+        background-color: var(--secondary-bg-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        &:hover {
-          background-color: var(--tertiary-border-color);
-          color: var(--secondary-font-color);
-        }
-        .item-body {
-          .content {
-            display: -webkit-box; /* 将元素设置为弹性盒子 */
-            -webkit-line-clamp: 2; /* 限制显示的行数 */
-            -webkit-box-orient: vertical; /* 设置盒子的方向为垂直 */
-            overflow: hidden; /* 隐藏溢出的内容 */
-            text-overflow: ellipsis; /* 溢出时显示省略号 */
 
-            .content-type {
-              font-weight: 600;
-              color: var(--primary-accent-color);
-              display: inline-block;
-              margin-right: 0.4rem;
+        .icon-showMore {
+          font-size: 1.3rem;
+          transition: all 0.3s;
+          height: 2rem;
+          width: 2rem;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 2rem;
+          &:hover {
+            color: var(--secondary-font-color);
+            background-color: var(--primary-accent-color);
+          }
+        }
+      }
+
+      .message-box-body {
+        height: 18rem;
+        overflow-y: auto;
+        overflow-x: hidden;
+        &::-webkit-scrollbar {
+          width: 10px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: var(--quaternary-bg-color);
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: var(--primary-border-color);
+          border-radius: 10px;
+        }
+        &::-webkit-scrollbar-button {
+          display: none;
+        }
+        .message-item-active {
+          border: 1px solid var(--primary-accent-color);
+        }
+        .message-item {
+          cursor: pointer;
+          padding: 0.5rem 1rem;
+          height: 5.6rem;
+          background-color: var(--tertiary-bg-color);
+          color: var(--primary-font-color);
+          transition: all 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 1rem;
+          &:hover {
+            background-color: var(--tertiary-border-color);
+            color: var(--secondary-font-color);
+          }
+          .item-body {
+            .content {
+              display: -webkit-box; /* 将元素设置为弹性盒子 */
+              -webkit-line-clamp: 2; /* 限制显示的行数 */
+              -webkit-box-orient: vertical; /* 设置盒子的方向为垂直 */
+              overflow: hidden; /* 隐藏溢出的内容 */
+              text-overflow: ellipsis; /* 溢出时显示省略号 */
+
+              .content-type {
+                font-weight: 600;
+                color: var(--primary-accent-color);
+                display: inline-block;
+                margin-right: 0.4rem;
+              }
+            }
+            .createTime {
+              color: var(--secondary-border-color);
             }
           }
-          .createTime {
-            color: var(--secondary-border-color);
-          }
-        }
 
-        .item-footer {
-          .checkBox {
-            height: 1.2rem;
-            width: 1.2rem;
-            text-align: center;
-            line-height: 1.2rem;
-            border: 1px solid var(--primary-accent-color);
-            .icon-checkMark {
-              color: var(--primary-accent-color);
+          .item-footer {
+            .redPoint {
+              height: 0.4rem;
+              width: 0.4rem;
+              background-color: #e63838;
+              border-radius: 50%;
+            }
+            .checkBox {
+              height: 1.2rem;
+              width: 1.2rem;
+              text-align: center;
+              line-height: 1.2rem;
+              border: 1px solid var(--primary-accent-color);
+              .icon-checkMark {
+                color: var(--primary-accent-color);
+              }
             }
           }
         }
-      }
-      .message-noMsg {
-        padding: 0.5rem 0;
-        text-align: center;
-        color: var(--primary-font-color);
-      }
+        .message-noMsg {
+          padding: 0.5rem 0;
+          text-align: center;
+          color: var(--primary-font-color);
+        }
 
-      .pageSelect {
-        background-color: transparent !important;
+        .pageSelect {
+          background-color: transparent !important;
+          margin-left: 1rem;
+        }
       }
     }
-  }
+    .message-select-box {
+      height: 21rem;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 0;
+      width: 10rem;
+      border-radius: 0 6px 6px 0;
+      overflow: hidden;
+      box-shadow: 0px 0px 10px 3px rgba(0, 0, 0);
+      background-color: var(--tertiary-bg-color);
 
-  .message-select-box {
-    height: 21rem;
-    position: absolute;
-    top: 120%;
-    right: 0;
-    z-index: 0;
-    width: 10rem;
-    border-radius: 0 6px 6px 0;
-    overflow: hidden;
-    box-shadow: 0px 0px 10px 3px rgba(0, 0, 0);
-    background-color: var(--tertiary-bg-color);
-
-    .message-select-box-header {
-      height: 3rem;
-      background-color: var(--secondary-bg-color);
-    }
-    .message-select-box-body {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.7rem;
-      .switch-box {
+      .message-select-box-header {
+        height: 3rem;
+        background-color: var(--secondary-bg-color);
+      }
+      .message-select-box-body {
+        padding: 1rem;
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        flex-direction: column;
+        gap: 0.7rem;
+        .switch-box {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
       }
     }
   }

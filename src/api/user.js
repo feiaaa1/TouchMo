@@ -142,8 +142,13 @@ export function deleteHistorySearch() {
   return request.delete('/user/search/history')
 }
 
-//用户评分电影
-export function rateMovie(data) {
+//用户初次评分电影
+export function firstRateMovie(data) {
+  return request.post('/user/media/score', data)
+}
+
+//用户修改评分电影
+export function modifyRateMovie(data) {
   return request.put('/user/media/score', data)
 }
 
@@ -161,7 +166,5 @@ export function removeMessage(data) {
 
 //批量已读消息
 export function setMessagesReadBatch(data) {
-  return request.put(
-    `/user/message?${data}`
-  )
+  return request.put(`/user/message?${data}`)
 }

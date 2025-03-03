@@ -1,10 +1,10 @@
 <template>
   <div
     ref="tag"
-    @click="navigateToTagCorrelation($event)"
+    @click="navigateToMediaFilterView($event)"
     :class="[
       'tag-container',
-  { border: props.isborder },
+      { border: props.isborder },
       //列出全部标签样式(这时会显示电影数量，所以通过这个来判断)
       { tagDisplayStyle: props.isShowFilmNum },
       { filterStyle: props.isFilterStyle },
@@ -70,20 +70,17 @@ const props = defineProps({
   isFilterStyle: {
     type: Boolean,
     default: false,
-  }
+  },
 })
 
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-function navigateToTagCorrelation(e) {
+function navigateToMediaFilterView(e) {
   //阻止冒泡
   e.stopPropagation()
   router.push({
-    name: 'tagCorrelation',
-    params: {
-      tagId: props.id,
-    },
+    name: 'mediaFilterView',
   })
 }
 </script>
@@ -99,14 +96,15 @@ function navigateToTagCorrelation(e) {
   padding: 0.5rem 1rem;
 
   &:hover {
-    p,.icon{
+    p,
+    .icon {
       color: var(--primary-func-color) !important;
     }
   }
 
   .icon {
-    color: var(--tertiary-font-color);
-    opacity: 0.5;
+    color: inherit;
+    opacity: 0.7;
     transition: all 0.2s;
   }
 

@@ -1,6 +1,25 @@
 <template>
-  <button :style="styleObject" :disabled="isLoading" :type="props.type">
-    <div :style="loadingStyleObj" v-show="isLoading" class="loading"></div>
+  <button
+    :style="{
+      color: props.color,
+      width: props.width,
+      height: props.height + 'rem',
+      padding: props.padding,
+      fontSize: props.fontSize,
+      border: `0.125em solid ${props.color}`,
+      borderRadius: props.borderRadius,
+    }"
+    :disabled="isLoading"
+    :type="props.type"
+  >
+    <div
+      :style="{
+        border: `2px solid ${props.color}`,
+        height: (props.height * 3) / 5 + 'rem',
+      }"
+      v-show="isLoading"
+      class="loading"
+    ></div>
     <p v-show="!isLoading">{{ props.text }}</p>
   </button>
 </template>
@@ -47,20 +66,9 @@ const props = defineProps({
   },
 })
 
-const styleObject = ref({
-  color: props.color,
-  width: props.width,
-  height: props.height + 'rem',
-  padding: props.padding,
-  fontSize: props.fontSize,
-  border: `0.125em solid ${props.color}`,
-  borderRadius: props.borderRadius,
-})
+const styleObject = ref()
 
-const loadingStyleObj = ref({
-  border: `2px solid ${props.color}`,
-  height: (props.height * 2) / 3 + 'rem',
-})
+const loadingStyleObj = ref()
 </script>
 
 <style lang="scss" scoped>
@@ -80,7 +88,6 @@ button {
   border-radius: 0.9375em;
   box-sizing: border-box;
   cursor: pointer;
-  display: inline-block;
   font-family: Roobert, sans-serif;
   font-size: 16px;
   font-weight: 600;

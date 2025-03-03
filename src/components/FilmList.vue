@@ -2,12 +2,11 @@
   <div class="film-container" :style="styleObject">
     <FilmShortening
       v-for="item in props.filmList"
-      :key="item.id"
+      :key="item.id?item.id:item"
       :filmItem="item"
       :isMore="props.isMore"
       :isShowRate="props.isShowRate"
       :isShowReleaseTime="props.isShowReleaseTime"
-      :isShowStatus="props.isShowStatus"
       :isShowHotLabel="props.isShowHotLabel"
     />
   </div>
@@ -46,10 +45,6 @@ const props = defineProps({
     default: false,
   },
   isShowHotLabel: {
-    type: Boolean,
-    default: false,
-  },
-  isShowStatus: {
     type: Boolean,
     default: false,
   },

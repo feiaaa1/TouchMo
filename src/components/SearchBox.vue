@@ -26,9 +26,9 @@
               @click="((isShowHistory = false), (input = item), getFilmArr())"
               class="historyItem"
               v-for="item in historyList"
-              :key="item"
+              :key="item.id"
             >
-              {{ item }}
+              {{ item.content }}
             </p>
           </div>
         </div>
@@ -82,6 +82,7 @@ async function handleDeleteHistory() {
 import { getSearchMovieList } from '@/api/movie'
 import { addHistorySearch } from '@/api/user'
 import { debounce } from '@/utils/debounce'
+import { ElMessage } from 'element-plus'
 
 //是否显示加载
 const isLoading = ref(false)
@@ -97,20 +98,36 @@ async function getFilmArr() {
     return
   }
   const params = {
-    name: input.value,
+    content: input.value,
     page: 1,
-    pageSize: 10,
   }
   isLoading.value = true
-  const getListRes = await getSearchMovieList(params)
-  filmList.value = getListRes.data.record
-  isLoading.value = false
-  const addHistoryRes = await addHistorySearch(input.value)
-  console.log('addHistoryRes--->', addHistoryRes)
+  try {
+    const getListRes = await getSearchMovieList(params)
+    console.log('获取搜索内容--->', getListRes)
+    if (getListRes.code === 200) {
+      filmList.value = getListRes.data.records
+      isLoading.value = false
+    } else {
+      ElMessage.error('获取搜索内容失败' + getListRes.msg)
+    }
+  } catch (error) {
+    ElMessage.error('获取搜索内容失败' + error)
+  } finally {
+    isLoading.value = false
+  }
+  try {
+    const addHistoryRes = await addHistorySearch(input.value)
+    console.log('添加搜索历史记录--->', addHistoryRes)
+    if (addHistoryRes.code !== 200) {
+      ElMessage.error('添加搜索历史记录失败--->' + addHistoryRes.msg)
+    }
+  } catch (error) {
+    ElMessage.error('添加搜索历史记录失败--->' + error)
+  }
 }
 // 使用防抖函数包装的搜索函数
 const debouncedGetFilmArr = debounce(getFilmArr, 400) // 延迟500毫秒
-
 
 //关闭逻辑 关闭后 1.清空电影list 2.清空输入框内容
 watch(styleStore.showBoxList, (newVal) => {
@@ -118,7 +135,6 @@ watch(styleStore.showBoxList, (newVal) => {
     closeBox()
   }
 })
-
 
 function closeBox() {
   input.value = ''

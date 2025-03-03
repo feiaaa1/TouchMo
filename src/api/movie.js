@@ -17,7 +17,7 @@ export function getMovieSource(filmId) {
 
 //获取搜索电影列表
 export function getSearchMovieList(data) {
-  return request.get('/user/search', {
+  return request.get('/search/media', {
     params: data,
   })
 }
@@ -48,7 +48,6 @@ export function getMovieComment(data) {
 export function getCommentDetail(commentId) {
   return request.get(`/user/comment?commentId=${commentId}`)
 }
-
 
 //用户评论电影
 export function subMovieComment(data) {
@@ -87,9 +86,38 @@ export function removeMovieCommentAction(commentId) {
   return request.delete(`/user/comment/action?commentId=${commentId}`)
 }
 
-//查看标签下影视作品
-export function getTagMediaList(data) {
-  return request.get('/user/label/media', {
+//获取指定影视作品的所有线路
+export function getMediaLineList(mediaId) {
+  return request.get(`/user/media/line?mediaId=${mediaId}`)
+}
+
+//获取影视作品集数信息
+export function getMediaVideo(data) {
+  return request.get(`/user/media/video`, {
     params: data,
   })
+}
+
+//获取影视作品播放路径
+export function getMediaVideoUrl(data) {
+  return request.get(`/user/media/open`, {
+    params: data,
+  })
+}
+
+//获取过滤后的媒体列表
+export function getFilterMediaList(data) {
+  return request.get('/user/category/media', {
+    params: data,
+  })
+}
+
+//获取所有分类
+export function getAllCategoryList() {
+  return request.get('/user/category')
+}
+
+//获取指定分类下的其他筛选列表
+export function getOtherFilterList(categoryId) {
+  return request.get(`/user/category/detail/${categoryId}`)
 }

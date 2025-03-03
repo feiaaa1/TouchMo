@@ -59,7 +59,7 @@ const router = useRouter()
 
 import { getPushMovieList } from '@/api/movie'
 const movieList = ref([])
-const isLoadComplete = ref(true)
+const isLoadComplete = ref(false)
 getPushMovieList().then((data) => {
   console.log('获取推荐电影列表getPushMovieList----->', data)
   movieList.value = data.data
