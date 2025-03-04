@@ -1,6 +1,7 @@
 <template>
   <div class="user-favorites-container">
     <div class="left-container">
+      <!-- 头部信息 返回、新建等 -->
       <header>
         <div
           style="cursor: pointer"
@@ -28,34 +29,40 @@
         >
         </span>
       </header>
+      <!-- 收藏夹列表展示主体 -->
       <main>
+        <!-- 收藏夹主体 -->
         <div
           v-show="!isEntryDir"
           @click="entryDir(item)"
-          v-for="item in userStore.userInfo.favorites"
+          v-for="item in userStore.userInfo.favorites.records"
           :key="item.id"
           class="favorites-container"
         >
+          <!-- 标题、内容数等 -->
           <div class="favorites-container-title-header">
             <h1>{{ item.name || '无名字' }}</h1>
             <h4 style="opacity: 0.7; font-weight: 400; font-style: italic">
-              {{ item.filmNum + '个内容' }}
+              {{ item.total + '个内容' }}
             </h4>
           </div>
+          <!-- 右边图标功能区 -->
           <div class="icon-container">
-            <span
-              @click="subDeleteFavorites($event, item.id)"
-              class="icon iconfont icon-delete"
-            ></span>
-            <span
-              @click="
-                (subModifyFavorites($event, item.id),
-                (styleStore.FavoriteState.isModifyFavorites = true))
-              "
-              class="icon iconfont icon-more"
-            ></span>
+            <PopupSelector
+              :options="[
+                { text: '删除', value: 0 },
+                { text: '修改', value: 1 },
+              ]"
+              @select="handleMoreBtnEvent($event, item.id)"
+            >
+              <button>
+                <!-- v-if="item.userId === userStore.userInfo.id" -->
+                <span class="icon iconfont icon-more"></span>
+              </button>
+            </PopupSelector>
           </div>
         </div>
+        <!-- 收藏夹下的电影列表展示 -->
         <transition name="filmList">
           <FilmList :isMore="true" :filmList="filmList" v-show="isEntryDir"></FilmList>
         </transition>
@@ -74,42 +81,91 @@ import FilmList from '@/components/FilmList.vue'
 
 const styleStore = useStyleStateStore()
 const userStore = useUserStore()
+const currentPage = ref(1)
+const sortOrder = ref(1)
 
-const isEntryDir = ref(false)
-const curDir = ref(null)
+//初始拉取第一页收藏夹列表
+userStore.getUserFavoritesList(currentPage.value, sortOrder.value)
+
+const isEntryDir = ref(false) //进入收藏夹状态
+const curDir = ref(null) //当前进入的收藏夹Id
+
+async function handleMoreBtnEvent(value, dirId) {
+  if (value === 0) {
+    //删除操作
+    subDeleteFavorites(dirId)
+  } else if (value === 1) {
+    //修改操作
+    subModifyFavorites(dirId)
+  }
+}
 
 //获取收藏夹电影列表
 import { getFavorites } from '@/api/user'
 const filmList = ref([])
-function entryDir(dir) {
-  getFavorites(dir.id).then((res) => {
-    styleStore.FavoriteState.currentFavoritesId = dir.id
-    curDir.value = dir
-    isEntryDir.value = true
-    filmList.value = res.data
-  })
+const filmListCurrentPage = ref(1) //收藏夹下的电影列表当前页
+const filmListSortOrder = ref(1) //收藏夹下的电影列表排序方式
+async function entryDir(dir) {
+  try {
+    const res = await getFavorites(dir.id, {
+      page: filmListCurrentPage.value,
+      sortOrder: filmListSortOrder.value,
+    })
+    console.log('获取收藏夹电影列表结果--->', res)
+    if (res.code === 200) {
+      styleStore.FavoriteState.currentFavoritesId = dir.id
+      curDir.value = dir
+      isEntryDir.value = true
+      filmList.value = res.data.records
+    } else {
+      ElMessage({
+        message: '获取收藏夹电影列表失败，' + res.msg,
+        type: 'error',
+        plain: true,
+      })
+    }
+  } catch (error) {
+    ElMessage({
+      message: '获取收藏夹电影列表失败，' + error,
+      type: 'error',
+      plain: true,
+    })
+  }
 }
 
 //删除收藏夹处理
 import { deleteFavorites } from '@/api/user'
-function subDeleteFavorites(e, favoriteId) {
-  e.stopPropagation()
-  deleteFavorites(favoriteId).then((res) => {
+async function subDeleteFavorites(favoriteId) {
+  try {
+    const res = await deleteFavorites('favoriteIds=' + favoriteId)
     console.log('deleteDir-->', res)
+    if (res.code === 200) {
+      ElMessage({
+        message: '删除收藏夹成功',
+        type: 'success',
+        plain: true,
+      })
+      // 拉取新的收藏夹列表
+      userStore.getUserFavoritesList(currentPage.value, sortOrder.value)
+    } else {
+      ElMessage({
+        message: '删除收藏夹失败，' + res.msg,
+        type: 'error',
+        plain: true,
+      })
+    }
+  } catch (error) {
     ElMessage({
-      message: '删除成功',
-      type: 'success',
-          plain: true,
-
+      message: '删除收藏夹失败，' + error,
+      type: 'error',
+      plain: true,
     })
-    userStore.getUser()
-  })
+  }
 }
-
 //修改文件夹处理
-function subModifyFavorites(e, favoritesId) {
-  e.stopPropagation()
+function subModifyFavorites(favoritesId) {
   styleStore.showBox('isShowModifyFavoritesCard')
+  styleStore.FavoriteState.isModifyFavorites = true
   styleStore.FavoriteState.currentFavoritesId = favoritesId
 }
 </script>
@@ -185,6 +241,9 @@ function subModifyFavorites(e, favoritesId) {
           h1 {
             color: var(--primary-accent-color);
           }
+          .icon-container button {
+            color: var(--primary-font-color);
+          }
         }
 
         .favorites-container-title-header {
@@ -201,17 +260,12 @@ function subModifyFavorites(e, favoritesId) {
           align-self: flex-end;
           display: flex;
           gap: 1rem;
-
-          .icon {
+          button {
+            border: none;
+            background-color: transparent;
+            color: transparent;
+            transition: all 0.3s;
             font-size: 1.2rem;
-            transition: color 0.3s;
-          }
-          .icon-delete {
-            &:hover {
-              color: var(--secondary-func-color);
-            }
-          }
-          .icon-more {
             &:hover {
               color: var(--primary-func-color);
             }

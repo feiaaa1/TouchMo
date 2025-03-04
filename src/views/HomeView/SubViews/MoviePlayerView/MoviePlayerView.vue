@@ -10,7 +10,7 @@
         <div class="LineGroup-conatiner">
           <div class="button" :key="item" v-for="item in lineGroup">
             <ButtonEle
-              @click="((currentLine = item), handleGetMediaVideo())"
+              @click="currentLine = item"
               width="fit-content"
               height="3"
               padding="0 1.5rem"
@@ -57,6 +57,8 @@ import { useRoute } from 'vue-router'
 import ButtonEle from '@/components/ButtonEle.vue'
 import M3U8Player from '@/components/M3U8Player.vue'
 import PaginationEle from '@/components/PaginationEle.vue'
+import { useStyleStateStore } from '@/stores/styleState'
+const styleStore = useStyleStateStore()
 const isLoadComplete = ref(false)
 const route = useRoute()
 const lineGroup = ref([]) //存储线路列表
@@ -97,6 +99,7 @@ watch(currentLine, () => {
 import { getMediaVideo } from '@/api/movie'
 async function handleGetMediaVideo() {
   try {
+    styleStore.startNewRequest()
     const res = await getMediaVideo({
       mediaId: route.params.id,
       line: currentLine.value,
@@ -108,6 +111,10 @@ async function handleGetMediaVideo() {
       episodeList.value = res.data.records
       isLoadComplete.value = true
       total.value = res.data.total
+      currentEpisode.value = null
+      videoUrl.value = ''
+      ElMessage.success('线路资源获取成功')
+      styleStore.enqueueProgress(100, styleStore.currentVersion)
     } else {
       ElMessage.error('获取集数失败，' + res.msg)
     }
@@ -121,14 +128,16 @@ import { getMediaVideoUrl } from '@/api/movie'
 async function handleGetMediaVideoUrl(episodeItem) {
   currentEpisode.value = episodeItem.episode
   try {
+    styleStore.startNewRequest()
     const res = await getMediaVideoUrl({
       mediaId: episodeItem.mediaId,
       videoId: episodeItem.id,
     })
     console.log('获取视频播放器地址--->', res)
-
     if (res.code === 200) {
       videoUrl.value = res.data
+      ElMessage.success('视频播放地址获取成功，正在加速解析中')
+      styleStore.enqueueProgress(100, styleStore.currentVersion)
     } else {
       ElMessage.error('视频播放地址获取失败，' + res.msg)
     }
@@ -195,7 +204,6 @@ async function handleGetMediaVideoUrl(episodeItem) {
       width: 100%;
       border: 1px solid var(--primary-border-color);
       border-radius: 0.8rem;
-      height: 30rem;
       background-color: var(--tertiary-bg-color);
       animation: slideUp 1.1s ease;
       padding: 1.5rem;
@@ -203,6 +211,7 @@ async function handleGetMediaVideoUrl(episodeItem) {
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
+      height: fit-content;
       .episode-container {
         width: 100%;
         display: flex;

@@ -4,15 +4,13 @@
       <h1>标签</h1>
       <div class="tags-list-container">
         <tag-component
-        :font-size="1.5"
-        v-for="(item, index) in tagsList"
-        :key="item.id"
-        :name="item.name"
-        :id="item.id"
-        :filmNum="item.total"
-        :is-show-film-num="true"
-        :isborder="true"
-        :class="[`delay-${index}`]"
+          :font-size="1.5"
+          v-for="(item, index) in tagsList"
+          :key="item.id"
+          :name="item.name"
+          :id="item.id"
+          :isborder="true"
+          :class="[`delay-${index}`]"
         />
       </div>
     </div>
@@ -62,10 +60,10 @@ getAllTagsList().then((res) => {
       justify-content: center;
       gap: 1rem;
       @for $i from 0 through 500 {
-  .delay-#{$i} {
-    animation:slideUp #{$i * 0.08s} ease; // 每个div延迟增加0.05s
-  }
-}
+        .delay-#{$i} {
+          animation: slideUp #{$i * 0.08s} ease; // 每个div延迟增加0.05s
+        }
+      }
     }
   }
 

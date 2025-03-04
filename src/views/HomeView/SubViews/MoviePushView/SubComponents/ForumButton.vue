@@ -1,6 +1,6 @@
 <template>
   <div class="forum-container">
-    <h3>论坛</h3>
+    <h3>解析(开发中)</h3>
     <span class="iconfont icon icon-forum"></span>
   </div>
 </template>

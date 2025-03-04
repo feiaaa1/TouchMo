@@ -1,6 +1,7 @@
 <template>
   <div
     class="messageButton-container"
+
     :style="{
       color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
     }"
@@ -271,6 +272,11 @@ function connectWebSocket() {
     await getMessageList(0, 1, 0)
   }
   ws.onmessage = async (e) => {
+    ElNotification({
+      title: '消息',
+      message: '收到新消息',
+      type: 'success',
+    })
     await getMessageList()
   }
   ws.onclose = () => {

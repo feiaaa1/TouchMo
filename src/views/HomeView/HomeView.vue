@@ -1,6 +1,7 @@
 <template>
   <div :class="['home-container', isDark ? 'dark-theme' : 'light-theme']">
     <canvas id="starfield" :class="{ blur: store.showBoxList.isShowUserCard }"></canvas>
+    <ResponsiveProgressBar />
     <NavigationBar :class="{ blur: store.showBoxList.isShowUserCard }" />
     <RouterView :class="{ blur: store.showBoxList.isShowUserCard }" />
     <FooterComponent />
@@ -14,6 +15,7 @@
 </template>
 
 <script setup>
+import ResponsiveProgressBar from '@/components/ResponsiveProgressBar.vue'
 import NavigationBar from './NavigationBar/NavigationBar.vue'
 import FooterComponent from './FooterComponent/FooterComponent.vue'
 import SearchBox from '@/components/SearchBox.vue'
@@ -40,7 +42,7 @@ watch(ThemeStyle, (newValue) => {
   isDark.value = newValue === 'dark' ? true : false
 })
 
-//获取登陆状态 用户信息 用户收藏夹 用户关注
+//获取登陆状态 用户信息 用户收藏夹 用户关注, 每次渲染刷新时获取
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
 userStore.getUser()
@@ -58,7 +60,7 @@ userStore.getUser()
   --quaternary-bg-color: #111014;
   --primary-border-color: #444444;
   --secondary-border-color: #858585;
-  --tertiary-border-color:#272729;
+  --tertiary-border-color: #272729;
   --primary-font-color: #cbcbcb;
   --secondary-font-color: #fafafa;
   --tertiary-font-color: #b8b8b8;

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
-
+import { useStyleStateStore } from '@/stores/styleState'
+const styleState = useStyleStateStore()
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
   baseURL: 'http://kyz.free.svipss.top', // 替换为你的 API 基础 URL
@@ -12,7 +13,6 @@ axiosInstance.interceptors.request.use(
   (config) => {
     // 从本地存储（例如 localStorage）获取 token
     const token = localStorage.getItem('token')
-
     if (token) {
       // 如果 token 存在，则将其作为请求头的一部分
       config.headers.token = `${token}`
@@ -45,8 +45,7 @@ axiosInstance.interceptors.response.use(
         type: 'error',
         plain: true,
       })
-    }
-    else if (error.message.includes('timeout')) {
+    } else if (error.message.includes('timeout')) {
       ElMessage({
         message: '请求超时',
         type: 'error',

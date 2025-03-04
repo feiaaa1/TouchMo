@@ -10,9 +10,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 function navigateToTagsPage() {
-  router.push({
-    name: 'tags',
-  })
+  router.push('MediaFilterView')
 }
 </script>
 

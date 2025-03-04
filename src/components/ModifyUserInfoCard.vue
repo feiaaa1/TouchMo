@@ -34,7 +34,7 @@
 
         <!-- 提交按钮 -->
         <ButtonEle
-         type="submit"
+          type="submit"
           text="保存"
           height="3.2"
           padding="0.7rem 2rem"
@@ -118,18 +118,15 @@ const handleSubmit = async () => {
       ElMessage({
         type: 'success',
         message: '修改成功！',
-      plain: true,
-
+        plain: true,
       })
-    styleStore.closeBox()
-    isLoading.value = false
-    }
-    else {
+      styleStore.closeBox()
+      isLoading.value = false
+    } else {
       ElMessage({
         type: 'error',
         message: `修改失败${res.msg}`,
-      plain: true,
-
+        plain: true,
       })
       isLoading.value = false
     }
@@ -138,8 +135,7 @@ const handleSubmit = async () => {
       ElMessage({
         type: 'error',
         message: `修改失败${error}`,
-      plain: true,
-
+        plain: true,
       })
       isLoading.value = false
     }

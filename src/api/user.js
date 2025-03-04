@@ -36,13 +36,17 @@ export function getUserInfo() {
 }
 
 //获取用户收藏夹
-export function getUserFavorites() {
-  return request.get('/user/favorites')
+export function getUserFavorites(params) {
+  return request.get('/user/favorites', {
+    params: params,
+  })
 }
 
 //获取用户关注列表
-export function getUserFollow() {
-  return request.get('/user/follow')
+export function getUserFollow(params) {
+  return request.get('/user/follow', {
+    params: params,
+  })
 }
 
 //修改用户信息
@@ -79,8 +83,10 @@ export function getFollow() {
 }
 
 //查看指定收藏夹
-export function getFavorites(id) {
-  return request.get(`/user/favorites/${id}`)
+export function getFavorites(id, params) {
+  return request.get(`/user/favorites/${id}`, {
+    params: params,
+  })
 }
 
 //创建收藏夹
@@ -94,14 +100,14 @@ export function modifyFavorites(data) {
 }
 
 //删除收藏夹
-export function deleteFavorites(id) {
-  return request.delete(`/user/favorites?favoriteId=${id}`)
+export function deleteFavorites(data) {
+  return request.delete(`/user/favorites?${data}`)
 }
 
 //添加电影到收藏夹
 export function addMovieToFavorites(data) {
   return request.post(
-    '/user/favorites/film',
+    '/user/favorites/media',
     {},
     {
       params: data,
@@ -111,7 +117,7 @@ export function addMovieToFavorites(data) {
 
 //从收藏夹移除电影
 export function deleteMovieFromFavorites(data) {
-  return request.delete('/user/favorites/film', {
+  return request.delete('/user/favorites/media', {
     params: data,
   })
 }

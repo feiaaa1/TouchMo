@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getUserInfo, getUserFollow, getUserFavorites } from '@/api/user'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
+import { SortOrder } from 'element-plus/es/components/table-v2/src/constants'
 
 export const useUserStore = defineStore('user', () => {
   const isLogin = ref(false)
@@ -29,30 +30,80 @@ export const useUserStore = defineStore('user', () => {
 
   const isFirstGetUser = ref(true)
   async function getUser() {
-    //获取用户信息并更新仓库
-    isFirstGetUser.value = false
+    try {
+      //获取用户信息并更新仓库
+      isFirstGetUser.value = false
       const res = await getUserInfo()
-      console.log('getuser----->',res);
+      console.log('获取用户信息----->', res)
       if (res.code === 200) {
         isLogin.value = true
         userInfo.value = res.data
-
-        const favoritesRes = await getUserFavorites()
-        userInfo.value.favorites = favoritesRes.data
-
-        const followRes = await getUserFollow()
-        userInfo.value.follow = followRes.data
-      } else {
-        //重置用户信息
-        resetUserInfo()
-        ElNotification({
-          title: 'Warning',
-          message: '用户登录失效',
-          type: 'warning',
-        })
+        //获取用户关注信息并更新仓库
+        getUserFollowList()
+        getUserFavoritesList()
       }
-
+    } catch (error) {
+      console.log(error)
+      ElMessage({
+        message: '获取用户信息失败，' + error,
+        type: 'error',
+        plain: true,
+      })
+    }
   }
 
-  return { isLogin, userInfo, getUser, resetUserInfo }
+  //拉取用户关注列表
+  async function getUserFollowList(page = 1, sortOrder = 1) {
+    try {
+      //获取用户关注信息并更新仓库
+      const followRes = await getUserFollow({
+        page: page,
+        sortOrder: sortOrder,
+      })
+      console.log('获取用户关注信息----->', followRes)
+      if (followRes.code === 200) {
+        userInfo.value.follow = followRes.data
+      } else {
+        ElMessage({
+          message: '获取用户关注信息失败，' + followRes.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
+    } catch (error) {
+      ElMessage({
+        message: '获取用户关注信息失败，' + error,
+        type: 'error',
+        plain: true,
+      })
+    }
+  }
+
+  //获取用户收藏夹信息并更新仓库
+  async function getUserFavoritesList(page = 1, sortOrder = 1) {
+    try {
+      const favoritesRes = await getUserFavorites({
+        page: page,
+        sortOrder: sortOrder,
+      })
+      console.log('获取用户收藏夹信息----->', favoritesRes)
+      if (favoritesRes.code === 200) {
+        userInfo.value.favorites = favoritesRes.data
+      } else {
+        ElMessage({
+          message: '获取用户收藏夹信息失败，' + favoritesRes.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
+    } catch (error) {
+      ElMessage({
+        message: '获取用户收藏夹信息失败，' + error,
+        type: 'error',
+        plain: true,
+      })
+    }
+  }
+
+  return { isLogin, userInfo, getUser, resetUserInfo, getUserFollowList, getUserFavoritesList }
 })

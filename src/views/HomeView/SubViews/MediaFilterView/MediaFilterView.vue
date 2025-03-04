@@ -73,11 +73,13 @@
 import PaginationEle from '@/components/PaginationEle.vue'
 import SelectEle from '@/components/SelectEle.vue'
 import FilmList from '@/components/FilmList.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, provide } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage, ElNotification } from 'element-plus'
 import { getFilterMediaList } from '@/api/movie'
+import { useStyleStateStore } from '@/stores/styleState'
 
+const styleStore = useStyleStateStore()
 const isLoadComplete = ref(true)
 const route = useRoute()
 const filmList = ref([])
@@ -98,6 +100,21 @@ const currentOrder = ref(1) //当前排序顺序 0升序 1降序
 const currentPage = ref(1) //当前页数
 const totalPage = ref(0) //总页数
 
+if (route.query.categoryId) {
+  currentCategoryId.value = route.query.categoryId
+}
+if (route.query.labelId) {
+  currentLabelId.value = route.query.labelId
+}
+
+const activeDropdownId = ref(null)
+provide('dropdownState', {
+  activeId: activeDropdownId,
+  setActiveId: (id) => {
+    activeDropdownId.value = id
+  },
+})
+
 //获取所有分类标签
 import { getAllCategoryList } from '@/api/movie'
 async function handleGetAllCategoryList() {
@@ -109,11 +126,10 @@ async function handleGetAllCategoryList() {
         item._label = item.name
         return item
       })
-      // 默认选择第一项分类标签
-      currentCategoryId.value = allCategories.value[0].id
+      //当初始值为空时（没有通过标签进入） 默认选择第一项分类标签
+      currentCategoryId.value = currentCategoryId.value || allCategories.value[0].id
       //初始化获取电影列表
       await getFilmList()
-      isLoadComplete.value = true
     } else {
       ElMessage.error('获取所有分类标签失败，' + res.msg)
     }
@@ -127,6 +143,7 @@ handleGetAllCategoryList()
 //根据当前参数获取电影列表
 async function getFilmList() {
   try {
+    styleStore.startNewRequest()
     const params = {
       categoryId: currentCategoryId.value,
       labelId: currentLabelId.value,
@@ -142,6 +159,7 @@ async function getFilmList() {
     if (res.code === 200) {
       totalPage.value = res.data.total
       filmList.value = res.data.records
+      styleStore.enqueueProgress(100, styleStore.currentVersion)
     } else {
       ElMessage.error('获取电影列表失败，' + res.msg)
     }
@@ -175,6 +193,7 @@ async function handleGetOtherFilterList(categoryId) {
         }
       })
       otherFilterOptions.value = copyResData
+      isLoadComplete.value = true
     } else {
       ElMessage.error('获取所有其他筛选列表失败，' + res.msg)
     }
@@ -182,9 +201,16 @@ async function handleGetOtherFilterList(categoryId) {
     ElMessage.error('获取所有其他筛选列表失败，' + error)
   }
 }
-watch(currentCategoryId, async (newVal) => {
-  handleGetOtherFilterList(newVal)
-})
+
+watch(
+  currentCategoryId,
+  async (newVal) => {
+    handleGetOtherFilterList(newVal)
+  },
+  {
+    immediate: currentCategoryId.value !== null ? true : false,
+  },
+)
 </script>
 
 <style lang="scss" scoped>

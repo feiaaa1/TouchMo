@@ -25,9 +25,10 @@
             :name="tag.name"
             :isLinkIcon="false"
             :is-filter-style="true"
+            tag-type="category"
           />
           <span class="icon iconfont icon-shoMore"></span>
-          <span class="showMoreBtn" @click="router.push('tags')">更多</span>
+          <span class="showMoreBtn" @click="router.push('MediaFilterView')">更多</span>
         </div>
         <FilmList
           :filmList="movieList"
@@ -55,30 +56,72 @@ import RankingBox from './SubComponents/RankingBox.vue'
 import TagComponent from '@/components/TagComponent.vue'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStyleStateStore } from '@/stores/styleState'
+const styleState = useStyleStateStore()
+
 const router = useRouter()
 
 import { getPushMovieList } from '@/api/movie'
 const movieList = ref([])
 const isLoadComplete = ref(false)
-getPushMovieList().then((data) => {
-  console.log('获取推荐电影列表getPushMovieList----->', data)
-  movieList.value = data.data
-})
+
+async function handleGetPushMovieList() {
+  try {
+    const res = await getPushMovieList()
+    console.log('获取推荐电影列表结果----->', res)
+    if (res.code === 200) {
+      movieList.value = res.data
+    } else {
+      ElMessage.error('获取推荐电影列表失败，' + res.msg)
+    }
+  } catch (error) {
+    ElMessage.error('获取推荐电影列表失败，' + error)
+  }
+}
 
 import { getAllTagsList } from '@/api/movie'
 const tagList = ref([])
-getAllTagsList().then((data) => {
-  console.log('获取所有标签tagList===>', data)
-  tagList.value = data.data.slice(0, 8)
-})
+async function handleGetAllTagsList() {
+  try {
+    const res = await getAllTagsList()
+    console.log('获取所有标签tagList===>', res)
+    if (res.code === 200) {
+      tagList.value = res.data.slice(0, 8)
+    } else {
+      ElMessage.error('获取所有标签列表失败，' + res.msg)
+    }
+  } catch (error) {
+    ElMessage.error('获取所有标签列表失败，' + error)
+  }
+}
 
 import { getHotPushMovieList } from '@/api/movie'
+import { ElMessage } from 'element-plus'
+import { delay } from '@/utils/delay'
 const rankingMovieList = ref([])
-getHotPushMovieList().then((data) => {
-  console.log('获取热门电影列表hotPushMovieList===>', data)
-  rankingMovieList.value = data.data
-  isLoadComplete.value = true
-})
+async function handleGetHotPushMovieList() {
+  try {
+    styleState.startNewRequest()
+    const res = await getHotPushMovieList()
+    console.log('获取热门电影列表hotPushMovieList===>', res)
+    if (res.code === 200) {
+      rankingMovieList.value = res.data
+      // 请求完成时强制更新到 100%
+      styleState.enqueueProgress(100, styleState.currentVersion)
+      await delay(300)//等待进度条动画完成
+      isLoadComplete.value = true
+    } else {
+      ElMessage.error('获取热门电影列表失败，' + res.msg)
+    }
+  } catch (error) {
+    ElMessage.error('获取热门电影列表失败，' + error)
+  }
+}
+handleGetPushMovieList()
+
+handleGetAllTagsList()
+
+handleGetHotPushMovieList()
 </script>
 
 <style lang="scss" scoped>
@@ -184,7 +227,7 @@ getHotPushMovieList().then((data) => {
     }
 
     .ranking-section {
-      width: 100%;
+      flex-grow: 1;
       animation: slideUp 1.3s ease -0.1s;
     }
   }

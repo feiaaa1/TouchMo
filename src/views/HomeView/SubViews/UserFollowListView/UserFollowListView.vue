@@ -2,8 +2,8 @@
   <div v-if="isLoadComplete" class="followList-container">
     <div class="left-container">
       <h1 class="title">关注列表</h1>
-      <div v-for="item in followList" :key="item.id" class="actor-box">
-        <div @click="navigateToActorProfile(item.id)" class="detail-container">
+      <div v-for="item in followList" :key="item.id" class="member-box">
+        <div @click="navigateTomemberProfile(item.id)" class="detail-container">
           <img :src="item.avatar" alt="" />
           <div class="title-container">
             <h1>{{ item.name }}</h1>
@@ -25,11 +25,11 @@ const router = useRouter()
 
 const isLoadComplete = ref(false)
 
-function navigateToActorProfile(id) {
+function navigateTomemberProfile(id) {
   router.push({
-    name: 'actors',
+    name: 'member',
     params: {
-      actorId: id,
+      memberId: id,
     },
   })
 }
@@ -85,7 +85,7 @@ function subDeleteFollow(id) {
       color: var(--primary-accent-color);
     }
 
-    .actor-box {
+    .member-box {
       width: 100%;
       margin-bottom: 3rem;
       animation: slideUp 0.5s ease;

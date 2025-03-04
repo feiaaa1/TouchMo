@@ -1,7 +1,7 @@
 <template>
   <div
     ref="tag"
-    @click="navigateToMediaFilterView($event)"
+    @click.stop="navigateToMediaFilterView()"
     :class="[
       'tag-container',
       { border: props.isborder },
@@ -41,7 +41,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  //获取电影数
+  tagType: {
+    type: String,
+    required: true,
+  },
+  //获取电影数(废弃)
   filmNum: {
     type: Number,
     default: 0,
@@ -56,7 +60,7 @@ const props = defineProps({
     type: Number,
     default: 0.83,
   },
-  //是否显示电影数
+  //是否显示电影数(废弃)
   isShowFilmNum: {
     type: Boolean,
     default: false,
@@ -76,11 +80,17 @@ const props = defineProps({
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-function navigateToMediaFilterView(e) {
-  //阻止冒泡
-  e.stopPropagation()
+function navigateToMediaFilterView() {
+  const query = {}
+  if (props.tagType === 'label') {
+    query.labelId = props.id
+  } else if (props.tagType === 'category') {
+    query.categoryId = props.id
+  }
+
   router.push({
     name: 'mediaFilterView',
+    query: query,
   })
 }
 </script>

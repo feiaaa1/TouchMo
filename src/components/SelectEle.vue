@@ -13,10 +13,10 @@
       <div class="left-container">
         <p class="filterType">{{ props.filterType }}</p>
         <div class="selectedLabel">
-          <span class="icon iconfont icon-filter"> </span>
+          <span v-if="props.isShowIcon" class="icon iconfont icon-filter"> </span>
           <p class="selectedText">
             {{
-              props.options.find((item) => item.id === props.optionId)?._label || props.placeholder
+              props.options.find((item) => item.id == props.optionId)?._label || props.placeholder
             }}
           </p>
         </div>
@@ -43,14 +43,14 @@
           :class="{ disabled: option.disabled }"
         >
           <p class="option-label">{{ option._label }}</p>
-          <span v-if="option.id === props.optionId" class="icon iconfont icon-checkMark"></span>
+          <span v-if="option.id == props.optionId" class="icon iconfont icon-checkMark"></span>
         </li>
       </ul>
     </transition>
   </div>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, watch } from 'vue'
 const props = defineProps({
   //必选 选项列表
   options: {
@@ -77,6 +77,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isShowIcon: {
+    type: Boolean,
+    default: true,
+  },
   //可选 选项高度
   height: {
     type: Number,
@@ -94,13 +98,46 @@ const props = defineProps({
   },
 })
 // console.log(props.options)
-const emit = defineEmits(['update:modelValue', 'change-option'])
+const emit = defineEmits(['update:optionId', 'change-option'])
+const dropdownState = inject('dropdownState') //注入父组件的状态
+const instanceId = Symbol() //生成唯一实例标识（或改用父组件传递的ID）
 const isOpen = ref(false) //展开下拉框状态
 const selectedLabel = ref('') //当前选择的内容
+selectedLabel.value =
+  props.options.find((item) => item.id == props.optionId)?._label || props.placeholder
 
+//监听全局激活状态变化
+watch(
+  () => dropdownState.activeId.value,
+  (newId) => {
+    if (newId !== instanceId) {
+      isOpen.value = false //非当前激活实例时关闭
+    }
+  },
+)
+
+watch(
+  () => props.options,
+  (newId) => {
+    if (props.filterType === '标签筛选')
+      console.log(props.filterType + '子组件传入的optionId', props.optionId, props.options)
+    console.log()
+  },
+  { immediate: true },
+)
+
+//切换下拉框展开状态
 const toggleDropdown = () => {
-  isOpen.value = !isOpen.value
+  if (!isOpen.value) {
+    // 展开时更新全局状态
+    dropdownState.setActiveId(instanceId)
+    isOpen.value = true
+  } else {
+    isOpen.value = false
+    dropdownState.setActiveId(null)
+  }
 }
+//选择下拉框中的选项触发的操作
 const selectOption = (option) => {
   if (option.disabled) return
   selectedLabel.value = option._label

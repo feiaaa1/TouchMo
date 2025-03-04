@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { downloadProgress } from '@/utils/responsiveProgressListener'
 
 //获取推送电影列表
 export function getPushMovieList() {
@@ -7,7 +8,9 @@ export function getPushMovieList() {
 
 //获取电影详情
 export function getMovieDetail(filmId) {
-  return request.get(`/user/media/?mediaId=${filmId}`)
+  return request.get(`/user/media/?mediaId=${filmId}`, {
+    onDownloadProgress: downloadProgress,
+  })
 }
 
 //获取电影路径
@@ -24,7 +27,9 @@ export function getSearchMovieList(data) {
 
 //获取热门电影列表
 export function getHotPushMovieList() {
-  return request.get('/user/push/hotPush')
+  return request.get('/user/push/hotPush', {
+    onDownloadProgress: downloadProgress,
+  })
 }
 
 //获取所有分类标签
@@ -33,8 +38,10 @@ export function getAllTagsList() {
 }
 
 //获取人员详情
-export function getActorProfile(id) {
-  return request.get(`/user/follow/${id}`)
+export function getMemberProfile(memberId, params) {
+  return request.get(`/user/member/${memberId}`, {
+    params: params,
+  })
 }
 
 //获取电影评论
@@ -95,6 +102,7 @@ export function getMediaLineList(mediaId) {
 export function getMediaVideo(data) {
   return request.get(`/user/media/video`, {
     params: data,
+    onDownloadProgress: downloadProgress,
   })
 }
 
@@ -102,6 +110,7 @@ export function getMediaVideo(data) {
 export function getMediaVideoUrl(data) {
   return request.get(`/user/media/open`, {
     params: data,
+    onDownloadProgress: downloadProgress,
   })
 }
 
@@ -109,6 +118,7 @@ export function getMediaVideoUrl(data) {
 export function getFilterMediaList(data) {
   return request.get('/user/category/media', {
     params: data,
+    onDownloadProgress: downloadProgress,
   })
 }
 

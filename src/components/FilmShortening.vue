@@ -42,16 +42,19 @@
         </div>
         <!-- 更多容器 -->
         <div class="more-container">
-          <span
-            @click="submitDeleteFavorites($event)"
-            class="icon icon-delete iconfont"
+          <PopupSelector
             v-if="props.isMore"
-          ></span>
-          <span
-            @click="showModifyFavoritesCard($event)"
-            class="icon icon-more iconfont"
-            v-if="props.isMore"
-          ></span>
+            :options="[
+              { text: '删除', value: 0 },
+              { text: '移动', value: 1 },
+            ]"
+            @select="handleMoreBtnEvent($event)"
+          >
+            <button>
+              <!-- v-if="item.userId === userStore.userInfo.id" -->
+              <span class="icon iconfont icon-more"></span>
+            </button>
+          </PopupSelector>
         </div>
       </div>
     </div>
@@ -59,9 +62,9 @@
 </template>
 
 <script setup>
-import TagComponent from './TagComponent.vue'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import PopupSelector from './PopupSelector.vue'
 
 const props = defineProps({
   filmItem: Object,
@@ -129,22 +132,39 @@ function navigateToMovieDetail(id) {
   })
 }
 
-function showModifyFavoritesCard(e) {
-  e.stopPropagation()
-  styleStore.showBox('isShowModifyFavoritesCard', props.id)
+async function handleMoreBtnEvent(value) {
+  if (value === 0) {
+    //删除
+    submitDeleteFavorites()
+  } else if (value === 1) {
+    //移动
+    showModifyFavoritesCard()
+  }
+}
+
+function showModifyFavoritesCard() {
+  styleStore.showBox('isShowModifyFavoritesCard', props.filmItem.id)
 }
 
 //移除电影收藏逻辑
 import { deleteMovieFromFavorites } from '@/api/user'
-function submitDeleteFavorites(e) {
-  e.stopPropagation()
-  const params = {
-    filmId: props.id,
-    favoriteId: styleStore.FavoriteState.currentFavoritesId,
+import { ElMessage } from 'element-plus'
+async function submitDeleteFavorites() {
+  try {
+    const params = {
+      favoriteId: styleStore.FavoriteState.currentFavoritesId,
+      mediaIds: props.filmItem.id,
+    }
+    const res = await deleteMovieFromFavorites(params)
+    console.log('删除收藏夹下电影的响应结果：', res)
+    if (res.code === 200) {
+      ElMessage.success('删除收藏夹下电影成功')
+    } else {
+      ElMessage.error('删除收藏夹下电影失败，' + res.msg)
+    }
+  } catch (error) {
+    ElMessage.error('删除收藏夹下电影失败，' + error)
   }
-  deleteMovieFromFavorites(params).then((res) => {
-    console.log('delete--->', res)
-  })
 }
 </script>
 
@@ -155,10 +175,10 @@ function submitDeleteFavorites(e) {
 .shorteing-container {
   cursor: pointer;
   width: 100%;
+  min-width: 0;
   aspect-ratio: 2/1.1;
   background-color: var(--quatenary-bg-color);
   border: 1px solid var(--primary-border-color);
-  overflow: hidden;
   border-radius: 0.7rem;
   transition: all 0.5s;
   display: flex;
@@ -203,6 +223,8 @@ function submitDeleteFavorites(e) {
     height: 55%;
     overflow: hidden;
     position: relative;
+    border-top-right-radius: 0.7rem;
+    border-top-left-radius: 0.7rem;
     .status {
       position: absolute;
       bottom: 0;
@@ -233,7 +255,7 @@ function submitDeleteFavorites(e) {
   }
 
   .detail-container {
-    height: 100%;
+    flex-grow: 1;
     width: 100%;
     padding: 2% 6%;
     display: flex;
@@ -291,21 +313,14 @@ function submitDeleteFavorites(e) {
 
       .more-container {
         color: var(--primary-font-color);
-        transform: translateY(1rem);
-
-        .icon {
-          display: inline-block;
-          margin-right: 5px;
-          transform: scale(1.3);
-
+        margin-left: auto;
+        width: fit-content;
+        button {
+          border: none;
+          background-color: transparent;
+          color: var(--primary-font-color);
           &:hover {
-            color: var(--primary-accent-color);
-          }
-        }
-        .icon-delete {
-          margin-right: 1rem;
-          &:hover {
-            color: var(--secondary-func-color);
+            color: var(--primary-func-color);
           }
         }
       }

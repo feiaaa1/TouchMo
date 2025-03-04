@@ -19,7 +19,7 @@
       <main>
         <div
           @click="handleMovie(item.id)"
-          v-for="item in userStore.userInfo.favorites"
+          v-for="item in userStore.userInfo.favorites.records"
           :key="item.id"
           v-show="
             !isCreate &&
@@ -54,9 +54,12 @@
               type="text"
             />
           </div>
-          <button class="submit-btn btn" @click="handleFavorite()">
-            {{ !styleStore.FavoriteState.isModifyFavorites ? '创建' : '修改' }}
-          </button>
+          <ButtonEle
+            :text="!styleStore.FavoriteState.isModifyFavorites ? '创建' : '修改'"
+            @click="handleFavorite()"
+            height="3"
+            color="var(--primary-accent-color)"
+          />
         </div>
       </main>
     </div>
@@ -64,11 +67,18 @@
 </template>
 
 <script setup>
+import ButtonEle from './ButtonEle.vue'
 import { useStyleStateStore } from '@/stores/styleState'
 import { useUserStore } from '@/stores/user'
 import { ref, watch } from 'vue'
 const styleStore = useStyleStateStore()
 const userStore = useUserStore()
+userStore.getUserFavoritesList() //获取用户收藏夹列表，以便进行电影的收藏
+watch(styleStore.showBoxList, () => {
+  if (styleStore.showBoxList.isShowModifyFavoritesCard) {
+    userStore.getUserFavoritesList() //获取用户收藏夹列表，以便进行电影的收藏
+  }
+})
 
 const isCreate = ref(false)
 
@@ -80,51 +90,70 @@ import { ElMessage } from 'element-plus'
 const name = ref('')
 const description = ref(null)
 
-function handleFavorite() {
-  if (!styleStore.FavoriteState.isModifyFavorites) {
-    const params = {
-      id: null,
-      name: name.value,
-      userId: userStore.userInfo.id,
-      description: description.value,
+async function handleFavorite() {
+  try {
+    if (!styleStore.FavoriteState.isModifyFavorites) {
+      const params = {
+        id: null,
+        name: name.value,
+        userId: userStore.userInfo.id,
+        description: description.value,
+      }
+      const res = await createFavorites(params)
+      console.log('新建收藏夹结果-->', res)
+      if (res.code === 200) {
+        styleStore.closeBox()
+        //清空输入框 更新数据
+        name.value = ''
+        description.value = null
+        ElMessage({
+          title: 'Success',
+          message: '创建收藏夹成功',
+          type: 'success',
+          plain: true,
+        })
+        isCreate.value = false
+        userStore.getUserFavoritesList()
+      } else {
+        ElMessage({
+          message: '创建收藏夹失败，' + res.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
+    } else {
+      const params = {
+        id: styleStore.FavoriteState.currentFavoritesId,
+        name: name.value,
+        userId: userStore.userInfo.id,
+        description: description.value,
+      }
+      const res = await modifyFavorites(params)
+      console.log('修改收藏夹结果--->', res)
+      if (res.code === 200) {
+        styleStore.closeBox()
+        //清空输入框 更新数据
+        name.value = ''
+        description.value = null
+        ElMessage({
+          message: '修改收藏夹成功',
+          type: 'success',
+          plain: true,
+        })
+        userStore.getUser()
+      } else {
+        ElMessage({
+          message: '修改收藏夹失败，' + res.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
     }
-    createFavorites(params).then((res) => {
-      console.log('createFavo-->', res)
-      styleStore.closeBox()
-      //清空输入框 更新数据
-      name.value = ''
-      description.value = null
-      ElMessage({
-        title: 'Success',
-        message: '创建成功',
-        type: 'success',
+  } catch (error) {
+    ElMessage({
+      message: '操作收藏夹失败，' + error,
+      type: 'error',
       plain: true,
-
-      })
-      isCreate.value = false
-      userStore.getUser()
-    })
-  } else {
-    const params = {
-      id: styleStore.FavoriteState.currentFavoritesId,
-      name: name.value,
-      userId: userStore.userInfo.id,
-      description: description.value,
-    }
-    modifyFavorites(params).then((res) => {
-      console.log('modifyFavorites--->', res)
-      styleStore.closeBox()
-
-      //清空输入框 更新数据
-      name.value = ''
-      description.value = null
-      ElMessage({
-        message: '修改成功',
-        type: 'success',
-      plain: true,
-
-      })
-      userStore.getUser()
     })
   }
 }
@@ -134,7 +163,7 @@ watch(styleStore.showBoxList, (newVal) => {
     ;(name.value = ''), (description.value = null)
   } else if (styleStore.FavoriteState.isModifyFavorites) {
     //处理修改电影自动填充
-    userStore.userInfo.favorites.forEach((item) => {
+    userStore.userInfo.favorites.records.forEach((item) => {
       if (item.id == styleStore.FavoriteState.currentFavoritesId) {
         name.value = item.name
         description.value = item.description
@@ -149,19 +178,28 @@ import { moveMovieToOtherFavorites } from '@/api/user'
 async function handleMovie(favoritesId) {
   try {
     if (!styleStore.FavoriteState.currentFavoritesId) {
+      // 执行收藏逻辑
       const params = {
-        filmId: styleStore.FavoriteState.currentFilmId,
+        mediaId: styleStore.FavoriteState.currentFilmId,
         favoriteId: favoritesId,
       }
       const res = await addMovieToFavorites(params)
-      console.log('addMovie--->', res)
-      styleStore.closeBox()
-      ElMessage({
-        message: '收藏成功！',
-        type: 'success',
-      plain: true,
-
-      })
+      console.log('收藏电影结果--->', res)
+      if (res.code === 200) {
+        styleStore.closeBox()
+        ElMessage({
+          message: '收藏成功！',
+          type: 'success',
+          plain: true,
+        })
+        return true
+      } else {
+        ElMessage({
+          message: '收藏失败，' + res.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
     } else {
       const params = {
         filmId: styleStore.FavoriteState.currentFilmId,
@@ -170,20 +208,33 @@ async function handleMovie(favoritesId) {
       }
       const res = await moveMovieToOtherFavorites(params)
       console.log('moveMovie---->', res)
-      styleStore.closeBox()
-      ElMessage({
-        message: '移动成功！',
-        type: 'success',
-      plain: true,
-
-      })
+      if (res.code === 200) {
+        styleStore.closeBox()
+        ElMessage({
+          message: '移动成功！',
+          type: 'success',
+          plain: true,
+        })
+        return true
+      } else {
+        ElMessage({
+          message: '移动失败，' + res.msg,
+          type: 'error',
+          plain: true,
+        })
+      }
     }
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    ElMessage({
+      message: '操作失败，' + error,
+      type: 'error',
+      plain: true,
+    })
   } finally {
-    //最后拉取用户信息
-    userStore.getUser()
+    // 最后拉取用户信息
+    userStore.getUserFavoritesList()
   }
+  return false
 }
 </script>
 
@@ -202,7 +253,7 @@ async function handleMovie(favoritesId) {
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 2rem;
 
   header {
     .title {

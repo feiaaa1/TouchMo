@@ -50,10 +50,10 @@ const router = createRouter({
             import('@/views/HomeView/SubViews/UserFavoritesView/UserFavoritesView.vue'),
         },
         {
-          path: 'actors/:actorId',
-          name: 'actors',
+          path: 'member/:memberId',
+          name: 'member',
           component: () =>
-            import('@/views/HomeView/SubViews/ActorProfileView/ActorProfileView.vue'),
+            import('@/views/HomeView/SubViews/MemberProfileView/MemberProfileView.vue'),
         },
       ],
     },

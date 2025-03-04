@@ -65,10 +65,6 @@ const props = defineProps({
     default: 'button',
   },
 })
-
-const styleObject = ref()
-
-const loadingStyleObj = ref()
 </script>
 
 <style lang="scss" scoped>

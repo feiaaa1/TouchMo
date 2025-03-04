@@ -1,8 +1,13 @@
 <template>
-  <div class="film-container" :style="styleObject">
+  <div
+    class="film-container"
+    :style="{
+      gridTemplateColumns: `repeat(${props.columns},1fr)`,
+    }"
+  >
     <FilmShortening
       v-for="item in props.filmList"
-      :key="item.id?item.id:item"
+      :key="item.id ? item.id : item"
       :filmItem="item"
       :isMore="props.isMore"
       :isShowRate="props.isShowRate"
@@ -48,10 +53,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
-
-const styleObject = reactive({
-  gridTemplateColumns: `repeat(${props.columns},1fr)`,
 })
 </script>
 

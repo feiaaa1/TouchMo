@@ -1,5 +1,5 @@
 <template>
-  <div class="popup-selector" @click="toggle">
+  <div class="popup-selector" @click.stop="toggle">
     <!-- 插槽：用于传入按钮 -->
     <slot></slot>
 
