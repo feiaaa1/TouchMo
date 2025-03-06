@@ -161,11 +161,10 @@ let startX, startWidth, startLeft, startTop, cropCanvasWidth, cropCanvasHeight
 const handleAvatarChange = async (event) => {
   // 通过拖拽或点击触发onchange事件获取file对象
   const file = event.target ? event.target.files[0] : event
+
   if (file) {
     ResetCroppedAvatarVariables() //先重置一遍所有裁剪相关变量
     isCrop.value = true
-    //1.获取上传的图片File对象
-    avatarFile.value = file
     //2.将file对象转换成img再通过canvas在本地进行绘制
     nextTick(async () => {
       // 确保DOM元素已经渲染完成
@@ -320,19 +319,17 @@ function updateOverlay() {
 }
 
 // 处理表单提交
-import { modifyUserInfo } from '@/api/user'
-import { upload } from '@/api/user'
+import { modifyUserInfo, upload } from '@/api/user'
 import { ElMessage } from 'element-plus'
 // 处理信息提交事件
 const handleSubmit = async () => {
+  isLoading.value = true
+  // 1.若是处于裁剪状态首先将裁剪后的canvas转换为file对象，否则直接提交原来的头像
   try {
-    isLoading.value = true
-    // 1.若是处于裁剪状态首先将裁剪后的canvas转换为file对象，否则直接提交原来的头像
     if (isCrop.value) {
-      croppedCanvas.value.toBlob((blob) => {
-        const file = new File([blob], 'avatar.png', { type: 'image/png' })
-        avatarFile.value = file
-      })
+      // 等待异步的toBlob完成
+      const blob = await toBlobAsync(croppedCanvas.value)
+      avatarFile.value = new File([blob], 'avatar.png', { type: 'image/png' })
       // 2.处理图片上传 更新数据为后端返回的url
       //封装formData
       const formData = new FormData()
@@ -381,6 +378,18 @@ const handleSubmit = async () => {
     }
     isLoading.value = false
   }
+}
+
+function toBlobAsync(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob)
+      } else {
+        reject(new Error('Canvas toBlob failed'))
+      }
+    }, 'image/png')
+  })
 }
 </script>
 
