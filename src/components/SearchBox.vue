@@ -23,7 +23,7 @@
           </div>
           <div class="history-main">
             <p
-              @click="((isShowHistory = false), (input = item), getFilmArr())"
+              @click="((isShowHistory = false), (input = item.content), getFilmArr())"
               class="historyItem"
               v-for="item in historyList"
               :key="item.id"
