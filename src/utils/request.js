@@ -1,10 +1,8 @@
 import axios from 'axios'
 import { ElMessage, ElNotification } from 'element-plus'
-import { useStyleStateStore } from '@/stores/styleState'
-const styleState = useStyleStateStore()
 // 创建一个 Axios 实例
 const axiosInstance = axios.create({
-  baseURL: 'https://kyz.free.svipss.top', // 替换为你的 API 基础 URL
+  baseURL: import.meta.env.VITE_APP_URL, // 替换为你的 API 基础 URL
   timeout: 20000, // 请求超时时间
 })
 

@@ -102,6 +102,11 @@ html::-webkit-scrollbar-thumb {
   border-radius: 10px;
 }
 
+em {
+  color: var(--secondary-func-color) !important;
+  font-style: normal !important;
+}
+
 .btn {
   appearance: none;
   background-color: transparent;

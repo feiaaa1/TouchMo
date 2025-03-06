@@ -18,12 +18,17 @@
             <p class="hitory-title">搜索历史</p>
             <div class="deleteHistory-container">
               <span class="icon iconfont icon-delete"></span>
-              <p class="deleteHistoryBtn" @click="handleDeleteHistory()">清空历史记录</p>
+              <p class="deleteHistoryBtn" @click="((isSelect = false), selectList.clear())">
+                {{ isSelect ? '取消' : '' }}
+              </p>
+              <p class="deleteHistoryBtn" @click="handleDeleteHistory()">
+                {{ isSelect ? '删除' : '清空历史记录' }}
+              </p>
             </div>
           </div>
           <div class="history-main">
             <p
-              @click="((isShowHistory = false), (input = item.content), getFilmArr())"
+              @click="handleClickHistoryItem(item.id)"
               class="historyItem"
               v-for="item in historyList"
               :key="item.id"
@@ -62,19 +67,29 @@ async function handleGetHistorySearch() {
   console.log('getHistoryList--->', res)
   historyList.value = res.data
 }
-
+// 初始获取搜索历史记录
 handleGetHistorySearch()
 
 //清空搜索历史
 import { deleteHistorySearch } from '@/api/user'
+const isSelect = ref(false) //是否是选择状态选择
+const selectList = ref(new Set()) //选择列表
 async function handleDeleteHistory() {
-  try {
-    const res = await deleteHistorySearch()
-    console.log('deleteHistory', res)
-  } catch (error) {
-    console.log('清空失败', error)
-  } finally {
-    handleGetHistorySearch()
+  if (!isSelect.value) {
+    try {
+      const res = await deleteHistorySearch()
+      console.log('清空历史搜索记录结果--->', res)
+      if (res.code === 200) {
+        ElMessage.success('清空成功')
+        // 重新拉取历史记录列表
+        handleGetHistorySearch()
+      } else {
+        ElMessage.error('清空失败：' + res.msg)
+      }
+    } catch (error) {
+      ElMessage.error('清空失败：' + error)
+    }
+  } else {
   }
 }
 

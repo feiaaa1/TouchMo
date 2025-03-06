@@ -144,8 +144,8 @@ export function addHistorySearch(content) {
 }
 
 //清空历史搜索记录
-export function deleteHistorySearch() {
-  return request.delete('/user/search/history')
+export function deleteHistorySearch(data) {
+  return request.delete(`/user/search/history?${data}`)
 }
 
 //用户初次评分电影

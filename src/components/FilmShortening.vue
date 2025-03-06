@@ -16,7 +16,7 @@
     <div class="detail-container">
       <!-- 详情容器头部 -->
       <div class="detail-container-header">
-        <h1 :v-html="props.filmItem.title + '【' + props.filmItem.status + '】 '"></h1>
+        <h1 v-html="props.filmItem.title + '【' + props.filmItem.status + '】 '"></h1>
       </div>
 
       <!-- 详情容器主体 -->
@@ -172,10 +172,7 @@ async function submitDeleteFavorites() {
 .isShowOpacity {
   opacity: 1 !important;
 }
-em {
-  color: var(--secondary-func-color);
-  display: inline-block;
-}
+
 .shorteing-container {
   cursor: pointer;
   width: 100%;
@@ -266,6 +263,7 @@ em {
     flex-direction: column;
     align-items: flex-start;
     justify-content: space-around;
+
 
     .detail-container-header {
       width: 100%;

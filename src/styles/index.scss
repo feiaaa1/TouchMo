@@ -11,7 +11,10 @@ html::-webkit-scrollbar-thumb {
   background: rgb(26, 26, 26);
   border-radius: 10px;
 }
-
+em {
+  color: var(--secondary-func-color) !important;
+  font-style: normal !important;
+}
 //全局按钮样式
 .btn {
   appearance: none;
