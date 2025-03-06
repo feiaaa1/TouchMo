@@ -1,7 +1,6 @@
 <template>
   <div
     class="messageButton-container"
-
     :style="{
       color: `${styleStore.NavigationState.isMovieDetail ? (styleStore.NavigationState.isScrollTop ? 'white' : 'var(--primary-font-color)') : 'var(--primary-font-color)'}`,
     }"
@@ -262,7 +261,7 @@ async function handleSetMessagesReadBatch() {
 function connectWebSocket() {
   // 从本地存储（例如 localStorage）获取 token
   const token = localStorage.getItem('token')
-  const ws = new WebSocket('ws://kyz.free.svipss.top/ws?token=' + token)
+  const ws = new WebSocket('wss://kyz.free.svipss.top/ws?token=' + token)
   ws.onopen = async () => {
     ElNotification({
       title: '消息',
