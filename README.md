@@ -1,5 +1,7 @@
 # TouchMo
 
+&nbsp;
+
 ## 🚀 项目介绍
 
 **TouchMo**一个支持实时电影推送和进行视频在线解析的SPA应用。
@@ -8,39 +10,52 @@
 - **后端**：java、redis等（另一位伙伴负责）
 - **项目预览**：[TouchMo 预览地址](https://movie-website-wheat-gamma.vercel.app/)（部署于Vercel，需要梯子，暂时使用本地服务器提供后端服务）
 
+&nbsp; &nbsp;
+
 ## 🔆项目预览
 
-**首页** （canvas绘制动态流星背景）
+  <br />
+  
+ **首页** （canvas绘制动态流星背景）
 ![enter image description here](https://i.ibb.co/6RZR0R3q/2025-03-07-021038.png)
-
-**登录**（登录注册）
+  <br />
+   
+ **登录**（登录注册）
 ![enter image description here](https://i.ibb.co/NdZyNGZj/2025-03-07-020350.png)
-
-**编辑资料**（支持拖拽上传图片、在线裁剪图片、在线预览头像）
-![enter image description here](https://i.ibb.co/WvNnrgGy/2025-03-07-015005.png)
-
+  <br />
+ 
+ **编辑资料**（支持拖拽上传图片、在线裁剪图片、在线预览头像）![enter image description here](https://i.ibb.co/WvNnrgGy/2025-03-07-015005.png)
+ <br />
+ 
 **影视筛选**
 ![enter image description here](https://i.ibb.co/d4GsbNS8/2025-03-07-021118.png)
-
+ <br />
+ 
 **搜索电影**（搜索内容高亮提示）
 ![enter image description here](https://i.ibb.co/1GgppYCx/2025-03-07-021200.png)
 ![enter image description here](https://i.ibb.co/qLHvF8Jc/2025-03-07-021212.png)
-
+ <br />
+ 
 **电影详情页面**（集收藏、评分、资源跳转、人员详情页跳转、评论于一页）
 ![enter image description here](https://i.ibb.co/hRnYLXD8/2025-03-07-021222.png)
 ![enter image description here](https://i.ibb.co/7JRn3Zpc/2025-03-07-021232.png)
 ![enter image description here](https://i.ibb.co/JWs485JR/2025-03-07-021258.png)
-
+ <br />
+ 
 **收藏夹查看**
 ![enter image description here](https://i.ibb.co/cXcSH2SN/2025-03-07-022659.png)
 ![enter image description here](https://i.ibb.co/HD9sCmZq/2025-03-07-022708.png)
-
+ <br />
+ 
 **即时消息**
 ![enter image description here](https://i.ibb.co/FkPpj2bF/2025-03-07-021324.png)
 ![enter image description here](https://i.ibb.co/HDy6FpJX/2025-03-07-021332.png)
-
+ <br />
+ 
 **影视剧播放页**（切换线路和集数）
 ![enter image description here](https://i.ibb.co/3bY9zPZ/2025-03-07-021352.png)
+
+&nbsp;
 
 ## 模块开发文档（方便后续维护）
 
