@@ -4,10 +4,10 @@
       <h1 class="title">关注列表</h1>
       <div v-for="item in followList" :key="item.id" class="member-box">
         <div @click="navigateTomemberProfile(item.id)" class="detail-container">
-          <img :src="item.avatar" alt="" />
+          <img :src="item.img" alt="" />
           <div class="title-container">
             <h1>{{ item.name }}</h1>
-            <button class="removeFollowBtn" @click="subDeleteFollow(item.id)">取消关注</button>
+            <button class="removeFollowBtn" @click.stop="subDeleteFollow(item.id)">取消关注</button>
           </div>
         </div>
       </div>
@@ -36,8 +36,9 @@ function navigateTomemberProfile(id) {
 
 const followList = ref([])
 function getFollowList() {
-  getFollow().then((res) => {
-    followList.value = res.data
+  
+  getFollow({ page: 1, sortOrder: 1 }).then((res) => {
+    followList.value = res.data.records
     isLoadComplete.value = true
   })
 }
@@ -47,12 +48,11 @@ getFollowList()
 import { deleteFollow } from '@/api/user'
 function subDeleteFollow(id) {
   deleteFollow(id).then((res) => {
-    if (res.code === 0) {
+    if (res.code === 200) {
       ElMessage({
         message: '取消成功',
         type: 'success',
-          plain: true,
-
+        plain: true,
       })
       getFollowList()
     }

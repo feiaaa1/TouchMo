@@ -78,8 +78,8 @@ export function deleteFollow(id) {
 }
 
 //关注用户
-export function getFollow() {
-  return request.get('/user/follow')
+export function getFollow(params) {
+  return request.get('/user/follow', {params: params})
 }
 
 //查看指定收藏夹

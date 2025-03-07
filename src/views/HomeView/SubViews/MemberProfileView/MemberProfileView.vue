@@ -2,17 +2,21 @@
   <div v-if="isLoadingComplete" class="member-container">
     <div class="left-container">
       <div class="detail-container">
-        <img :src="memberProfile.avatar" alt="" />
+        <img :src="memberProfile.img" alt="" />
         <div class="title-container">
           <h1>{{ memberProfile.name }}</h1>
-          <button v-if="!memberProfile.isFollow" class="followBtn btn" @click="submitFollow()">
+          <button
+            v-if="+memberProfile.isFollow === 0"
+            class="followBtn btn"
+            @click="submitFollow()"
+          >
             关注
           </button>
           <button v-else class="removeFollowBtn btn" @click="submitRemoveFollow()">已关注</button>
         </div>
       </div>
       <h1>参演作品</h1>
-      <FilmList :filmList="memberProfile.films" />
+      <FilmList :filmList="memberProfile.media.records" />
     </div>
     <div class="right-container"></div>
   </div>
@@ -35,7 +39,7 @@ async function getInfo() {
       page: 1,
       sortOrder: 1,
     })
-    console.log('获取指定人员信息-->', memberProfile.value)
+    console.log('获取指定人员信息-->', res)
     if (res.code === 200) {
       memberProfile.value = res.data
       isLoadingComplete.value = true
@@ -62,12 +66,16 @@ import { follow } from '@/api/user'
 async function submitFollow() {
   try {
     const res = await follow(route.params.memberId)
-    console.log('followRes-->', res)
-    ElMessage({
-      message: '关注成功',
-      type: 'success',
-      plain: true,
-    })
+    console.log('关注人员结果-->', res)
+    if (res.code === 200) {
+      ElMessage({
+        message: '关注成功',
+        type: 'success',
+        plain: true,
+      })
+    } else {
+      ElMessage.error('关注失败，' + res.msg)
+    }
   } catch (error) {
     ElMessage({
       message: '关注失败' + error,
@@ -81,16 +89,19 @@ async function submitFollow() {
 
 //取消关注逻辑
 import { deleteFollow } from '@/api/user'
-import { sortOrders } from 'element-plus/es/components/table-v2/src/constants'
 async function submitRemoveFollow() {
   try {
     const res = await deleteFollow(route.params.memberId)
-    console.log('deleteFollowRes-->', res)
-    ElMessage({
-      message: '取消关注成功',
-      type: 'success',
-      plain: true,
-    })
+    console.log('取消关注结果-->', res)
+    if (res.code === 200) {
+      ElMessage({
+        message: '取消关注成功',
+        type: 'success',
+        plain: true,
+      })
+    } else {
+      ElMessage.error('取消关注失败' + res.msg)
+    }
   } catch (error) {
     ElMessage({
       message: '取消关注失败' + error,
